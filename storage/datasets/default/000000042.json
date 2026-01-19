@@ -1,0 +1,43 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "La Station (Ferme Pierre Bolduc enr)",
+  "location": "Compton, Québec",
+  "address": "440, chemin de Hatley, Compton, QUÉBEC, J0B 1L0",
+  "lat": null,
+  "lng": null,
+  "email": "",
+  "phone": "8196744840",
+  "website": "fromagerielastation.com",
+  "profile_url": "https://regenerationcanada.org/en/la-station/",
+  "categories": "rpc3, rpc6",
+  "products": "Milk, Cheese, Hay, Wheat, Barley, Soy, Corn, Maple syrup",
+  "services": "rss6, rss7, rss9, rss11",
+  "how_to_buy": "Farm kiosk",
+  "size": "1050 acres",
+  "results": "Since the establishment of the windbreak hedges, there has been an increase in the number of birds at the farm.",
+  "quote": "Regenerative agriculture takes into account soil protection and the role of animals in crop rotation and biodiversity.",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc3",
+    "rpc6"
+  ],
+  "service_codes": [
+    "rss6",
+    "rss7",
+    "rss9",
+    "rss11"
+  ],
+  "category_names": [
+    "rpc3",
+    "rpc6"
+  ],
+  "service_names": [
+    "rss6",
+    "rss7",
+    "rss9",
+    "rss11"
+  ],
+  "category_names_str": "rpc3; rpc6",
+  "service_names_str": "rss6; rss7; rss9; rss11"
+}

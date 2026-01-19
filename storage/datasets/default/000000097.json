@@ -1,0 +1,31 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Icellars Estate Winery",
+  "location": "Niagara-on-the-Lake, Ontario",
+  "address": "615 Concession 5 Rd, Niagara-on-the-Lake, Ontario, L0S1J0",
+  "lat": null,
+  "lng": null,
+  "email": "info@icellars.ca",
+  "phone": "2894795969",
+  "website": "icellars.ca",
+  "profile_url": "https://regenerationcanada.org/en/icellars-estate-winery/",
+  "categories": "rpc10",
+  "products": "Organic Wine",
+  "services": "",
+  "how_to_buy": "Winery retail, LCBO, online",
+  "size": "50 acres",
+  "results": "The soil is less compacted and more permeable with a higher water infiltration rate. |*| Organic matter is increasing every year based on soil tests. |*| Plants are more resilient and robust to weather events and disease pressure.",
+  "quote": "It is a part of our organic farming and net energy zero building practices",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc10"
+  ],
+  "service_codes": [],
+  "category_names": [
+    "rpc10"
+  ],
+  "service_names": [],
+  "category_names_str": "rpc10",
+  "service_names_str": ""
+}

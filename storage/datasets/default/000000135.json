@@ -1,0 +1,47 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Stony Hill Farm",
+  "location": "Oakbank, Manitoba",
+  "address": "26042 Hillside Road, Oakbank, Manitoba, R5N 0G6",
+  "lat": null,
+  "lng": null,
+  "email": "brenda@sustainablegrain.ca",
+  "phone": "204-296-6265",
+  "website": "stonyhillfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/stony-hill-farm/",
+  "categories": "rpc2, rpc8, rpc100",
+  "products": "Eggs from grazing hens, Saskatoon berries, Camping",
+  "services": "rss1, rss2, rss5, rss6, rss7",
+  "how_to_buy": "Come to the farm to buy eggs or text orders to the phone number on our web site.",
+  "size": "20 acres",
+  "results": "Increased earthworms and birds",
+  "quote": "Regenerative Agriculture means creating success in doing food production in healthy environments and selling it to people to eat.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/StonyHillFarm-logo-RGB-raster.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/StonyHillFarm-logo-RGB-raster-300x300.jpg",
+  "category_codes": [
+    "rpc2",
+    "rpc8",
+    "rpc100"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss2",
+    "rss5",
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc2",
+    "rpc8",
+    "rpc100"
+  ],
+  "service_names": [
+    "rss1",
+    "rss2",
+    "rss5",
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc2; rpc8; rpc100",
+  "service_names_str": "rss1; rss2; rss5; rss6; rss7"
+}

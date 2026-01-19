@@ -1,0 +1,47 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Maple Ridge Farm",
+  "location": "Sydenham, ON",
+  "address": "3098 Alton Rd E, Sydenham, ON, K0H 2T0",
+  "lat": null,
+  "lng": null,
+  "email": "mapleridgefarmer@gmail.com",
+  "phone": "6135322981",
+  "website": "mapleridge-farm.com",
+  "profile_url": "https://regenerationcanada.org/en/maple-ridge-farm/",
+  "categories": "rpc1, rpc2, rpc11, rpc13",
+  "products": "Beekeeping workshops, Seasonal flowers, Onfarm experiences, Strategy sessions for farmers, Pastured Free Range Eggs, Grass Finished Organic Beef, Pastured Poultry, Pastured Pork, Gardening workshops, Class Trips, Raw Honey, Floral workshops",
+  "services": "rss1, rss2, rss6, rss7",
+  "how_to_buy": "Website and through our weekly farm update",
+  "size": "93 acres acres",
+  "results": "Pasture quality has improved significantly (weed reduction and perennial diversity has increased) |*|Thriving diverse ecosystem of birds, insects and herbivores and predators|*|Improved canopy growth of wooded areas|*|Reduced brown space (ultimately decreasing soil erosion)|*|Use of cover cropping has improved flower field fertility",
+  "quote": "A holistic approach to agriculture that works in step with nature to rebuild soil health, increase biodiversity, resulting in more resilient, flourishing ecosystems as well as sustainable food production.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/MRF_Logo_150x.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/MRF_Logo_150x.png",
+  "category_codes": [
+    "rpc1",
+    "rpc2",
+    "rpc11",
+    "rpc13"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss2",
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc2",
+    "rpc11",
+    "rpc13"
+  ],
+  "service_names": [
+    "rss1",
+    "rss2",
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc1; rpc2; rpc11; rpc13",
+  "service_names_str": "rss1; rss2; rss6; rss7"
+}

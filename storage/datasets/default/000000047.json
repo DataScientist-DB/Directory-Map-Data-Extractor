@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Upland Organics",
+  "location": "Wood Mountain, SK, CA",
+  "address": "Box 113, Wood Mountain, Saskatchewan, S0H 4L0, Canada",
+  "lat": null,
+  "lng": null,
+  "email": "allison@uplandorganics.ca",
+  "phone": "306-266-4646",
+  "website": "uplandorganics.ca",
+  "profile_url": "https://regenerationcanada.org/en/upland-organics/",
+  "categories": "rpc3, rpc4",
+  "products": "Flax, Lentils, Durum, Sunflowers",
+  "services": "rss1, rss6, rss7",
+  "how_to_buy": "Please contact us directly.",
+  "size": "4000+ acres",
+  "results": "Healthy soil produces healthy food.",
+  "quote": "The primary reason we farm using regenerative principles is that we want to leave everything better than we found it. When you farm this way, you’re always looking ahead to the success of future generations.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Upland-Organics-Family-Picture-with-logo.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Upland-Organics-Family-Picture-with-logo-300x200.png",
+  "category_codes": [
+    "rpc3",
+    "rpc4"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc3",
+    "rpc4"
+  ],
+  "service_names": [
+    "rss1",
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc3; rpc4",
+  "service_names_str": "rss1; rss6; rss7"
+}

@@ -1,0 +1,45 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Backwoods Buffalo Ranch",
+  "location": "Mayerthorpe, Alberta",
+  "address": "Box 336, Mayerthorpe, Alberta, T0E 1N0",
+  "lat": null,
+  "lng": null,
+  "email": "backwoodsbuffaloranch@gmail.com",
+  "phone": "780-305-8449",
+  "website": "www.backwoodsbuffalo.com",
+  "profile_url": "https://regenerationcanada.org/en/backwoods-buffalo-ranch/",
+  "categories": "rpc1, rpc2, rpc5",
+  "products": "Grass Finished Lamb, Pastured Bison, Pastured Pork, Pastured Chicken, Pastured Turkey, Free-Range Eggs, Vegetables",
+  "services": "rss2, rss6, rss7, rss10",
+  "how_to_buy": "Backwoods Buffalo Ranch on-site Farm Store, Farmers Markets, Online Ordering",
+  "size": "320 acres",
+  "results": "Healthier soil, better grass production, healthier animals",
+  "quote": "When we consciously and efficiently utilize animals and plants in synchronicity, we gain food security, that is regeneration.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/backwoods-buffalo-ranch-2.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/backwoods-buffalo-ranch-2-300x150.jpg",
+  "category_codes": [
+    "rpc1",
+    "rpc2",
+    "rpc5"
+  ],
+  "service_codes": [
+    "rss2",
+    "rss6",
+    "rss7",
+    "rss10"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc2",
+    "rpc5"
+  ],
+  "service_names": [
+    "rss2",
+    "rss6",
+    "rss7",
+    "rss10"
+  ],
+  "category_names_str": "rpc1; rpc2; rpc5",
+  "service_names_str": "rss2; rss6; rss7; rss10"
+}

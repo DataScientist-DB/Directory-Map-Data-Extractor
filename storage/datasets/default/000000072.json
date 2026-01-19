@@ -1,0 +1,43 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Cardale Grain Corp.",
+  "location": "Newdale, MB",
+  "address": "BOX 129, NEWDALE, MB, R0J 1J0",
+  "lat": null,
+  "lng": null,
+  "email": "chrisraupers@hotmail.com",
+  "phone": "204-868-5329",
+  "website": "https://engrainedflour.ca/",
+  "profile_url": "https://regenerationcanada.org/en/cardale-grain-corp/",
+  "categories": "rpc3, rpc4",
+  "products": "Flour, Red Fife Wheat, HRS Wheat, Oats, Peas, Barley, Canola, Fababeans, Camelina, Hay",
+  "services": "rss1, rss6, rss7, rss9",
+  "how_to_buy": "https://engrainedflour.ca/, Farm Visit",
+  "size": "6500 acres",
+  "results": "Fungal Hyphae are easily found on decaying stubble and in Soil |*|Increased Water Infiltration|*|Return of the Earth Worm",
+  "quote": "Regenerative Agriculture entails understanding Soil, Nature and Plants.  It is my Job to grow Nutritional Dense Food while growing Soil.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/cgc-logo-square.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/cgc-logo-square.jpg",
+  "category_codes": [
+    "rpc3",
+    "rpc4"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names": [
+    "rpc3",
+    "rpc4"
+  ],
+  "service_names": [
+    "rss1",
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names_str": "rpc3; rpc4",
+  "service_names_str": "rss1; rss6; rss7; rss9"
+}

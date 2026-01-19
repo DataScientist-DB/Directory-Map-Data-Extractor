@@ -1,0 +1,18 @@
+{
+  "actorSpecification": 1,
+  "name": "actor-6-directory-listing-extractor",
+  "title": "Directory Listing Extractor",
+  "description": "Extract listings from directory/map pages into structured datasets.",
+  "version": "0.1",
+  "meta": {
+    "templateId": "python-start"
+  },
+  "input": "./INPUT_SCHEMA.json",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "title": "Extracted listings",
+      "schema": "./DATASET_SCHEMA.json"
+    }
+  }
+}

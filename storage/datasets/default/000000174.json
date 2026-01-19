@@ -1,0 +1,35 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Carter Cattle Company",
+  "location": "Lacadena, Saskatchewan",
+  "address": "PO Box 69, Lacadena, Saskatchewan, S0L 1V0",
+  "lat": null,
+  "lng": null,
+  "email": "cartercattle@xplornet.com",
+  "phone": "306-574-4908",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/carter-cattle/",
+  "categories": "rpc1, rpc3, rpc4",
+  "products": "Grass-fed beef",
+  "services": "",
+  "how_to_buy": "Email us to order custom finished beef by the quarter, half or whole.",
+  "size": "6000 acres",
+  "results": "When we enhance the relationship between grasslands-croplands-livestock and wildlife we are able to improve the health and longevity of each",
+  "quote": "Regenerative agriculture is a newer term for a traditional method of farming and raising livestock within a holistic system that creates benefits for all parts of the system. Healthy soils, sunshine and water are foundational. We are farming for our family and for our future.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/carter-cattle-company-ltd_zujHRYNb4Rvt_0.JPG",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/carter-cattle-company-ltd_zujHRYNb4Rvt_0-300x187.jpg",
+  "category_codes": [
+    "rpc1",
+    "rpc3",
+    "rpc4"
+  ],
+  "service_codes": [],
+  "category_names": [
+    "rpc1",
+    "rpc3",
+    "rpc4"
+  ],
+  "service_names": [],
+  "category_names_str": "rpc1; rpc3; rpc4",
+  "service_names_str": ""
+}

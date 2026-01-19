@@ -1,0 +1,43 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Andreas Ventures",
+  "location": "Sheho, Saskatchewan",
+  "address": "Box 351, Sheho Saskatchewan, Canada, S0A3T0",
+  "lat": null,
+  "lng": null,
+  "email": "s.andreas@sasktel.net",
+  "phone": "306-272-7395",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/andreas-ventures/",
+  "categories": "rpc1, rpc3, rpc4, rpc13",
+  "products": "beef, oats, peas, flax, barley, honey",
+  "services": "rss6, rss7",
+  "how_to_buy": "we sell honey at our local farmers market and are looking at possibly expanding to grass-fed beef in the future",
+  "size": "1500 acres",
+  "results": "we have noticed our water infiltration has improved on our land|*|our organic matter has increased by .5 to 1 % |*|our veterinary bills have dropped dramatically as the cattle benefit from diverse diets (cover crops etc)|*|our need for synthetic fertilizer has dropped and our profit has increased|*|We have plenty of wildlife, way too many moose and deer. They love to be on our land , we are one of the few farms in the area that hasn\\'t cleared every marsh, or trees. The birds are more diverse as well since we started in 2015",
+  "quote": "Regenerative agriculture, to us, means trying to farm  with mother nature not against her",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc1",
+    "rpc3",
+    "rpc4",
+    "rpc13"
+  ],
+  "service_codes": [
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc3",
+    "rpc4",
+    "rpc13"
+  ],
+  "service_names": [
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc1; rpc3; rpc4; rpc13",
+  "service_names_str": "rss6; rss7"
+}

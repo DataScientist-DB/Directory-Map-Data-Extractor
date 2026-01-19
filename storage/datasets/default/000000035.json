@@ -1,0 +1,43 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "South Glanton Farms",
+  "location": "Forrest, Manitoba",
+  "address": "PO Box 61, Forrest, Manitoba, R0K 0W0",
+  "lat": null,
+  "lng": null,
+  "email": "rboydy@yahoo.ca",
+  "phone": "2047247019",
+  "website": "www.southglantonfarms.com",
+  "profile_url": "https://regenerationcanada.org/en/south-glanton-farms/",
+  "categories": "rpc1, rpc3, rpc4",
+  "products": "Grass fed beef, Pasture raised pork, Small Grains, Hairy Vetch Seed, Forage pea seed, Forrage-fed cattle and bred cows",
+  "services": "rss6, rss7, rss9",
+  "how_to_buy": "Online through our website",
+  "size": "4000 acres",
+  "results": "Increased levels of wildlife and diversity compared to neighbouring land|*| Reduction in runoff during large rain events|*| Soil carbon increasing in pastures",
+  "quote": "Regenerative agriculture means continually improving the health of the land we manage while enhancing our local community and increasing our quality of life.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/SGF_logo1.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/SGF_logo1-300x129.jpg",
+  "category_codes": [
+    "rpc1",
+    "rpc3",
+    "rpc4"
+  ],
+  "service_codes": [
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc3",
+    "rpc4"
+  ],
+  "service_names": [
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names_str": "rpc1; rpc3; rpc4",
+  "service_names_str": "rss6; rss7; rss9"
+}

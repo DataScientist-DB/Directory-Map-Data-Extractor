@@ -1,0 +1,57 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Agua Dulce Farm",
+  "location": "Victoria, BC",
+  "address": "480 Brookhaven Rd, Victoria, BC, V9E 2A5",
+  "lat": null,
+  "lng": null,
+  "email": "aguadulcefarm@gmail.com",
+  "phone": "+1 2508888788",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/agua-dulce-farm/",
+  "categories": "rpc2, rpc5, rpc7, rpc8, rpc9, rpc11, rpc12, rpc13, rpc14",
+  "products": "market vegetables, herbs, eggs, berries, orchard fruit, alpaca fibre",
+  "services": "rss1, rss6, rss8, rss10",
+  "how_to_buy": "From our Farm gate /farm Stand, and from a local Food Hub distributor, South Island Farm Hub (sifarmhub.ca)",
+  "size": "1.25 acres",
+  "results": "In 2019, we began with a neglected horse farm with a shallow layer of sandy/clay topsoil. After 4 years of focus on rebuilding soil with organic matter, we have established a strong base to continue adding to each year.|*|We now have an abundance of diverse species including pollinators and other beneficials, birds, and earthworms.",
+  "quote": "It\\'s an approach to growing food that mimics nature working to reverse negative impacts instead of just avoiding or eliminating them.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Aqua-Dulce-Farm-Logo.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Aqua-Dulce-Farm-Logo.png",
+  "category_codes": [
+    "rpc2",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc9",
+    "rpc11",
+    "rpc12",
+    "rpc13",
+    "rpc14"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss6",
+    "rss8",
+    "rss10"
+  ],
+  "category_names": [
+    "rpc2",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc9",
+    "rpc11",
+    "rpc12",
+    "rpc13",
+    "rpc14"
+  ],
+  "service_names": [
+    "rss1",
+    "rss6",
+    "rss8",
+    "rss10"
+  ],
+  "category_names_str": "rpc2; rpc5; rpc7; rpc8; rpc9; rpc11; rpc12; rpc13; rpc14",
+  "service_names_str": "rss1; rss6; rss8; rss10"
+}

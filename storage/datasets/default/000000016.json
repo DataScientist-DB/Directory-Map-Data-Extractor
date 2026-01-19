@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Scorched Earth Vineyard & Winery",
+  "location": "Kelowna, British Columbia",
+  "address": "6007 Lakeshore Rd, Kelowna, British Columbia, V1W 4J5",
+  "lat": null,
+  "lng": null,
+  "email": "info@scorchedearthwinery.ca",
+  "phone": "250-717-7994",
+  "website": "www.scorchedearthwinery.ca",
+  "profile_url": "https://regenerationcanada.org/en/scorched-earth-vineyard-winery/",
+  "categories": "rpc10",
+  "products": "Wine",
+  "services": "rss7, rss8, rss9, rss10",
+  "how_to_buy": "Winery or private retail liquor stores in BC",
+  "size": "12 acres",
+  "results": "Well-balanced ecosystem from natural pests to prevent the need for any pesticides|*|No herbicide use because of our cover crop and no tillage practices|*|Diverse wildlife habitat",
+  "quote": "Regenerative agriculture means being stewards of the land to ensure what we grow and produce is in harmony with nature, and to be as clean and natural as possible.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/SEW_Logo1.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/SEW_Logo1-300x180.jpg",
+  "category_codes": [
+    "rpc10"
+  ],
+  "service_codes": [
+    "rss7",
+    "rss8",
+    "rss9",
+    "rss10"
+  ],
+  "category_names": [
+    "rpc10"
+  ],
+  "service_names": [
+    "rss7",
+    "rss8",
+    "rss9",
+    "rss10"
+  ],
+  "category_names_str": "rpc10",
+  "service_names_str": "rss7; rss8; rss9; rss10"
+}

@@ -1,0 +1,31 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Four Goats Farm",
+  "location": "Delta, Ontario",
+  "address": "735 Daytown rd, Delta, Ontario, K0E 1G0",
+  "lat": null,
+  "lng": null,
+  "email": "fourgoatsfarm@gmail.com",
+  "phone": "647-859-8997",
+  "website": "fourgoatsfarm.com",
+  "profile_url": "https://regenerationcanada.org/en/four-goats-farm/",
+  "categories": "rpc1",
+  "products": "Certified organic pastured chicken, Pastured pork, Grass fed goat",
+  "services": "",
+  "how_to_buy": "Farmers markets: Ottawa Organic Farmers\\' Market and Ottawa Farmers\\' Market Association (Lansdowne and Barrhaven), Monthly CSA",
+  "size": "25 acres",
+  "results": "Flourishing cover crops in land previously improved by pigs and goats roaming through.|*|Significant improvements seen even in stoney and marginal lands.",
+  "quote": "Regenerative agriculture means working with animals to heal damaged soils and marginal land. This is done through a management system that is designed to mimic natural systems. This method of agriculture creates healthier animals and ecosystems, which in turn provides healthier food for us.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo_250x88px.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo_250x88px.png",
+  "category_codes": [
+    "rpc1"
+  ],
+  "service_codes": [],
+  "category_names": [
+    "rpc1"
+  ],
+  "service_names": [],
+  "category_names_str": "rpc1",
+  "service_names_str": ""
+}

@@ -1,0 +1,51 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Ravenwood Farm",
+  "location": "Groundbirch, BC",
+  "address": "Box 181, Groundbirch, BC, V0C 1T0",
+  "lat": null,
+  "lng": null,
+  "email": "ravenwoodfarmbc@xplornet.ca",
+  "phone": "7886919905",
+  "website": "ravenwoodfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/ravenwood-farm/",
+  "categories": "rpc1, rpc2, rpc5, rpc7, rpc8, rpc13",
+  "products": "Black Currant Products, Honey, Eggs, Beef boxes, Raspberries",
+  "services": "rss8, rss9, rss10, rss12",
+  "how_to_buy": "People can contact us via ravenwoodfarm.ca or social media. We also sell our products wholesale. We are collaboration with stores all over BC. They are listed on our website.",
+  "size": "100 acres",
+  "results": "We recently planted more black currant bushes on contour with great results on water catchment.|*|We are surrounded by Wildlife. We have a lot of bird species and wild honey bees. |*|Our garden beds are moist even with dry weather and we have a lot of earth worms in them. |*|Our black currant orchard is producing 3lb / bush. The berries are big and sweet. Really great crop result.",
+  "quote": "For us regenerative agriculture means an ecologically responsible farm that is a joy to operate and is resilient in spite of the many challenges agriculture faces today. Inspired by recent extreme weather events &amp; the impacts of climate change we are currently extending our water and soil management.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/ravenwood-farm_ZzR7hxh4nPdZ_0.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/ravenwood-farm_ZzR7hxh4nPdZ_0-1000x512.png",
+  "category_codes": [
+    "rpc1",
+    "rpc2",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc13"
+  ],
+  "service_codes": [
+    "rss8",
+    "rss9",
+    "rss10",
+    "rss12"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc2",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc13"
+  ],
+  "service_names": [
+    "rss8",
+    "rss9",
+    "rss10",
+    "rss12"
+  ],
+  "category_names_str": "rpc1; rpc2; rpc5; rpc7; rpc8; rpc13",
+  "service_names_str": "rss8; rss9; rss10; rss12"
+}

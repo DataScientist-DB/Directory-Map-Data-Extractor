@@ -1,0 +1,47 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Persephone Garden Market",
+  "location": "Allenford, ON",
+  "address": "241063 Conc 3 Keppel, R.R. # 3, Allenford, ON, N0H 1A0",
+  "lat": null,
+  "lng": null,
+  "email": "kristine@persephonedays.ca",
+  "phone": "519-935-3005",
+  "website": "https://www.persephonemarketgarden.ca/",
+  "profile_url": "https://regenerationcanada.org/en/persephone-market-garden/",
+  "categories": "rpc1, rpc5, rpc11",
+  "products": "Lamb, Duck, Geese, Eggs, Vegetables",
+  "services": "rss1, rss3, rss5, rss9, rss10",
+  "how_to_buy": "Through our CSA or virtual Farm Stand - find out more on our website https://www.persephonemarketgarden.ca/",
+  "size": "100 acres",
+  "results": "Higher and more reliable yields|*|Better quality of produce|*|My market garden is home to diverse species, many of whom are endangered (plants, insects, birds, amphibians, reptiles and mammals)",
+  "quote": "I focus on observing the land and plants and shifting my management interventions to foster health and resilience. I am not in control. Rather I attempt to dance with the ecosystem and gently nudge it toward outcomes I need.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Persphone-Logo-Vector.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Persphone-Logo-Vector.jpg",
+  "category_codes": [
+    "rpc1",
+    "rpc5",
+    "rpc11"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss3",
+    "rss5",
+    "rss9",
+    "rss10"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc5",
+    "rpc11"
+  ],
+  "service_names": [
+    "rss1",
+    "rss3",
+    "rss5",
+    "rss9",
+    "rss10"
+  ],
+  "category_names_str": "rpc1; rpc5; rpc11",
+  "service_names_str": "rss1; rss3; rss5; rss9; rss10"
+}

@@ -1,0 +1,37 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Ferme Clerjoye",
+  "location": "St-Marc, Qc",
+  "address": "441 rang des 60, St-Marc, Qc, J0l 2e0",
+  "lat": null,
+  "lng": null,
+  "email": "",
+  "phone": "5142355516",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/ferme-clerjoye/",
+  "categories": "rpc6",
+  "products": "Milk",
+  "services": "rss6, rss9",
+  "how_to_buy": "Milk and dairy products with the blue cow",
+  "size": "622 acres",
+  "results": "Increased animal and human well-being with the construction of a barn entirely on bed pack, resulting in improved longevity and a work organization that contributes to a better quality of life for those who work there |*|Many windbreaks and riparian buffer strips planted over the past 25 years, beautifying the landscape. More planting planned over the next few years.",
+  "quote": "The implementation of several practices that contribute to the health of our soils, our land, our biodiversity, our animals and those who work on them.",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc6"
+  ],
+  "service_codes": [
+    "rss6",
+    "rss9"
+  ],
+  "category_names": [
+    "rpc6"
+  ],
+  "service_names": [
+    "rss6",
+    "rss9"
+  ],
+  "category_names_str": "rpc6",
+  "service_names_str": "rss6; rss9"
+}

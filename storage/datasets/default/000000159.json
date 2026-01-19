@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Ferme de l\\'odyssee",
+  "location": "Sainte-Monique, Québec",
+  "address": "3240 Rang le Petit-Saint-Esprit, Nicolet, Québec, J3T 1T7",
+  "lat": null,
+  "lng": null,
+  "email": "sebastien.angers.regen@gmail.com",
+  "phone": "819-448-2383",
+  "website": "www.fermedelodyssee.ca",
+  "profile_url": "https://regenerationcanada.org/en/ferme-de-lodyssee/",
+  "categories": "rpc3, rpc4, rpc5",
+  "products": "Corn, Soy, Rye, Hairy vetch, Forage peas, Leeks, Squash, Pumpkin seeds",
+  "services": "rss4, rss6",
+  "how_to_buy": "B2B sales via partners: Prana, Viandes du Breton etc.",
+  "size": "",
+  "results": "Mushrooms appearing at the surface of the soils|*| Reduced erosion|*| Improved water infiltration and less run-off|*| Improved soil structure stability|*| Increased biodiversity (beneficial insects &amp; mushrooms)|*| Deep plant root systems|*| Carbon flowing in a more sustainable and virtuous way",
+  "quote": "Biodiversity: it\\'s the reflection of the art of farm regenerative living",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo-ferme-de-lodysee.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo-ferme-de-lodysee-300x300.jpg",
+  "category_codes": [
+    "rpc3",
+    "rpc4",
+    "rpc5"
+  ],
+  "service_codes": [
+    "rss4",
+    "rss6"
+  ],
+  "category_names": [
+    "rpc3",
+    "rpc4",
+    "rpc5"
+  ],
+  "service_names": [
+    "rss4",
+    "rss6"
+  ],
+  "category_names_str": "rpc3; rpc4; rpc5",
+  "service_names_str": "rss4; rss6"
+}

@@ -1,0 +1,43 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Nature\\'s Apprentice Farm",
+  "location": "Pakenham, Ontario",
+  "address": "112 Lynx Hollow Rd, Pakenham, Ontario, K0A2X0",
+  "lat": null,
+  "lng": null,
+  "email": "naturesapprenticefarm@gmail.com",
+  "phone": "613-255-5509",
+  "website": "naturesapprenticefarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/natures-apprentice-farm/",
+  "categories": "rpc2, rpc5, rpc11",
+  "products": "Salad greens, Root vegetables, Summer fruits, Herbs, Garlic, Ginger, U-pick flowers, Eggs",
+  "services": "rss5, rss6, rss7",
+  "how_to_buy": "Salad subscription, Farm stand, e-mail pre-order, local deliveries, and at local stores and restaurants",
+  "size": "0.3 acres",
+  "results": "Soil life and organic-matter content is on the rise|*|Birds, insects, reptiles and amphibians have increased in numbers and diversity|*|The soil texture and water retention capacity has improved|*|No erosion issues|*|People think the farm is beautiful and they feel calm and relaxed",
+  "quote": "Regenerative agriculture is about partnering with Nature to grow food and to restore the health of our planet.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Natures-Apprentice-Logo.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Natures-Apprentice-Logo-300x257.jpg",
+  "category_codes": [
+    "rpc2",
+    "rpc5",
+    "rpc11"
+  ],
+  "service_codes": [
+    "rss5",
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc2",
+    "rpc5",
+    "rpc11"
+  ],
+  "service_names": [
+    "rss5",
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc2; rpc5; rpc11",
+  "service_names_str": "rss5; rss6; rss7"
+}

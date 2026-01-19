@@ -1,0 +1,37 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Saunders Family Farm & Vineyard",
+  "location": "Lincoln, Ontario",
+  "address": "5358 King Street, Lincoln, Ontario L3J 1P2",
+  "lat": null,
+  "lng": null,
+  "email": "saundersfamilyfarm@gmail.com",
+  "phone": "",
+  "website": "www.instagram.com/saundersvineyard",
+  "profile_url": "https://regenerationcanada.org/en/saunders-family-farm-vineyard/",
+  "categories": " rpc7, rpc10",
+  "products": "Winegrapes: chardonnay - pinot noir - riesling - cabernet franc - merlot",
+  "services": "rss6",
+  "how_to_buy": "Wine made from our grapes is available for purchase through contacting our winery clients: Bachelder Wines (<a href=\\'http://bachelderniagara.com\\' target=\\'_blank\\'>bachelderniagara.com</a>).",
+  "size": "11 acres",
+  "results": "Soil Organic Matter increased ~ 6.9% over 1 year (2018-2019); next testing 2022|*| Diverse population of insects/birds/amphibians and small mammals in the vineyard|*| Variety of natural perennial ground cover species|*| No visible soil erosion|*| Good water infiltration and retention|*| Active Soil Carbon ranges 543ppm - 835ppm (quick &amp; easy food/energy for soil microbes)",
+  "quote": "Regenerative agriculture means taking responsibility in stewardship and in reverence for all life, for the health and the survival of the planet.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/LOGO_sffv_Barn_Vnyrd-1.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/LOGO_sffv_Barn_Vnyrd-1-300x224.jpg",
+  "category_codes": [
+    "rpc7",
+    "rpc10"
+  ],
+  "service_codes": [
+    "rss6"
+  ],
+  "category_names": [
+    "rpc7",
+    "rpc10"
+  ],
+  "service_names": [
+    "rss6"
+  ],
+  "category_names_str": "rpc7; rpc10",
+  "service_names_str": "rss6"
+}

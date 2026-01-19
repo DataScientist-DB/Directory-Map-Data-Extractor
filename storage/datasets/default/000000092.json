@@ -1,0 +1,45 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Local Valley Beef",
+  "location": "Long Settlement, New Brunswick",
+  "address": "3532 NB-550, Long Settlement, New Brunswick, E7K 1R3",
+  "lat": null,
+  "lng": null,
+  "email": "",
+  "phone": "506-260-0872",
+  "website": "www.localvalleybeef.ca",
+  "profile_url": "https://regenerationcanada.org/en/local-valley-beef/",
+  "categories": "rpc1",
+  "products": "Grass-fed beef, Free-range chicken",
+  "services": "rss1, rss2, rss3, rss4, rss6, rss7",
+  "how_to_buy": "On our website",
+  "size": "335 acres",
+  "results": "Increased biodiversity|*| Enhanced soil productivity|*| Enhanced grazing carrying capacity",
+  "quote": "Regenerative agriculture is an integrated approach to conservation cropping and grass management, within a landscape health mindset.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/local-valley-beef-logo_black-text.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/local-valley-beef-logo_black-text-297x300.jpg",
+  "category_codes": [
+    "rpc1"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss2",
+    "rss3",
+    "rss4",
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc1"
+  ],
+  "service_names": [
+    "rss1",
+    "rss2",
+    "rss3",
+    "rss4",
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc1",
+  "service_names_str": "rss1; rss2; rss3; rss4; rss6; rss7"
+}

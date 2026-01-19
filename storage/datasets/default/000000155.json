@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Rosy Farms",
+  "location": "Alcomdale, Alberta",
+  "address": "57114 Range Road 264, Alcomdale, Alberta, T8R 0Y8",
+  "lat": null,
+  "lng": null,
+  "email": "andrew@rosyfarms.com",
+  "phone": "780-951-1015",
+  "website": "www.rosyfarms.com",
+  "profile_url": "https://regenerationcanada.org/en/rosy-farms/",
+  "categories": "rpc7, rpc8",
+  "products": "Frozen haskaps, Wholesale frozen haskaps, Upick haskaps July to early August",
+  "services": "rss5, rss6, rss7",
+  "how_to_buy": "Online at <a href=\\'http://steveanddansonlinemarket.ca/products/a-b-frozen-haskap-berries\\' target=\\'_blank\\'>steveanddansonlinemarket.ca/products/a-b-frozen-haskap-berries</a>, Summer farmers markets, U-pick July to early August",
+  "size": "27 acres",
+  "results": "Since 2015, increase of native plants growing in and around the orchard|*|Year after year increase of soil carbon 0.20%|*|Pollination plan was created, 2015, to build native pollinators. In 2020, 27 acres of orchard was pollinated by native bees|*|Diverse polyculture planting, shelterbelt and between haskap rows perennial cover crops|*|Increased soil permeability of water.",
+  "quote": "Regenerative agriculture means working with the environment, learning what it is telling us, and adapting to its changes, all the while guiding those changes through research and knowledge-based practices.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/rosy-farms_pqXZ2uahPu4h_1.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/rosy-farms_pqXZ2uahPu4h_1-200x300.jpg",
+  "category_codes": [
+    "rpc7",
+    "rpc8"
+  ],
+  "service_codes": [
+    "rss5",
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc7",
+    "rpc8"
+  ],
+  "service_names": [
+    "rss5",
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc7; rpc8",
+  "service_names_str": "rss5; rss6; rss7"
+}

@@ -1,0 +1,53 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Coen Farm",
+  "location": "Ferintosh, AB",
+  "address": "Box 165, Ferintosh, AB, T0B 1M0",
+  "lat": null,
+  "lng": null,
+  "email": "",
+  "phone": "",
+  "website": "www.coenfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/coen-farm/",
+  "categories": "rpc1, rpc2, rpc3, rpc5, rpc6, rpc7, rpc8",
+  "products": "Milk-Fed Pork, Grass-Fed Beef, Pasture Raised Eggs, Forest Garden Fruits, Consulting, Tours, Books",
+  "services": "rss1, rss6, rss7, rss9",
+  "how_to_buy": "Website, Farm Tours",
+  "size": "undefined acres",
+  "results": "We harvest more than 10 million gallons for spring run off every year, |*|Many species of birds, insects, and mammals have returned.",
+  "quote": "Industrial agriculture has forever been struggling to answer two questions: How do I kill this thing that wants to live, and how do I keep this thing alive that wants to die. Regenerative agriculture asks the question: How do I create the conditions for all life to thrive.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/COEN-FARM-ALL-LOGO-FILES_COEN-NAME-ONLY-B.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/COEN-FARM-ALL-LOGO-FILES_COEN-NAME-ONLY-B-300x94.png",
+  "category_codes": [
+    "rpc1",
+    "rpc2",
+    "rpc3",
+    "rpc5",
+    "rpc6",
+    "rpc7",
+    "rpc8"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc2",
+    "rpc3",
+    "rpc5",
+    "rpc6",
+    "rpc7",
+    "rpc8"
+  ],
+  "service_names": [
+    "rss1",
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names_str": "rpc1; rpc2; rpc3; rpc5; rpc6; rpc7; rpc8",
+  "service_names_str": "rss1; rss6; rss7; rss9"
+}

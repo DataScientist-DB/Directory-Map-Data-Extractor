@@ -1,0 +1,45 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Highfield Regenerative Farm",
+  "location": "Calgary, Alberta",
+  "address": "1920 Highfield Crescent SE, Calgary, Alberta, T2G 5M1",
+  "lat": null,
+  "lng": null,
+  "email": "highfieldregenerativefarm@gmail.com",
+  "phone": "403-605-6669",
+  "website": "www.highfieldfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/highfield-regenerative-farm/",
+  "categories": "rpc5, rpc11, rpc100",
+  "products": "Greens, MicroGreens, Flowers, Compost, Worm Castings, Soil Mixes, Compost Extract, Garlic",
+  "services": "rss6, rss7, rss8, rss11",
+  "how_to_buy": "Through our website and/or at the farm.",
+  "size": "10 acres",
+  "results": "We are just in the beginning phases and building the soil base and amendments to use on the farm.",
+  "quote": "Regenerative agriculture means working with Nature to build the soil and plants.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/20-06-04-Highfield-Farm-Logo-Proof-02.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/20-06-04-Highfield-Farm-Logo-Proof-02.jpg",
+  "category_codes": [
+    "rpc5",
+    "rpc11",
+    "rpc100"
+  ],
+  "service_codes": [
+    "rss6",
+    "rss7",
+    "rss8",
+    "rss11"
+  ],
+  "category_names": [
+    "rpc5",
+    "rpc11",
+    "rpc100"
+  ],
+  "service_names": [
+    "rss6",
+    "rss7",
+    "rss8",
+    "rss11"
+  ],
+  "category_names_str": "rpc5; rpc11; rpc100",
+  "service_names_str": "rss6; rss7; rss8; rss11"
+}

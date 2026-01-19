@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Clanman Jerseys Ltd",
+  "location": "Clanwilliam, Manitoba",
+  "address": "Box 132, Clanwilliam, Manitoba, R0J 0K0",
+  "lat": null,
+  "lng": null,
+  "email": "",
+  "phone": "204-868-5608",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/clanman-jerseys-ltd/",
+  "categories": "rpc6, rpc15",
+  "products": "Milk(commercial sales), Grass finished beef, Compost",
+  "services": "rss1, rss6, rss7",
+  "how_to_buy": "We offer dairy specific consulting, information, and farm tours. We have many years worth of experience with intensive grazing milking cows and heifers, zero till farming and cover crop selection and timing for high quality feed. After years of trials and adapting practices on our farm, we want to share this knowledge with other farmers because we feel the dairy industry can benefit in many ways from these practices.",
+  "size": "560 acres",
+  "results": "We have seen a increase of organic matter to levels 2-4% higher then average of area farms, reduced inputs, increased grazing days, improved cow health",
+  "quote": "To us, regenerative agriculture means working with nature to reduce inputs, increase farm resilience, and produce healthier animals and food.",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc6",
+    "rpc15"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc6",
+    "rpc15"
+  ],
+  "service_names": [
+    "rss1",
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc6; rpc15",
+  "service_names_str": "rss1; rss6; rss7"
+}

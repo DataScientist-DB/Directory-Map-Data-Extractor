@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Divine Colour Acres",
+  "location": "Almonte, ON",
+  "address": "1178 Upper Perth Rd, Almonte, ON, K0A 1A0",
+  "lat": null,
+  "lng": null,
+  "email": "divinecolouracres@gmail.com",
+  "phone": "",
+  "website": "https://www.divinecolouracres.ca/",
+  "profile_url": "https://regenerationcanada.org/en/divine-colour-acres/",
+  "categories": "rpc11, rpc5",
+  "products": "Fresh cut flowers, natural dyes, dried florals, garlic",
+  "services": "rss1, rss2, rss6",
+  "how_to_buy": "Flower CSA, direct order from our website https://www.divinecolouracres.ca/ and at the farm stand",
+  "size": "3 acres",
+  "results": "More presence of wildlife",
+  "quote": "Growing in harmony with nature to increase the health of all living beings",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/divine-colour-acres_5vvm8hYYyodY_0.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/divine-colour-acres_5vvm8hYYyodY_0.png",
+  "category_codes": [
+    "rpc11",
+    "rpc5"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss2",
+    "rss6"
+  ],
+  "category_names": [
+    "rpc11",
+    "rpc5"
+  ],
+  "service_names": [
+    "rss1",
+    "rss2",
+    "rss6"
+  ],
+  "category_names_str": "rpc11; rpc5",
+  "service_names_str": "rss1; rss2; rss6"
+}

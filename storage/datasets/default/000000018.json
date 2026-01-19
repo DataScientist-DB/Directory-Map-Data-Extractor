@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Tru Pure Farms",
+  "location": "ST. Catharines, ON",
+  "address": "1379 President CT, ST. Catharines, ON, L2R6P9",
+  "lat": null,
+  "lng": null,
+  "email": "info@stangls.com",
+  "phone": "905-641-8133",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/tru-pure-farms/",
+  "categories": "rpc5, rpc15, rpc100",
+  "products": "Tomatoes, Potatoes, Artichokes, Lettuce, Other produce, Compost",
+  "services": "rss1, rss3",
+  "how_to_buy": "onsite",
+  "size": ".12 acres",
+  "results": "shift from annual to perennial plant diversity,|*|increase at all trophic levels, worms, birds, wildlife|*|increased fungal dominance|*|increased soil microbiology",
+  "quote": "Regenerative agriculture is about creating communion from the earth, to the plant, to us, and back to the earth. We are all recyclable.",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc5",
+    "rpc15",
+    "rpc100"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss3"
+  ],
+  "category_names": [
+    "rpc5",
+    "rpc15",
+    "rpc100"
+  ],
+  "service_names": [
+    "rss1",
+    "rss3"
+  ],
+  "category_names_str": "rpc5; rpc15; rpc100",
+  "service_names_str": "rss1; rss3"
+}

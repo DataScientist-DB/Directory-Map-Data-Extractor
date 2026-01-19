@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Rubber Boot Farm",
+  "location": "Timmins, Ontario",
+  "address": "209 Jaguar Drive, Timmins, Ontario, P4R 0G9",
+  "lat": null,
+  "lng": null,
+  "email": "rubberboot.farm@gmail.com",
+  "phone": "705-365-0770",
+  "website": "facebook.com/RubberBootFarm",
+  "profile_url": "https://regenerationcanada.org/en/rubber-boot-farm/",
+  "categories": "rpc1, rpc2, rpc13",
+  "products": "Pork, Broilers, Eggs, Honey, Garlic, Herbs, Goats",
+  "services": "rss5, rss7",
+  "how_to_buy": "Farm Gate",
+  "size": "20 acres",
+  "results": "Pigs raised in our silvopasture woodlot consume +/-30% less feed than when we use to raise them in an outdoor pen. This translates into the pigs having a healthier fat content at a lower feed cost and a more even disbursement of manure and urine throughout the farm.",
+  "quote": "",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Pig.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Pig-300x223.png",
+  "category_codes": [
+    "rpc1",
+    "rpc2",
+    "rpc13"
+  ],
+  "service_codes": [
+    "rss5",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc2",
+    "rpc13"
+  ],
+  "service_names": [
+    "rss5",
+    "rss7"
+  ],
+  "category_names_str": "rpc1; rpc2; rpc13",
+  "service_names_str": "rss5; rss7"
+}

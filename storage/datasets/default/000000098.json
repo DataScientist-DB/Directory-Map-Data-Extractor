@@ -1,0 +1,39 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Fleurs de Ferme",
+  "location": "Sainte Christine, Québec",
+  "address": "1517 Rang 8, Sainte Christine, Québec, J0H 1H0",
+  "lat": null,
+  "lng": null,
+  "email": "fleursdeferme@gmail.com",
+  "phone": "450-521-8931",
+  "website": "www.fleursdeferme.ca",
+  "profile_url": "https://regenerationcanada.org/en/fleurs-de-ferme/",
+  "categories": "rpc11",
+  "products": "Specialty cut flowers, Bouquets, Wedding flowers, Events flowers, CSA bouquets subscription",
+  "services": "rss1, rss9, rss10",
+  "how_to_buy": "CSA flower subscription, farmers markets, weddings & events, special orders",
+  "size": "2 acres",
+  "results": "Return of pollinators|*| Improvement of soil structure|*| Return of diverse fauna (snakes/toads/frogs/birds)|*| Stopping soil erosion|*| Slowing of water run offs",
+  "quote": "Regenerative agriculture means restoring and preserving the soil and a healthy ecosystem, respecting humans",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo-fleurs-de-ferme-mars-2019.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo-fleurs-de-ferme-mars-2019-300x294.png",
+  "category_codes": [
+    "rpc11"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss9",
+    "rss10"
+  ],
+  "category_names": [
+    "rpc11"
+  ],
+  "service_names": [
+    "rss1",
+    "rss9",
+    "rss10"
+  ],
+  "category_names_str": "rpc11",
+  "service_names_str": "rss1; rss9; rss10"
+}

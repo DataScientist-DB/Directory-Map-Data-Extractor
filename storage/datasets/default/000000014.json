@@ -1,0 +1,31 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Mans Organics",
+  "location": "Coaldale, Alberta",
+  "address": "102040 Range Road 200, Coaldale, Alberta, T1M 1M7",
+  "lat": null,
+  "lng": null,
+  "email": "mail@mansorganics.ca",
+  "phone": "",
+  "website": "mansorganics.ca",
+  "profile_url": "https://regenerationcanada.org/en/mans-organics/",
+  "categories": "rpc5",
+  "products": "Onions, Shallots, Garlic, Winter Squash, Watermelons, Cantaloupe, Honeydew, Rhubarb, Tomatoes, Peppers, Cucumbers, Eggplant, Ginger, Turmeric",
+  "services": "",
+  "how_to_buy": "Through retailers that work with us.",
+  "size": "100 acres",
+  "results": "Soil structure improved all the way through the A horizon.|*|A large increase in soil organic matter.",
+  "quote": "Regenerative agriculture means growing nutritious food while improving the health of the farm\\'s ecosystem.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/mans-organics.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/mans-organics-300x114.png",
+  "category_codes": [
+    "rpc5"
+  ],
+  "service_codes": [],
+  "category_names": [
+    "rpc5"
+  ],
+  "service_names": [],
+  "category_names_str": "rpc5",
+  "service_names_str": ""
+}

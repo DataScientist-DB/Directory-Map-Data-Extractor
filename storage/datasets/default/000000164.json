@@ -1,0 +1,47 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Riverdale Farm & Forest Inc.",
+  "location": "Inglewood, ON, CA",
+  "address": "15707 McLaughlin Rd, Inglewood, Ontario, L7C 1N2, Canada",
+  "lat": null,
+  "lng": null,
+  "email": "",
+  "phone": "905-588-0085",
+  "website": "riverdalefarmandforest.ca",
+  "profile_url": "https://regenerationcanada.org/en/riverdale-farm-forest-inc/",
+  "categories": " rpc2, rpc5, rpc7, rpc8, rpc100",
+  "products": "Eggs, Potatoes, Kale, Garlic, Cabbage, Tomatoes, Carrots, Beets, Parsnips, Onions, Mushroom, Sea Buckthorn Berries, Pears, Compost",
+  "services": "rss6, rss7, rss11",
+  "how_to_buy": "Prepaid Farm Account, Each week a list of products is prepared & emailed, people select products & quantity, email orders back and pick up at the farm Thursday to Weekend at their desire. Purchase is subtracted from prepaid account. Cash, Cheque or E-transfer accepted. Money can be added to their farm account any time. Farm Gate Sales Thursday to Saturday.",
+  "size": "166 acres",
+  "results": "Increase in Brix levels|*| Reduction in weed/insect/disease pressure|*| Increase in soil organic matter|*| Increase in soil water infiltration|*| Stable plant sap pH reading.",
+  "quote": "Regenerative Agriculture, or what I call \\'Zero Budget Natural Farming\\', is producing healthy, enriched products including farm inputs using the landform ecological assets.",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc2",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc100"
+  ],
+  "service_codes": [
+    "rss6",
+    "rss7",
+    "rss11"
+  ],
+  "category_names": [
+    "rpc2",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc100"
+  ],
+  "service_names": [
+    "rss6",
+    "rss7",
+    "rss11"
+  ],
+  "category_names_str": "rpc2; rpc5; rpc7; rpc8; rpc100",
+  "service_names_str": "rss6; rss7; rss11"
+}

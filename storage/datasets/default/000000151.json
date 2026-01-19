@@ -1,0 +1,41 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Ferme la Bourrasque",
+  "location": "saint-nazaire d\\'acton, Quebec",
+  "address": "312, rang brodeur, saint-nazaire d\\'acton, Quebec, J0H 1V0",
+  "lat": null,
+  "lng": null,
+  "email": "fermelabourrasque@hotmail.com",
+  "phone": "15143490516",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/ferme-la-bourrasque/",
+  "categories": "rpc5, rpc12",
+  "products": "garlic flower, garlic, eggplant, beet, bok choy, broccoli, chamomile, celeriac, Chinese cabbage, cucumber, squash, zucchini, turmeric, spinach, French shallot, fennel, ginger, bean, kale, mesclun, lettuce, onion, onion, sweet potato, leek, bell pepper, hot pepper, potato, rabiole, radish, winter radish, radicchio, arugula, tomato, cherry tomato, parsley, coriander, dill, thyme, sage, chives, rosemary, mint, stevia, oregano",
+  "services": "rss7, rss8, rss12",
+  "how_to_buy": "organic baskets, market stalls, producers\\' cooperative grocery store, fundraising campaigns in schools",
+  "size": "10 acres",
+  "results": "appearance of endangered bird species (Bobolink, swallow, etc.)",
+  "quote": "sustainable agricultural practices",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc5",
+    "rpc12"
+  ],
+  "service_codes": [
+    "rss7",
+    "rss8",
+    "rss12"
+  ],
+  "category_names": [
+    "rpc5",
+    "rpc12"
+  ],
+  "service_names": [
+    "rss7",
+    "rss8",
+    "rss12"
+  ],
+  "category_names_str": "rpc5; rpc12",
+  "service_names_str": "rss7; rss8; rss12"
+}

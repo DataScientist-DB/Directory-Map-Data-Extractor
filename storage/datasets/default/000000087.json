@@ -1,0 +1,39 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Oneka",
+  "location": "Frelighsburg, Québec",
+  "address": "23 rue Principale, Frelighsburg, Québec, J0J 1C0",
+  "lat": null,
+  "lng": null,
+  "email": "contact@onekaelements.com",
+  "phone": "450-298-5352",
+  "website": "www.onekaelements.com",
+  "profile_url": "https://regenerationcanada.org/en/oneka/",
+  "categories": "rpc100",
+  "products": "Body care products",
+  "services": "rss1, rss6, rss7",
+  "how_to_buy": "On our website, at the Oneka boutique in Frelighsburg, and in health-foods and zero-waste stores",
+  "size": "150 acres",
+  "results": "Increased insect presence|*| Increased diversity of native plant species",
+  "quote": "Regenerative agriculture represents biodiversity, wild foraging, as well as working with native plant species and plants that grow naturally without having to alter natural environments",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/ONEKA_476FondBlanc-e1692630316388.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/ONEKA_476FondBlanc-e1692630316388-1000x500.jpg",
+  "category_codes": [
+    "rpc100"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc100"
+  ],
+  "service_names": [
+    "rss1",
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc100",
+  "service_names_str": "rss1; rss6; rss7"
+}

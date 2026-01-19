@@ -1,0 +1,31 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Juniper",
+  "location": "Wakefield, quebec",
+  "address": "375 Shouldice Rd, Wakefield, quebec, J0X 3G0",
+  "lat": null,
+  "lng": null,
+  "email": "info@juniperfarm.ca",
+  "phone": "819-459-1630",
+  "website": "juniperfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/juniper/",
+  "categories": "rpc5",
+  "products": "mixed vegetables, farm-to-table kitchen",
+  "services": "",
+  "how_to_buy": "online store, on-site store.",
+  "size": "20 acres",
+  "results": "organic matter is building|*|the farm is alive",
+  "quote": "Regenerative agriculture means keeping a healthy relationship with the earth, relating to all-natural systems in a balanced way.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/juniper-farm-email.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/juniper-farm-email-300x102.png",
+  "category_codes": [
+    "rpc5"
+  ],
+  "service_codes": [],
+  "category_names": [
+    "rpc5"
+  ],
+  "service_names": [],
+  "category_names_str": "rpc5",
+  "service_names_str": ""
+}

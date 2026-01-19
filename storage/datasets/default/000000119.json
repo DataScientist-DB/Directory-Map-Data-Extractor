@@ -1,0 +1,45 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Pure Pasture Products",
+  "location": "Rose Prairie, British Columbia",
+  "address": "5072 Doig Rd Rose Prairie, British Columbia, V0C 2H0",
+  "lat": null,
+  "lng": null,
+  "email": "purepastureproducts@gmail.com",
+  "phone": "780-864-8093",
+  "website": "www.purepastureproducts.com",
+  "profile_url": "https://regenerationcanada.org/en/pure-pasture-products/",
+  "categories": "rpc1, rpc2",
+  "products": "Beef, Pork, Goats, Eggs, Chicken, Turkey",
+  "services": "rss1, rss4, rss6, rss7, rss9",
+  "how_to_buy": "Farmers Market, through website and contact direct",
+  "size": "6500 acres",
+  "results": "As we continue to increase ground cover and biodiversity we are seeing our water cycle improving.|*|We are seeing a return of deer, moose, martins, weasels, marmots and etc., as well as lots of birds which are enjoying the abundance of mice which are thriving with all the ground cover.|*|By beginning to repair riparian areas we have seen lots of water foul and other life return.",
+  "quote": "Regenerative agriculture means being part of, and a co-creator with, nature.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/pure-pasture-logo.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/pure-pasture-logo.png",
+  "category_codes": [
+    "rpc1",
+    "rpc2"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss4",
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc2"
+  ],
+  "service_names": [
+    "rss1",
+    "rss4",
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names_str": "rpc1; rpc2",
+  "service_names_str": "rss1; rss4; rss6; rss7; rss9"
+}

@@ -1,0 +1,39 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "GoodLot Farm + Farmstead Brewing Co.",
+  "location": "Alton, Ontario",
+  "address": "18825 Shaws Creek Rd., Alton, Ontario, L7K 1L3",
+  "lat": null,
+  "lng": null,
+  "email": "gail@goodlot.farm",
+  "phone": "519-927-5881",
+  "website": "www.goodlot.beer",
+  "profile_url": "https://regenerationcanada.org/en/goodlot/",
+  "categories": "rpc100",
+  "products": "Beer, Seasonal vegetables",
+  "services": "rss6, rss7, rss9",
+  "how_to_buy": "Online sales, Market garden direct, U-Pick, Farm Store seasonally, CSA subscriptions seasonally, Beach, and some seasonal bulk meat orders delivered to Edmonton and Calgary yearly.",
+  "size": "2 acres",
+  "results": "Increase of soil OM levels - now up to 6%|*| Increase of beneficial insects by leaving natural areas undisturbed|*| Increase of water retention with use of cover crops|*| Cover cropping hop alleys helps reduce compaction|*| Minimum tillage shows increase in vegetable yields",
+  "quote": "By practising regenerative techniques and by thinking outside the box of conventional farming practices, I have hope that we will be able to nurture our soils and restore balance back to our ecosystem.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/GoodLot_final_logos_withfarm_yellow-07.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/GoodLot_final_logos_withfarm_yellow-07-300x158.jpg",
+  "category_codes": [
+    "rpc100"
+  ],
+  "service_codes": [
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names": [
+    "rpc100"
+  ],
+  "service_names": [
+    "rss6",
+    "rss7",
+    "rss9"
+  ],
+  "category_names_str": "rpc100",
+  "service_names_str": "rss6; rss7; rss9"
+}

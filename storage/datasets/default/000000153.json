@@ -1,0 +1,45 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Les Jardins Collaboratifs du Moutonblon",
+  "location": "Saint-Charles-sur-Richelieu, Québec",
+  "address": "12 chemin des Patriotes, Saint-Charles-sur-Richelieu, Québec, J0H 2G0",
+  "lat": null,
+  "lng": null,
+  "email": "olivier@jardinsmoutonblon.ca",
+  "phone": "514-377-9148",
+  "website": "jardinsmoutonblon.ca",
+  "profile_url": "https://regenerationcanada.org/en/les-jardins-collaboratifs-du-moutonblon/",
+  "categories": "rpc4, rpc5, rpc7, rpc8, rpc11",
+  "products": "About forty different varieties of organic vegetables",
+  "services": "rss6, rss7",
+  "how_to_buy": "Directly on the farm, by coming to farm them with us! The farm is going into collaborative mode - we still have room for people who want to come farm with us!",
+  "size": "0,5 ha acres",
+  "results": "The widespread use of wood chips throughout the garden over the past five years has clearly increased the soil&rsquo;s organic matter content and made working with clay soil more enjoyable|*|Adding birdhouses definitely attracts birds, mainly tree swallows, which are great predators of harmful insects and a joy to watch as they flit around the garden&mdash;without being a nuisance to us!|*|Flower beds surrounding the gardens attract pollinators throughout the entire cultivated area.",
+  "quote": "Regenerative agriculture is about cultivating the land in a healthy way and respectfully interconnecting all the actors in the ecosystem—whether in the biological, geographical, or socio-cultural aspects of our projects.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Moutonblon-Logo.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Moutonblon-Logo-1000x855.jpg",
+  "category_codes": [
+    "rpc4",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc11"
+  ],
+  "service_codes": [
+    "rss6",
+    "rss7"
+  ],
+  "category_names": [
+    "rpc4",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc11"
+  ],
+  "service_names": [
+    "rss6",
+    "rss7"
+  ],
+  "category_names_str": "rpc4; rpc5; rpc7; rpc8; rpc11",
+  "service_names_str": "rss6; rss7"
+}

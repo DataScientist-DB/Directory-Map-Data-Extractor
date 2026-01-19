@@ -1,0 +1,55 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Au Petit Boisé",
+  "location": "Dunham, Quebec",
+  "address": "986 hudon, Dunham, Quebec, J0E 1M0",
+  "lat": null,
+  "lng": null,
+  "email": "aupetitboise@gmail.com",
+  "phone": "450-295-2471",
+  "website": "aupetitboise.com",
+  "profile_url": "https://regenerationcanada.org/en/au-petit-boise/",
+  "categories": "rpc2, rpc5, rpc7, rpc8, rpc11, rpc12",
+  "products": "mostly veggie baskets",
+  "services": "rss1, rss6, rss7, rss8, rss9, rss10",
+  "how_to_buy": "CSA baskets",
+  "size": "2 acres",
+  "results": "It went from being a sterile x-mas tree plantation to a bio-diverse landscape with many pollinators and birds|*|Amphibians, pollinators and birds have returned",
+  "quote": "Regenerative agriculture means leaving the land better than we found it.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/aupetitboise-petit-format.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/aupetitboise-petit-format-259x300.jpg",
+  "category_codes": [
+    "rpc2",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc11",
+    "rpc12"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss6",
+    "rss7",
+    "rss8",
+    "rss9",
+    "rss10"
+  ],
+  "category_names": [
+    "rpc2",
+    "rpc5",
+    "rpc7",
+    "rpc8",
+    "rpc11",
+    "rpc12"
+  ],
+  "service_names": [
+    "rss1",
+    "rss6",
+    "rss7",
+    "rss8",
+    "rss9",
+    "rss10"
+  ],
+  "category_names_str": "rpc2; rpc5; rpc7; rpc8; rpc11; rpc12",
+  "service_names_str": "rss1; rss6; rss7; rss8; rss9; rss10"
+}

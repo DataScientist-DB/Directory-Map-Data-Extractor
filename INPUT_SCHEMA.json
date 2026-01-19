@@ -1,0 +1,125 @@
+{
+  "title": "Directory Listing Extractor - Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "mode": {
+      "title": "Mode",
+      "type": "string",
+      "description": "Extraction mode. Use embedded_js for JS-embedded listing objects.",
+      "default": "embedded_js",
+      "editor": "select",
+      "enum": ["embedded_js", "dom"]
+    },
+    "startUrls": {
+      "title": "Start URLs",
+      "type": "array",
+      "description": "One or more directory/map pages to start from.",
+      "editor": "requestListSources",
+      "default": [{ "url": "https://regenerationcanada.org/en/map/" }]
+    },
+    "maxListings": {
+      "title": "Max listings",
+      "type": "integer",
+      "description": "Safety cap for number of listings pushed to dataset.",
+      "default": 500,
+      "minimum": 1,
+      "maximum": 50000
+    },
+    "maxPages": {
+      "title": "Max pages",
+      "type": "integer",
+      "description": "Safety cap for number of pages visited.",
+      "default": 1,
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "debug": {
+      "title": "Debug logging",
+      "type": "boolean",
+      "description": "Print verbose logs for troubleshooting.",
+      "default": false
+    },
+    "outputCsv": {
+      "title": "Export CSV",
+      "type": "boolean",
+      "default": true
+    },
+    "outputXlsx": {
+      "title": "Export XLSX",
+      "type": "boolean",
+      "default": true
+    },
+    "outputColumnsMode": {
+      "title": "Output columns mode",
+      "type": "string",
+      "default": "default",
+      "editor": "select",
+      "enum": ["default", "all"]
+    },
+    "outputBaseName": {
+      "title": "Output base name",
+      "type": "string",
+      "default": "output"
+    },
+    "embedded": {
+      "title": "Embedded JS settings",
+      "type": "object",
+      "description": "Used only in embedded_js mode.",
+      "default": {
+        "anchorKey": "logoMedium",
+        "keys": [
+          "name",
+          "loc",
+          "address",
+          "lat",
+          "lng",
+          "email",
+          "tel",
+          "website",
+          "pageURL",
+          "categories",
+          "products",
+          "services",
+          "buy",
+          "size",
+          "results",
+          "quote",
+          "logo",
+          "logoMedium"
+        ],
+        "fieldMap": {
+          "name": "entity_name",
+          "loc": "location",
+          "address": "address",
+          "lat": "lat",
+          "lng": "lng",
+          "email": "email",
+          "tel": "phone",
+          "website": "website",
+          "pageURL": "profile_url",
+          "categories": "categories",
+          "products": "products",
+          "services": "services",
+          "buy": "how_to_buy",
+          "size": "size",
+          "results": "results",
+          "quote": "quote",
+          "logo": "logo",
+          "logoMedium": "logo_medium"
+        }
+      }
+    },
+    "taxonomy": {
+      "title": "Taxonomy overrides",
+      "type": "object",
+      "description": "Optional manual decoding overrides for category/service codes.",
+      "default": {
+        "categoryMap": {},
+        "serviceMap": {}
+      }
+    }
+  },
+  "required": ["startUrls"],
+  "additionalProperties": true
+}

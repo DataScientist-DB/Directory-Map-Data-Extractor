@@ -1,0 +1,39 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Scout Vineyard",
+  "location": "Cawston, BC",
+  "address": "761 highway 3, Cawston, BC, V0X 1C3",
+  "lat": null,
+  "lng": null,
+  "email": "Murray@scoutvineyard.com",
+  "phone": "250-499-1556",
+  "website": "Scoutvineyard.com",
+  "profile_url": "https://regenerationcanada.org/en/scout-vineyard/",
+  "categories": "rpc8, rpc10",
+  "products": "Wine grapes - syrah, Wine grapes - Riesling, Wine grapes - Pinot Gris, Wine Grapes - Cab Sauv",
+  "services": "rss3, rss4",
+  "how_to_buy": "Scoutvineyard.com",
+  "size": "9 acres",
+  "results": "Reduction in inputs needed for crop|*|Reduction in water usage|*|Increased soil biology|*|Less tractor usage / less fossil fuels",
+  "quote": "Regenerative agriculture is way of farming that can heal the planet.",
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [
+    "rpc8",
+    "rpc10"
+  ],
+  "service_codes": [
+    "rss3",
+    "rss4"
+  ],
+  "category_names": [
+    "rpc8",
+    "rpc10"
+  ],
+  "service_names": [
+    "rss3",
+    "rss4"
+  ],
+  "category_names_str": "rpc8; rpc10",
+  "service_names_str": "rss3; rss4"
+}

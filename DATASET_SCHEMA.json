@@ -1,0 +1,27 @@
+{
+  "title": "Directory Listing Extractor – Dataset Item",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "source_url": { "type": "string" },
+    "profile_url": { "type": ["string", "null"] },
+    "entity_name": { "type": ["string", "null"] },
+    "location": { "type": ["string", "null"] },
+    "address": { "type": ["string", "null"] },
+    "lat": { "type": ["number", "null"] },
+    "lng": { "type": ["number", "null"] },
+    "email": { "type": ["string", "null"] },
+    "phone": { "type": ["string", "null"] },
+    "website": { "type": ["string", "null"] },
+    "categories": { "type": ["array", "null"], "items": { "type": "string" } },
+    "products": { "type": ["array", "null"], "items": { "type": "string" } },
+    "services": { "type": ["array", "null"], "items": { "type": "string" } },
+    "how_to_buy": { "type": ["string", "null"] },
+    "size": { "type": ["string", "null"] },
+    "results": { "type": ["array", "null"], "items": { "type": "string" } },
+    "quote": { "type": ["string", "null"] },
+    "logo": { "type": ["string", "null"] },
+    "logo_medium": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

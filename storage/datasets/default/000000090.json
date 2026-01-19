@@ -1,0 +1,33 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Cold Springs Organics",
+  "location": "Campbellcroft, Ontario",
+  "address": "8869 Spruce Grove Road, Campbellcroft, Ontario, L0A1B0",
+  "lat": null,
+  "lng": null,
+  "email": "coldspringsorganics@gmail.com",
+  "phone": "4162099196",
+  "website": "coldspringsorganics.com",
+  "profile_url": "https://regenerationcanada.org/en/cold-springs-organics/",
+  "categories": "rpc5, rpc15",
+  "products": "organic vegetables",
+  "services": "",
+  "how_to_buy": "CSA (Community Supported Agriculture - we have an 18 week Veggie Box Subscription program available for pickup or delivery and we attend the Cobourg Farmer\\'s Market from 8am-1pm on Saturdays.",
+  "size": "65 acres",
+  "results": "Increased population of native birds including barn sparrows and bluebirds.|*|Increased biodiversity.",
+  "quote": "It means that we are leaving the land better than we found it. It helps the land while also helping the community.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Profile-Picture-from-Email.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Profile-Picture-from-Email-1000x1000.jpg",
+  "category_codes": [
+    "rpc5",
+    "rpc15"
+  ],
+  "service_codes": [],
+  "category_names": [
+    "rpc5",
+    "rpc15"
+  ],
+  "service_names": [],
+  "category_names_str": "rpc5; rpc15",
+  "service_names_str": ""
+}

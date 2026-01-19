@@ -1,0 +1,57 @@
+{
+  "source_url": "https://regenerationcanada.org/en/map/",
+  "entity_name": "Old 99 Farm",
+  "location": "Dundas, ON",
+  "address": "1580 Old Hwy 99, Dundas, ON, L9H 5E3",
+  "lat": null,
+  "lng": null,
+  "email": "old99farm2015@gmail.com",
+  "phone": "905 537 0163",
+  "website": "old99farm.ca",
+  "profile_url": "https://regenerationcanada.org/en/old-99-farm/",
+  "categories": "rpc1, rpc2, rpc5, rpc6, rpc7, rpc8, rpc15",
+  "products": "beef, pork, chicken, eggs, vegetables, berries, stone fruit, compost",
+  "services": "rss1, rss4, rss6, rss7, rss9, rss10",
+  "how_to_buy": "Virtual farm market (www.old99farm.locallygrown.net), on-farm sales, CSA baskets, four season harvests",
+  "size": "15 acres",
+  "results": "Increased bird, reptile and insect populations|*|Soil in paddocks holds moisture, weathers dry spells well|*|Animals are not afflicted with parasites and diseases",
+  "quote": "Growing food while increasing biodiversity and vitality of the land in harmony with nature while reducing the impacts of climate change.",
+  "logo": "https://regenerationcanada.org/wp-content/uploads/old99logo.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/old99logo.jpg",
+  "category_codes": [
+    "rpc1",
+    "rpc2",
+    "rpc5",
+    "rpc6",
+    "rpc7",
+    "rpc8",
+    "rpc15"
+  ],
+  "service_codes": [
+    "rss1",
+    "rss4",
+    "rss6",
+    "rss7",
+    "rss9",
+    "rss10"
+  ],
+  "category_names": [
+    "rpc1",
+    "rpc2",
+    "rpc5",
+    "rpc6",
+    "rpc7",
+    "rpc8",
+    "rpc15"
+  ],
+  "service_names": [
+    "rss1",
+    "rss4",
+    "rss6",
+    "rss7",
+    "rss9",
+    "rss10"
+  ],
+  "category_names_str": "rpc1; rpc2; rpc5; rpc6; rpc7; rpc8; rpc15",
+  "service_names_str": "rss1; rss4; rss6; rss7; rss9; rss10"
+}
