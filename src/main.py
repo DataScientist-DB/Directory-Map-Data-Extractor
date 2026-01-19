@@ -76,7 +76,7 @@ def _normalize_tax_map(m: Dict[Any, Any]) -> Dict[str, str]:
     return out
 
 
-from pathlib import Path
+
 from apify import Actor
 
 # keep your imports:
@@ -201,11 +201,12 @@ async def main():
         )
 
         # Export CSV/XLSX
+        # Export CSV/XLSX
         dataset_dir = _Path("storage/datasets/default")
 
         paths = export_outputs(
             dataset_dir=dataset_dir,
-            out_base=Path(input_data.get("outputBaseName", "output")),
+            out_base=_Path(input_data.get("outputBaseName", "output")),
             write_csv=bool(input_data.get("outputCsv", True)),
             write_xlsx=bool(input_data.get("outputXlsx", True)),
             columns_mode=input_data.get("outputColumnsMode", "default"),
@@ -214,17 +215,19 @@ async def main():
         )
 
         Actor.log.info(f"EXPORT FILES: {paths}")
-        from pathlib import Path
 
         # Upload export files to Key-Value Store so they appear in Apify UI
         if isinstance(paths, dict):
             for _, rel in paths.items():
                 if not rel:
                     continue
-                p = Path(rel)
+                p = _Path(rel)
                 if not p.is_absolute():
-                    # try current dir first
-                    candidates = [p, Path("storage") / rel, Path("storage/key_value_stores/default") / rel]
+                    candidates = [
+                        p,
+                        _Path("storage") / rel,
+                        _Path("storage/key_value_stores/default") / rel
+                    ]
                 else:
                     candidates = [p]
 
@@ -238,7 +241,6 @@ async def main():
                     Actor.log.warning(f"Export file not found on disk: {rel} (tried {candidates})")
                     continue
 
-                # content types for UI download
                 if found.suffix.lower() == ".csv":
                     ct = "text/csv"
                 elif found.suffix.lower() == ".xlsx":
@@ -253,7 +255,7 @@ async def main():
         # (Optional but recommended for the challenge)
         for p in (paths or []):
             try:
-                p = Path(p)
+                p = _Path(p)
                 if p.exists() and p.is_file():
                     await Actor.set_value(p.name, p.read_bytes(), content_type="application/octet-stream")
             except Exception as e:
