@@ -11,6 +11,53 @@ from src.crawler import run_crawler
 from src.export_outputs import export_outputs
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
 
+import io
+import csv
+from apify import Actor
+
+async def export_dataset_to_kv(out_base: str, write_csv: bool, write_xlsx: bool) -> None:
+    dataset = await Actor.open_dataset()  # default dataset
+    items = (await dataset.get_data(limit=999999)).items
+
+    if write_csv:
+        buf = io.StringIO()
+        if items:
+            # stable columns: union of keys
+            cols = sorted({k for row in items for k in row.keys()})
+        else:
+            cols = ["empty"]
+
+        writer = csv.DictWriter(buf, fieldnames=cols, extrasaction="ignore")
+        writer.writeheader()
+        for row in items:
+            writer.writerow(row)
+
+        await Actor.set_value(f"{out_base}.csv", buf.getvalue().encode("utf-8"), content_type="text/csv")
+
+    if write_xlsx:
+        # Requires openpyxl in requirements.txt
+        from openpyxl import Workbook
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "data"
+
+        if items:
+            cols = sorted({k for row in items for k in row.keys()})
+        else:
+            cols = ["empty"]
+
+        ws.append(cols)
+        for row in items:
+            ws.append([row.get(c, "") for c in cols])
+
+        xbuf = io.BytesIO()
+        wb.save(xbuf)
+        await Actor.set_value(
+            f"{out_base}.xlsx",
+            xbuf.getvalue(),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
 
 def _clean_label(v: Any) -> str:
     if v is None:
@@ -165,6 +212,40 @@ async def main():
         )
 
         Actor.log.info(f"EXPORT FILES: {paths}")
+        from pathlib import Path
+
+        # Upload export files to Key-Value Store so they appear in Apify UI
+        if isinstance(paths, dict):
+            for _, rel in paths.items():
+                if not rel:
+                    continue
+                p = Path(rel)
+                if not p.is_absolute():
+                    # try current dir first
+                    candidates = [p, Path("storage") / rel, Path("storage/key_value_stores/default") / rel]
+                else:
+                    candidates = [p]
+
+                found = None
+                for c in candidates:
+                    if c.exists() and c.is_file():
+                        found = c
+                        break
+
+                if not found:
+                    Actor.log.warning(f"Export file not found on disk: {rel} (tried {candidates})")
+                    continue
+
+                # content types for UI download
+                if found.suffix.lower() == ".csv":
+                    ct = "text/csv"
+                elif found.suffix.lower() == ".xlsx":
+                    ct = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                else:
+                    ct = "application/octet-stream"
+
+                await Actor.set_value(found.name, found.read_bytes(), content_type=ct)
+                Actor.log.info(f"Uploaded to KV: {found.name} ({found.stat().st_size} bytes)")
 
         # ✅ If export_outputs writes files, also store them in KV for Apify UI download
         # (Optional but recommended for the challenge)
