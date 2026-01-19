@@ -16,38 +16,32 @@ import io
 import csv
 from apify import Actor
 
+import io
+import csv
+
 async def export_dataset_to_kv(out_base: str, write_csv: bool, write_xlsx: bool) -> None:
-    dataset = await Actor.open_dataset()  # default dataset
-    items = (await dataset.get_data(limit=999999)).items
+    dataset = await Actor.open_dataset()
+    data = await dataset.get_data(limit=999999)
+    items = data.items or []
+    Actor.log.info(f"EXPORT: dataset items={len(items)}")
 
     if write_csv:
         buf = io.StringIO()
-        if items:
-            # stable columns: union of keys
-            cols = sorted({k for row in items for k in row.keys()})
-        else:
-            cols = ["empty"]
-
-        writer = csv.DictWriter(buf, fieldnames=cols, extrasaction="ignore")
-        writer.writeheader()
+        cols = sorted({k for row in items for k in row.keys()}) if items else ["empty"]
+        w = csv.DictWriter(buf, fieldnames=cols, extrasaction="ignore")
+        w.writeheader()
         for row in items:
-            writer.writerow(row)
-
+            w.writerow(row)
         await Actor.set_value(f"{out_base}.csv", buf.getvalue().encode("utf-8"), content_type="text/csv")
+        Actor.log.info(f"Uploaded KV: {out_base}.csv")
 
     if write_xlsx:
-        # Requires openpyxl in requirements.txt
         from openpyxl import Workbook
-
         wb = Workbook()
         ws = wb.active
         ws.title = "data"
 
-        if items:
-            cols = sorted({k for row in items for k in row.keys()})
-        else:
-            cols = ["empty"]
-
+        cols = sorted({k for row in items for k in row.keys()}) if items else ["empty"]
         ws.append(cols)
         for row in items:
             ws.append([row.get(c, "") for c in cols])
@@ -59,6 +53,7 @@ async def export_dataset_to_kv(out_base: str, write_csv: bool, write_xlsx: bool)
             xbuf.getvalue(),
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
+        Actor.log.info(f"Uploaded KV: {out_base}.xlsx")
 
 def _clean_label(v: Any) -> str:
     if v is None:
@@ -199,22 +194,23 @@ async def main():
             },
             content_type="application/json"
         )
+        dataset = await Actor.open_dataset()
+        peek = await dataset.get_data(limit=3)
+        Actor.log.info(
+            f"DATASET PEEK count={len(peek.items)} keys={(list(peek.items[0].keys()) if peek.items else [])}")
 
         # Export CSV/XLSX
         # Export CSV/XLSX
         dataset_dir = _Path("storage/datasets/default")
 
-        paths = export_outputs(
-            dataset_dir=dataset_dir,
-            out_base=_Path(input_data.get("outputBaseName", "output")),
-            write_csv=bool(input_data.get("outputCsv", True)),
-            write_xlsx=bool(input_data.get("outputXlsx", True)),
-            columns_mode=input_data.get("outputColumnsMode", "default"),
-            category_map=category_map,
-            service_map=service_map
-        )
+
 
         Actor.log.info(f"EXPORT FILES: {paths}")
+
+        dataset = await Actor.open_dataset()
+        preview = await dataset.get_data(limit=5)
+        Actor.log.info(
+            f"Dataset preview count={len(preview.items)} sample_keys={list((preview.items or [{}])[0].keys())}")
 
         # Upload export files to Key-Value Store so they appear in Apify UI
         if isinstance(paths, dict):
