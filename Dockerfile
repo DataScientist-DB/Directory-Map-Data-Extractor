@@ -4,8 +4,7 @@ COPY . ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Playwright browsers (Chromium) into the image
-RUN python -m playwright install chromium
+# Install Playwright browser + all required OS dependencies
+RUN python -m playwright install --with-deps chromium
 
 CMD ["python", "-m", "src.main"]
-
