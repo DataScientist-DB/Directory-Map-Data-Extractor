@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 import html
-from pathlib import Path
+from pathlib import Path as _Path
+
 from typing import Any, Dict
 
 from apify import Actor
@@ -200,7 +201,8 @@ async def main():
         )
 
         # Export CSV/XLSX
-        dataset_dir = Path("storage/datasets/default")
+        dataset_dir = _Path("storage/datasets/default")
+
         paths = export_outputs(
             dataset_dir=dataset_dir,
             out_base=Path(input_data.get("outputBaseName", "output")),
