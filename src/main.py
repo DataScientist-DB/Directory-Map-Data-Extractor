@@ -193,8 +193,10 @@ async def main() -> None:
         crawl_info = await run_crawler(input_data) or {}
 
         ds = await Actor.open_dataset()
-        info = await ds.get_info()
-        Actor.log.info(f"DATASET itemCount={info.item_count}")
+        peek = await ds.get_data(limit=3)
+        Actor.log.info(
+            f"DATASET AFTER CRAWL count={len(peek.items or [])} keys={list((peek.items or [{}])[0].keys()) if (peek.items or []) else []}"
+        )
 
         auto_cat = crawl_info.get("category_map", {}) or {}
         auto_srv = crawl_info.get("service_map", {}) or {}
