@@ -3,8 +3,8 @@ from __future__ import annotations
 import html
 import io
 import csv
+import json
 from typing import Any, Dict
-from pathlib import Path as _Path
 
 from apify import Actor
 
@@ -29,12 +29,6 @@ def _normalize_tax_map(m: Dict[Any, Any]) -> Dict[str, str]:
     return out
 
 
-import json
-import io
-import csv
-from typing import Any
-from apify import Actor
-
 def _cell(v: Any) -> str:
     """Make values safe for CSV/XLSX."""
     if v is None:
@@ -42,13 +36,18 @@ def _cell(v: Any) -> str:
     if isinstance(v, (str, int, float, bool)):
         return str(v)
     if isinstance(v, (list, tuple, set)):
-        # join common list fields nicely
         return "; ".join(str(x) for x in v)
     if isinstance(v, dict):
         return json.dumps(v, ensure_ascii=False)
     return str(v)
 
-async def export_dataset_to_kv(out_base: str, write_csv: bool, write_xlsx: bool) -> None:
+
+async def export_dataset_to_kv(
+    out_base: str,
+    write_csv: bool,
+    write_xlsx: bool,
+    columns_mode: str = "default",
+) -> None:
     ds = await Actor.open_dataset()
     data = await ds.get_data(limit=999999)
     items = data.items or []
@@ -58,8 +57,39 @@ async def export_dataset_to_kv(out_base: str, write_csv: bool, write_xlsx: bool)
 
     Actor.log.info(f"EXPORT: dataset items={len(items)}")
 
-    # Build stable columns (union of keys)
-    cols = sorted({k for row in items for k in row.keys()}) if items else ["empty"]
+    # ---- CURATED STORE-READY COLUMNS ----
+    DEFAULT_COLUMNS = [
+        "entity_name",
+        "location",
+        "address",
+        "phone",
+        "email",
+        "website",
+        "profile_url",
+        "category_names_str",
+        "service_names_str",
+        "source_url",
+    ]
+
+    ALL_COLUMNS = [
+        *DEFAULT_COLUMNS,
+        "category_codes",
+        "service_codes",
+        "category_names",
+        "service_names",
+        "logo",
+        "logo_medium",
+        "lat",
+        "lng",
+        "quote",
+        "products",
+        "services",
+        "how_to_buy",
+        "size",
+        "results",
+    ]
+
+    cols = ALL_COLUMNS if (columns_mode or "").strip().lower() == "all" else DEFAULT_COLUMNS
 
     # ---------- CSV ----------
     if write_csv:
@@ -69,7 +99,11 @@ async def export_dataset_to_kv(out_base: str, write_csv: bool, write_xlsx: bool)
         for row in items:
             w.writerow([_cell(row.get(c)) for c in cols])
 
-        await Actor.set_value(f"{out_base}.csv", buf.getvalue().encode("utf-8"), content_type="text/csv")
+        await Actor.set_value(
+            f"{out_base}.csv",
+            buf.getvalue().encode("utf-8"),
+            content_type="text/csv",
+        )
         Actor.log.info(f"Uploaded KV: {out_base}.csv")
 
     # ---------- XLSX ----------
@@ -146,20 +180,18 @@ async def main() -> None:
 
         Actor.log.info(f"LOADED INPUT keys={list(input_data.keys())}")
 
-        # PROBE: guarantees Dataset + KV store exist even if crawl fails later
         start_url = (input_data.get("startUrls") or [{}])[0].get("url")
 
-
-        # KEEP only KV probe:
+        # KV probe only (do NOT pollute Dataset)
         await Actor.set_value(
             "PROBE.json",
             {"_probe": True, "message": "KV store works", "start_url": start_url},
             content_type="application/json",
         )
 
-
-        # --- Run crawler (should push REAL rows via Actor.push_data inside crawler) ---
+        # --- Run crawler (crawler pushes rows via Actor.push_data) ---
         crawl_info = await run_crawler(input_data) or {}
+
         ds = await Actor.open_dataset()
         info = await ds.get_info()
         Actor.log.info(f"DATASET itemCount={info.item_count}")
@@ -204,19 +236,13 @@ async def main() -> None:
             content_type="application/json",
         )
 
-        # Peek AFTER crawl
-        ds = await Actor.open_dataset()
-        peek = await ds.get_data(limit=3)
-        Actor.log.info(
-            f"DATASET AFTER CRAWL count={len(peek.items)} keys={(list(peek.items[0].keys()) if peek.items else [])}"
-        )
-
-        # Export from dataset -> KV (reliable on Apify Cloud)
+        # Export from dataset -> KV
         Actor.log.info("Starting dataset export to KV...")
         await export_dataset_to_kv(
             out_base=input_data.get("outputBaseName", "output"),
             write_csv=bool(input_data.get("outputCsv", True)),
             write_xlsx=bool(input_data.get("outputXlsx", False)),
+            columns_mode=str(input_data.get("outputColumnsMode", "default")),
         )
 
 
