@@ -1,65 +1,23 @@
 from __future__ import annotations
 
-import json
 import html
-from pathlib import Path as _Path
-
+import io
+import csv
 from typing import Any, Dict
+from pathlib import Path as _Path
 
 from apify import Actor
 
 from src.crawler import run_crawler
-from src.export_outputs import export_outputs
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
 
-import io
-import csv
-from apify import Actor
-
-import io
-import csv
-
-async def export_dataset_to_kv(out_base: str, write_csv: bool, write_xlsx: bool) -> None:
-    dataset = await Actor.open_dataset()
-    data = await dataset.get_data(limit=999999)
-    items = data.items or []
-    Actor.log.info(f"EXPORT: dataset items={len(items)}")
-
-    if write_csv:
-        buf = io.StringIO()
-        cols = sorted({k for row in items for k in row.keys()}) if items else ["empty"]
-        w = csv.DictWriter(buf, fieldnames=cols, extrasaction="ignore")
-        w.writeheader()
-        for row in items:
-            w.writerow(row)
-        await Actor.set_value(f"{out_base}.csv", buf.getvalue().encode("utf-8"), content_type="text/csv")
-        Actor.log.info(f"Uploaded KV: {out_base}.csv")
-
-    if write_xlsx:
-        from openpyxl import Workbook
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "data"
-
-        cols = sorted({k for row in items for k in row.keys()}) if items else ["empty"]
-        ws.append(cols)
-        for row in items:
-            ws.append([row.get(c, "") for c in cols])
-
-        xbuf = io.BytesIO()
-        wb.save(xbuf)
-        await Actor.set_value(
-            f"{out_base}.xlsx",
-            xbuf.getvalue(),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-        Actor.log.info(f"Uploaded KV: {out_base}.xlsx")
 
 def _clean_label(v: Any) -> str:
     if v is None:
         return ""
     s = html.unescape(str(v))
     return " ".join(s.split()).strip()
+
 
 def _normalize_tax_map(m: Dict[Any, Any]) -> Dict[str, str]:
     out: Dict[str, str] = {}
@@ -71,16 +29,73 @@ def _normalize_tax_map(m: Dict[Any, Any]) -> Dict[str, str]:
     return out
 
 
-
+import json
+import io
+import csv
+from typing import Any
 from apify import Actor
 
-# keep your imports:
-# from src.crawler import run_crawler
-# from src.export import export_outputs
-# from src.taxonomy_defaults import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
-# from src.helpers import _normalize_tax_map
+def _cell(v: Any) -> str:
+    """Make values safe for CSV/XLSX."""
+    if v is None:
+        return ""
+    if isinstance(v, (str, int, float, bool)):
+        return str(v)
+    if isinstance(v, (list, tuple, set)):
+        # join common list fields nicely
+        return "; ".join(str(x) for x in v)
+    if isinstance(v, dict):
+        return json.dumps(v, ensure_ascii=False)
+    return str(v)
 
-async def main():
+async def export_dataset_to_kv(out_base: str, write_csv: bool, write_xlsx: bool) -> None:
+    ds = await Actor.open_dataset()
+    data = await ds.get_data(limit=999999)
+    items = data.items or []
+
+    # filter out probe rows if any exist
+    items = [r for r in items if not (isinstance(r, dict) and r.get("_probe"))]
+
+    Actor.log.info(f"EXPORT: dataset items={len(items)}")
+
+    # Build stable columns (union of keys)
+    cols = sorted({k for row in items for k in row.keys()}) if items else ["empty"]
+
+    # ---------- CSV ----------
+    if write_csv:
+        buf = io.StringIO()
+        w = csv.writer(buf)
+        w.writerow(cols)
+        for row in items:
+            w.writerow([_cell(row.get(c)) for c in cols])
+
+        await Actor.set_value(f"{out_base}.csv", buf.getvalue().encode("utf-8"), content_type="text/csv")
+        Actor.log.info(f"Uploaded KV: {out_base}.csv")
+
+    # ---------- XLSX ----------
+    if write_xlsx:
+        from openpyxl import Workbook
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "data"
+        ws.append(cols)
+
+        for row in items:
+            ws.append([_cell(row.get(c)) for c in cols])
+
+        xbuf = io.BytesIO()
+        wb.save(xbuf)
+
+        await Actor.set_value(
+            f"{out_base}.xlsx",
+            xbuf.getvalue(),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        Actor.log.info(f"Uploaded KV: {out_base}.xlsx")
+
+
+async def main() -> None:
     async with Actor:
         input_data = await Actor.get_input() or {}
 
@@ -95,17 +110,11 @@ async def main():
             input_data = {
                 "mode": "embedded_js",
                 "startUrls": [{"url": "https://regenerationcanada.org/en/map/"}],
-                "maxListings": 500,
+                "maxListings": 250,
                 "maxPages": 1,
                 "embedded": {
                     "enabled": True,
                     "preferJsonLd": True,
-                    "anchorKey": "logoMedium",
-                    "keys": [
-                        "name", "loc", "address", "lat", "lng", "email", "tel",
-                        "website", "pageURL", "categories", "products", "services",
-                        "buy", "size", "results", "quote", "logo", "logoMedium"
-                    ],
                     "fieldMap": {
                         "name": "entity_name",
                         "loc": "location",
@@ -124,35 +133,37 @@ async def main():
                         "results": "results",
                         "quote": "quote",
                         "logo": "logo",
-                        "logoMedium": "logo_medium"
-                    }
+                        "logoMedium": "logo_medium",
+                    },
                 },
                 "outputCsv": True,
                 "outputXlsx": True,
                 "outputColumnsMode": "default",
-                "outputBaseName": "output",
+                "outputBaseName": "directory_listings_demo",
                 "taxonomy": {"categoryMap": {}, "serviceMap": {}},
-                "debug": True
+                "debug": False,
             }
 
         Actor.log.info(f"LOADED INPUT keys={list(input_data.keys())}")
 
-        # ✅ PROBE: guarantees Dataset + KV store are NOT empty
+        # PROBE: guarantees Dataset + KV store exist even if crawl fails later
         start_url = (input_data.get("startUrls") or [{}])[0].get("url")
-        await Actor.push_data({
-            "_probe": True,
-            "message": "Actor started successfully",
-            "mode": input_data.get("mode"),
-            "start_url": start_url
-        })
+
+
+        # KEEP only KV probe:
         await Actor.set_value(
             "PROBE.json",
-            {"_probe": True, "message": "KV store works", "start_url": start_url, "mode": input_data.get("mode")},
-            content_type="application/json"
+            {"_probe": True, "message": "KV store works", "start_url": start_url},
+            content_type="application/json",
         )
 
-        # --- Run crawler ---
+
+        # --- Run crawler (should push REAL rows via Actor.push_data inside crawler) ---
         crawl_info = await run_crawler(input_data) or {}
+        ds = await Actor.open_dataset()
+        info = await ds.get_info()
+        Actor.log.info(f"DATASET itemCount={info.item_count}")
+
         auto_cat = crawl_info.get("category_map", {}) or {}
         auto_srv = crawl_info.get("service_map", {}) or {}
 
@@ -160,23 +171,21 @@ async def main():
         manual_cat = taxonomy.get("categoryMap", {}) or {}
         manual_srv = taxonomy.get("serviceMap", {}) or {}
 
-        # ✅ Merge order = static defaults -> auto -> manual
         category_map = {
             **_normalize_tax_map(RPC_CATEGORY_MAP),
             **_normalize_tax_map(auto_cat),
-            **_normalize_tax_map(manual_cat)
+            **_normalize_tax_map(manual_cat),
         }
         service_map = {
             **_normalize_tax_map(RSS_SERVICE_MAP),
             **_normalize_tax_map(auto_srv),
-            **_normalize_tax_map(manual_srv)
+            **_normalize_tax_map(manual_srv),
         }
 
         if input_data.get("debug"):
             Actor.log.info(f"DEBUG category_map sample={list(category_map.items())[:10]}")
             Actor.log.info(f"DEBUG service_map sample={list(service_map.items())[:10]}")
 
-        # Save TAXONOMY.json
         await Actor.set_value(
             "TAXONOMY.json",
             {
@@ -189,74 +198,29 @@ async def main():
                     "manual_categories": len(manual_cat),
                     "manual_services": len(manual_srv),
                     "final_categories": len(category_map),
-                    "final_services": len(service_map)
-                }
+                    "final_services": len(service_map),
+                },
             },
-            content_type="application/json"
+            content_type="application/json",
         )
-        dataset = await Actor.open_dataset()
-        peek = await dataset.get_data(limit=3)
+
+        # Peek AFTER crawl
+        ds = await Actor.open_dataset()
+        peek = await ds.get_data(limit=3)
         Actor.log.info(
-            f"DATASET PEEK count={len(peek.items)} keys={(list(peek.items[0].keys()) if peek.items else [])}")
+            f"DATASET AFTER CRAWL count={len(peek.items)} keys={(list(peek.items[0].keys()) if peek.items else [])}"
+        )
 
-        # Export CSV/XLSX
-        # Export CSV/XLSX
-        dataset_dir = _Path("storage/datasets/default")
+        # Export from dataset -> KV (reliable on Apify Cloud)
+        Actor.log.info("Starting dataset export to KV...")
+        await export_dataset_to_kv(
+            out_base=input_data.get("outputBaseName", "output"),
+            write_csv=bool(input_data.get("outputCsv", True)),
+            write_xlsx=bool(input_data.get("outputXlsx", False)),
+        )
 
-
-
-        Actor.log.info(f"EXPORT FILES: {paths}")
-
-        dataset = await Actor.open_dataset()
-        preview = await dataset.get_data(limit=5)
-        Actor.log.info(
-            f"Dataset preview count={len(preview.items)} sample_keys={list((preview.items or [{}])[0].keys())}")
-
-        # Upload export files to Key-Value Store so they appear in Apify UI
-        if isinstance(paths, dict):
-            for _, rel in paths.items():
-                if not rel:
-                    continue
-                p = _Path(rel)
-                if not p.is_absolute():
-                    candidates = [
-                        p,
-                        _Path("storage") / rel,
-                        _Path("storage/key_value_stores/default") / rel
-                    ]
-                else:
-                    candidates = [p]
-
-                found = None
-                for c in candidates:
-                    if c.exists() and c.is_file():
-                        found = c
-                        break
-
-                if not found:
-                    Actor.log.warning(f"Export file not found on disk: {rel} (tried {candidates})")
-                    continue
-
-                if found.suffix.lower() == ".csv":
-                    ct = "text/csv"
-                elif found.suffix.lower() == ".xlsx":
-                    ct = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                else:
-                    ct = "application/octet-stream"
-
-                await Actor.set_value(found.name, found.read_bytes(), content_type=ct)
-                Actor.log.info(f"Uploaded to KV: {found.name} ({found.stat().st_size} bytes)")
-
-        # ✅ If export_outputs writes files, also store them in KV for Apify UI download
-        # (Optional but recommended for the challenge)
-        for p in (paths or []):
-            try:
-                p = _Path(p)
-                if p.exists() and p.is_file():
-                    await Actor.set_value(p.name, p.read_bytes(), content_type="application/octet-stream")
-            except Exception as e:
-                Actor.log.warning(f"Failed to store export file to KV: {p} ({e})")
 
 if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())
