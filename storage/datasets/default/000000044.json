@@ -1,41 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Diddley Squash Farm",
-  "location": "Salisbury West, NB, Canada",
-  "address": "291 Scott Road, Salisbury West, NB, E4J 3K4, Canada",
+  "entity_name": "Icellars Estate Winery",
+  "location": "Niagara-on-the-Lake, Ontario",
+  "address": "615 Concession 5 Rd, Niagara-on-the-Lake, Ontario, L0S1J0",
   "lat": null,
   "lng": null,
-  "email": "selinkle@aol.com",
-  "phone": "506-872-4984",
-  "website": "certified.naturallygrown.org/producers/5639",
-  "profile_url": "https://regenerationcanada.org/en/diddley-squash-farm/",
-  "categories": "rpc5",
-  "products": "Parsley, Cilantro, Swiss chard, Arugula, Lettuce, Spinach, Turnip, Carrots, Onions, Garlic, Potatoes, Cabbage, Brussel sprouts, Peas, Beans, Corn, Beets, Tomatoes, Peppers, Kale, Cucumbers, Strawberries, Squash, Pumpkins",
-  "services": "rss6, rss7, rss8, rss11",
-  "how_to_buy": "Dolma Food in Moncton, NB or through the Salisbury Farmers Market, the Petitcodiac Farmers Market, or directly from the farm. Customers may also request to be added to a private shopping page that I do not make available to the public because of limited quantities of product during some seasons.",
-  "size": "127 acres",
-  "results": "I have greenhouses and no animals. Most of my farm is an untouched woodlot|*| I use mostly barrier methods to keep pests out of my garden. A greenhouse is a barrier|*| I also use netting and an 8 foot fence|*| Increasing soil organic matter is my approach to getting my crops through extended periods of drought|*| My farm is Certified Naturally Grown",
-  "quote": "Regenerative farming is a form of sustainable agriculture, one that can continue without harming the soil or biodiversity of the area",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/produce-label-2017.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/produce-label-2017.jpg",
-  "category_codes": [
-    "rpc5"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7",
-    "rss8",
-    "rss11"
-  ],
-  "category_names": [
-    "rpc5"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7",
-    "rss8",
-    "rss11"
-  ],
-  "category_names_str": "rpc5",
-  "service_names_str": "rss6; rss7; rss8; rss11"
+  "email": "info@icellars.ca",
+  "phone": "2894795969",
+  "website": "icellars.ca",
+  "profile_url": "https://regenerationcanada.org/en/icellars-estate-winery/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

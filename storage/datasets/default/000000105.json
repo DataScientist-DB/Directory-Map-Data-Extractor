@@ -1,39 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Rustik Bison",
-  "location": "Saint-Herménégilde, Quebec / Québec",
-  "address": "1248 Chemin Caron, Saint-Herménégilde, Québec, J0B 2W0",
+  "entity_name": "Persephone Brewing Company Farm",
+  "location": "Gibsons, BC",
+  "address": "1053 Stewart Road, Gibsons, BC, V0N 1V7",
   "lat": null,
   "lng": null,
-  "email": "anoukcaron@rustikbison.ca",
-  "phone": "8193497023",
-  "website": "rustikbison.com",
-  "profile_url": "https://regenerationcanada.org/en/rustik-bison/",
-  "categories": "rpc1",
-  "products": "Meat cuts, terrines, rillettes, sausages, smoked meats, jerky, sausages, burger patties, hides, horns",
-  "services": "rss6, rss7, rss11",
-  "how_to_buy": "At the farm store during opening hours (schedule available on Google and Facebook), online with self-serve pickup at the farm, as well as at one of the regional points of sale.",
-  "size": "23 acres",
-  "results": "Birdwatching as birds reclaim the prairie|*|Reduction of runoff and erosion (ditch water is clear and clean)|*|Presence of a large number of native pollinators|*|Improved deep soil structure|*|Animal weight gain is excellent, a sign of their well-being in our system",
-  "quote": "Regenerative agriculture is the agriculture of the future, the agriculture of resilience.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Rustik-Bison-logo-stamp.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Rustik-Bison-logo-stamp-1000x750.png",
-  "category_codes": [
-    "rpc1"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7",
-    "rss11"
-  ],
-  "category_names": [
-    "rpc1"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7",
-    "rss11"
-  ],
-  "category_names_str": "rpc1",
-  "service_names_str": "rss6; rss7; rss11"
+  "email": "brian@thebeerfarm.ca",
+  "phone": "7784623007",
+  "website": "https://www.persephonebrewing.com/our-farm",
+  "profile_url": "https://regenerationcanada.org/en/persephone-brewing-company/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Persephone-Logo-SmallNoTexture-2C-BlackRed1795C-POS-RGB-copy.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Persephone-Logo-SmallNoTexture-2C-BlackRed1795C-POS-RGB-copy-300x215.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

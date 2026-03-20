@@ -1,41 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Rosengren Farms",
-  "location": "Midale, Saskatchewan",
-  "address": "Box 540, Midale, Saskatchewan, S0C 1S0",
+  "entity_name": "StoneCroft Farm",
+  "location": "Black Creek, British Colombia",
+  "address": "2165 Kelland Rd, Black Creek, British Colombia, V9J 1G4",
   "lat": null,
   "lng": null,
-  "email": "colin@rosengrenfarms.com",
-  "phone": "306-458-7792",
+  "email": "glenandkathybeaton@live.com",
+  "phone": "250-334-7159",
   "website": "",
-  "profile_url": "https://regenerationcanada.org/en/rosengren-farms/",
-  "categories": "rpc3, rpc4",
-  "products": "canola, non-GMO canola, flax, mustard, hemp, soybeans, lentils, peas, maple peas, chickpeas, wheat, durum, barley, oats, rye",
-  "services": "rss6, rss7, rss9",
-  "how_to_buy": "processors and food production companies can buy grains from us.  Consumers can purchase Three Farmers brand products in stores",
-  "size": "8500 acres",
-  "results": "increased yields from intercropping|*|increased yields from variable rate intercropping",
-  "quote": "Regenerative agriculture is the practice of rebuilding soils by mimicking intensely the processes that created them in the first place.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/farm-logo.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/farm-logo-300x164.jpg",
-  "category_codes": [
-    "rpc3",
-    "rpc4"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names": [
-    "rpc3",
-    "rpc4"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names_str": "rpc3; rpc4",
-  "service_names_str": "rss6; rss7; rss9"
+  "profile_url": "https://regenerationcanada.org/en/stonecroft-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/dayold-tom-strutting-his-stuff-sml.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/dayold-tom-strutting-his-stuff-sml-284x300.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

@@ -1,37 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Glen Lake Pasture Farm",
-  "location": "Tarantum, Prince Edward Island",
-  "address": "1434 Simpsons Lane-Rt. 255, Tarantum, Prince Edward Island, C1B3H1",
+  "entity_name": "Hickory Hill Forest Farm",
+  "location": "FRANKFORD, ON",
+  "address": "162 Flyboy Road, FRANKFORD, ON, K0K 2C0",
   "lat": null,
   "lng": null,
-  "email": "Travis@glenlakepasture.ca",
-  "phone": "9023935119",
-  "website": "glenlakepasture.ca",
-  "profile_url": "https://regenerationcanada.org/en/glen-lake-pasture-farm/",
-  "categories": "rpc1, rpc2",
-  "products": "Heritage Breed Red Wattle Pork, Pasture raised Chicken, Pasture Raised Turkey, Grass Fed Beef, Weaner Pigs for homesteaders/backyard farmers",
-  "services": "rss7",
-  "how_to_buy": "Our products are available for purchase at the Charlottetown farmers Market or through our monthly CSA program. Our Pork is alos available at Hunter River Homestyle Flavours in Hunter River, PEI",
-  "size": "250 acres",
-  "results": "Increased soil carrying capacity|*|Diverse wildlife vs surrounding farms",
-  "quote": "Regenerative ag means continually improving the soil, for ourselves and for whoever will be farming our land after us. It mean raising our livestock in a manner that takes their inate behaviours into consideration. It means providing quality, ethical food for people in our community.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/GLPF_logo-blue-400.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/GLPF_logo-blue-400.png",
-  "category_codes": [
-    "rpc1",
-    "rpc2"
-  ],
-  "service_codes": [
-    "rss7"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc2"
-  ],
-  "service_names": [
-    "rss7"
-  ],
-  "category_names_str": "rpc1; rpc2",
-  "service_names_str": "rss7"
+  "email": "cindyschnaithmann@gmail.com",
+  "phone": "9059121980",
+  "website": "hickoryhillforestfarm.com",
+  "profile_url": "https://regenerationcanada.org/en/hickory-hill-forest-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/design-transparent.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/design-transparent-300x300.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

@@ -1,41 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Les jardins de l\\'écoumène",
-  "location": "St-Damien, QC",
-  "address": "2855 chemin de l\\'écoumène, St-Damien, QC, J0K 2E0",
+  "entity_name": "Juniper",
+  "location": "Wakefield, quebec",
+  "address": "375 Shouldice Rd, Wakefield, quebec, J0X 3G0",
   "lat": null,
   "lng": null,
-  "email": "guylaine@ecoumene.com",
-  "phone": "14508982855",
-  "website": "ecoumene.com",
-  "profile_url": "https://regenerationcanada.org/en/les-jardins-de-lecoumene-inc/",
-  "categories": "rpc100",
-  "products": "Vegetable and herb seeds",
-  "services": "rss1, rss2, rss7, rss9",
-  "how_to_buy": "At our 220 retailers across Quebec, on our online store www.ecoumene.com, at our horticultural store in St Damien (2855 chemin de l\\'écoumène) and at seed events from the end of January until March.",
-  "size": "10 acres en production acres",
-  "results": "Improved soil structure|*| Reduced soil compaction and elimination of soil crusting. |*|Improved soil nutrient cycling has been observed. |*|Our agroforestry systems show a better regulation of species populations.|*| The increased carbon content in our soils through the addition of biochar which also brings better water retention. |*|The increase in the presence of soil organisms. |*| A general improvement of the health of the soils. |*|A better control of the runoff and the retention of water.",
-  "quote": "The physical, biological and chemical health of soils.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/logo-ecoumene-web.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo-ecoumene-web.png",
-  "category_codes": [
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss2",
-    "rss7",
-    "rss9"
-  ],
-  "category_names": [
-    "rpc100"
-  ],
-  "service_names": [
-    "rss1",
-    "rss2",
-    "rss7",
-    "rss9"
-  ],
-  "category_names_str": "rpc100",
-  "service_names_str": "rss1; rss2; rss7; rss9"
+  "email": "info@juniperfarm.ca",
+  "phone": "819-459-1630",
+  "website": "juniperfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/juniper/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/juniper-farm-email.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/juniper-farm-email-300x102.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

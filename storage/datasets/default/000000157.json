@@ -1,39 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Hjertaas Farm",
-  "location": "Redvers, Saskatchewan",
-  "address": "Redvers, Saskatchewan, S0C 2H0",
+  "entity_name": "Coopérative Ferme Terre Partagée",
+  "location": "Rogersville, New Brunswick",
+  "address": "1312 Pleasant Ridge, Rogersville, NB, E4Y 1C8",
   "lat": null,
   "lng": null,
-  "email": "hjertaas1@icloud.com",
-  "phone": "306-840-7223",
-  "website": "",
-  "profile_url": "https://regenerationcanada.org/en/hjertaas-farm/",
-  "categories": "rpc1",
-  "products": "Beef, Chicken, Lamb",
-  "services": "rss6, rss7, rss11",
-  "how_to_buy": "",
-  "size": "800 acres",
-  "results": "More diversity|*| More wildlife|*| Carbon sequestration increasing",
-  "quote": "Healthy soil = healthy food = healthy people = healthy planet",
-  "logo": "",
-  "logo_medium": "",
-  "category_codes": [
-    "rpc1"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7",
-    "rss11"
-  ],
-  "category_names": [
-    "rpc1"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7",
-    "rss11"
-  ],
-  "category_names_str": "rpc1",
-  "service_names_str": "rss6; rss7; rss11"
+  "email": "info@ftpcoop.com",
+  "phone": "506 251 8246",
+  "website": "fermeterrepartagee.org",
+  "profile_url": "https://regenerationcanada.org/en/cooperative-ferme-terre-partagee/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo-Ferme-terre-partage--e-couleur-coop.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo-Ferme-terre-partage--e-couleur-coop.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

@@ -1,35 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Cedar Creek Estate Winery",
-  "location": "Kelowna, BC",
-  "address": "5445 Lakeshore Rd, Kelowna, BC, V1W4S5",
+  "entity_name": "Signal ranch",
+  "location": "Fisher branch , Mb",
+  "address": "Box 485 , Fisher branch , MB, R0C 0Z0",
   "lat": null,
   "lng": null,
-  "email": "ksimcic@sebastianfarms.ca",
-  "phone": "778-738-1020",
-  "website": "cedarcreek.bc.ca",
-  "profile_url": "https://regenerationcanada.org/en/cedar-creek-estate-winery/",
-  "categories": "rpc10",
-  "products": "Wine",
-  "services": "rss7",
-  "how_to_buy": "Online store, onsite cellar door, wine stores (nationally)",
-  "size": "74 acres",
-  "results": "Increased biodiversity above and below ground|*|Worm population increasing|*|Vine growth balance changing/improving|*|Improved fruit and wine quality",
-  "quote": "Regenerative Agriculture means farming in concert with the land to build a healthy ecosystem.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/CC_Logo_FullColor.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/CC_Logo_FullColor-300x171.png",
-  "category_codes": [
-    "rpc10"
-  ],
-  "service_codes": [
-    "rss7"
-  ],
-  "category_names": [
-    "rpc10"
-  ],
-  "service_names": [
-    "rss7"
-  ],
-  "category_names_str": "rpc10",
-  "service_names_str": "rss7"
+  "email": "sigurdur50@gmail.com",
+  "phone": "2043082338",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/signal-ranch/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

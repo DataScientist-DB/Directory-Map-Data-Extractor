@@ -1,0 +1,146 @@
+{
+  "title": "Directory Listing Extractor - Input",
+  "description": "Configure directory/map extraction from embedded JS objects or DOM listings.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "mode": {
+      "title": "Mode",
+      "description": "Extraction mode. Use embedded_js for JS-embedded listing objects. Use dom for HTML listing cards.",
+      "type": "string",
+      "default": "embedded_js",
+      "editor": "select",
+      "enum": ["embedded_js", "dom"]
+    },
+    "startUrls": {
+      "title": "Start URLs",
+      "description": "One or more directory/map pages to crawl.",
+      "type": "array",
+      "editor": "requestListSources",
+      "default": [{ "url": "https://regenerationcanada.org/en/map/" }]
+    },
+    "maxListings": {
+      "title": "Max listings",
+      "description": "Safety cap for number of dataset items produced.",
+      "type": "integer",
+      "default": 500,
+      "minimum": 1,
+      "maximum": 50000
+    },
+    "maxPages": {
+      "title": "Max pages",
+      "description": "Safety cap for number of pages visited.",
+      "type": "integer",
+      "default": 1,
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "debug": {
+      "title": "Debug logging",
+      "description": "Print verbose logs for troubleshooting (responses, taxonomy detection, counts).",
+      "type": "boolean",
+      "default": false
+    },
+    "outputCsv": {
+      "title": "Export CSV",
+      "description": "Generate output.csv in the run output (in addition to dataset).",
+      "type": "boolean",
+      "default": true
+    },
+    "outputXlsx": {
+      "title": "Export XLSX",
+      "description": "Generate output.xlsx in the run output (in addition to dataset).",
+      "type": "boolean",
+      "default": true
+    },
+    "outputColumnsMode": {
+      "title": "Output columns mode",
+      "description": "default = core columns only, all = includes extra fields (address, quote, logo, etc.).",
+      "type": "string",
+      "default": "default",
+      "editor": "select",
+      "enum": ["default", "all"]
+    },
+    "outputBaseName": {
+      "title": "Output base name",
+      "description": "Base name for exported files (without extension).",
+      "type": "string",
+      "default": "output",
+      "editor": "textfield"
+    },
+    "embedded": {
+      "title": "Embedded extraction",
+      "description": "Controls extraction of embedded JSON/LD data and mapping to output fields.",
+      "type": "object",
+      "editor": "json",
+      "default": {
+        "enabled": true,
+        "preferJsonLd": true,
+        "fieldMap": {
+          "name": "entity_name",
+          "loc": "location",
+          "address": "address",
+          "lat": "lat",
+          "lng": "lng",
+          "email": "email",
+          "tel": "phone",
+          "website": "website",
+          "pageURL": "profile_url",
+          "categories": "categories",
+          "products": "products",
+          "services": "services",
+          "buy": "how_to_buy",
+          "size": "size",
+          "results": "results",
+          "quote": "quote",
+          "logo": "logo",
+          "logoMedium": "logo_medium"
+        }
+      },
+      "properties": {
+        "enabled": {
+          "title": "Enable embedded extraction",
+          "description": "If true, the Actor will try to extract embedded JSON/LD data (e.g., JSON-LD, script tags) and map it using fieldMap.",
+          "type": "boolean",
+          "default": true
+        },
+        "preferJsonLd": {
+          "title": "Prefer JSON-LD",
+          "description": "If true, prefer schema.org JSON-LD blocks when multiple embedded formats are present.",
+          "type": "boolean",
+          "default": true
+        },
+        "fieldMap": {
+          "title": "Field map",
+          "description": "Map raw embedded keys to your output field names. Keys are source keys, values are output fields.",
+          "type": "object",
+          "editor": "json",
+          "default": {
+            "name": "entity_name",
+            "loc": "location",
+            "address": "address",
+            "lat": "lat",
+            "lng": "lng",
+            "email": "email",
+            "tel": "phone",
+            "website": "website",
+            "pageURL": "profile_url",
+            "categories": "categories",
+            "products": "products",
+            "services": "services",
+            "buy": "how_to_buy",
+            "size": "size",
+            "results": "results",
+            "quote": "quote",
+            "logo": "logo",
+            "logoMedium": "logo_medium"
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": ["mode", "startUrls"],
+  "additionalProperties": true
+}

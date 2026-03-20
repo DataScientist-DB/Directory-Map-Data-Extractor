@@ -1,43 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "La Ferme Végétale",
-  "location": "labrecque, Quebec",
-  "address": "4700 9e rang ouest, labrecque, Quebec, G0W 1Y0",
+  "entity_name": "Deer Meadow Farmacy",
+  "location": "Oak Lake, Manitoba",
+  "address": "139113 Road 51 North, P.O. Box 151, Oak Lake, Manitoba, R0M 1P0",
   "lat": null,
   "lng": null,
-  "email": "lafermevegetale@hotmail.com",
-  "phone": "4186906001",
-  "website": "lafermevegetale.ca",
-  "profile_url": "https://regenerationcanada.org/en/la-ferme-vegetale/",
-  "categories": "rpc5, rpc7, rpc13",
-  "products": "Honey, honeyberry, garlic",
-  "services": "rss1, rss5, rss10",
-  "how_to_buy": "<a href=\\'https://www.facebook.com/LaFermeVegetale\\' target=\\'_blank\\'> Send him a message on Facebook</a>",
-  "size": "22 acres",
-  "results": "We use Living Soil Farming methods. This means no tilling of the soil and feeding the soil to feed the plant, increase in pollinator trees, avoiding pesticides, insecticides, etc.|*|We\\'re gradualy creating flowerbeds, indigenous windbreaks and places for birds, etc. We have a large wetland area that we want to keep as is. Peat bog.|*|*To learn more about what they do, &lt;a href=\\'https://www.lafermevegetale.ca/blog\\' target=\\'_blank\\'&gt;check out their blog&lt;/a&gt; (French only). They publish a monthly article on topics related to regenerative agrictulture.",
-  "quote": "Everything. Soils can do so much: preserve biodiversity, helpe climate change and preserving our fertile lands",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/logo_final_pour_video-removebg-.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo_final_pour_video-removebg-.png",
-  "category_codes": [
-    "rpc5",
-    "rpc7",
-    "rpc13"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss5",
-    "rss10"
-  ],
-  "category_names": [
-    "rpc5",
-    "rpc7",
-    "rpc13"
-  ],
-  "service_names": [
-    "rss1",
-    "rss5",
-    "rss10"
-  ],
-  "category_names_str": "rpc5; rpc7; rpc13",
-  "service_names_str": "rss1; rss5; rss10"
+  "email": "farmfamily@deermeadowfarmacy.com",
+  "phone": "(204) 851-5459",
+  "website": "deermeadowfarmacy.com",
+  "profile_url": "https://regenerationcanada.org/en/deer-meadow-farmacy/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Deer-MeadowFarms.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Deer-MeadowFarms-1000x600.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

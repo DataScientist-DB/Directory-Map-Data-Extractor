@@ -1,35 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Ferme Desrosiers",
-  "location": "St-Albert, Ontario",
-  "address": "1976 Route 600 West, St-Albert, Ontario, K0A 3C0",
+  "entity_name": "Hazy Hollow Acres",
+  "location": "Picture Butte, AB",
+  "address": "P.O. Box 946, Picture Butte, AB, T0K1V0",
   "lat": null,
   "lng": null,
-  "email": "info@dtalign.ca",
-  "phone": "613-443-3072",
-  "website": "",
-  "profile_url": "https://regenerationcanada.org/en/ferme-desrosiers/",
-  "categories": "rpc3",
-  "products": "organic soybeans, organic corn, organic winter wheat, organic spring wheat",
-  "services": "rss6",
-  "how_to_buy": "Contact us",
-  "size": "1000 acres",
-  "results": "We see more wild life and our soil structure is much better and healthier, Horizon a is thicker.",
-  "quote": "Regenerative agriculture is a way to build the health of the soil — and ultimately entire farms by tapping into nature\\'s natural processes. Learning to work with nature, rather than against it, will benefit us all in the end: the soil, water, air, plants, animals and people.",
+  "email": "teresavdha@gmail.com",
+  "phone": "4033080010",
+  "website": "hazyhollowacres.weebly.com",
+  "profile_url": "https://regenerationcanada.org/en/hazy-hollow-acres/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
   "logo": "",
   "logo_medium": "",
-  "category_codes": [
-    "rpc3"
-  ],
-  "service_codes": [
-    "rss6"
-  ],
-  "category_names": [
-    "rpc3"
-  ],
-  "service_names": [
-    "rss6"
-  ],
-  "category_names_str": "rpc3",
-  "service_names_str": "rss6"
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

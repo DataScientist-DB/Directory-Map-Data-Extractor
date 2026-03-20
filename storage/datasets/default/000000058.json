@@ -1,45 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Richards Family Farm and Livestock Ltd.",
-  "location": "Bangor, SK",
-  "address": "Box 84, Bangor, SK, S0A 0Eo",
+  "entity_name": "St. Brigid\\'s Creamery Ltd.",
+  "location": "Brussels, Ontario",
+  "address": "42352 Brandon Rd., Brussels, Ontario, N0G 1H0",
   "lat": null,
   "lng": null,
-  "email": "glrichards@sasktel.net",
-  "phone": "3067285864",
-  "website": "wholefarmmarket.com",
-  "profile_url": "https://regenerationcanada.org/en/richards-family-farm-and-livestock-ltd/",
-  "categories": "rpc1, rpc3, rpc4",
-  "products": "beef cattle, grass-finished beef, forage-based cattle genetics, forage grain seed, carbon negative regenerative grain, consulting",
-  "services": "rss1, rss6, rss7, rss9",
-  "how_to_buy": "Our grass-fed beef is marketed through wholefarmmarket.com",
-  "size": "5000 acres",
-  "results": "Soil organic matter increases by up to 50%|*|Much more animal diversity and numbers above and below the ground.|*|Healthier water and nutrient cycles",
-  "quote": "Regenerating farmers, consumers, communities, ecosystems, and the business of farming together, one farm at a time.",
-  "logo": "",
-  "logo_medium": "",
-  "category_codes": [
-    "rpc1",
-    "rpc3",
-    "rpc4"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc3",
-    "rpc4"
-  ],
-  "service_names": [
-    "rss1",
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names_str": "rpc1; rpc3; rpc4",
-  "service_names_str": "rss1; rss6; rss7; rss9"
+  "email": "info@stbrigidscreamery.ca",
+  "phone": "",
+  "website": "stbrigidscreamery.ca",
+  "profile_url": "https://regenerationcanada.org/en/st-brigids-creamery-ltd/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/StBrigids_Primary_ColourRGB.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/StBrigids_Primary_ColourRGB-300x95.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

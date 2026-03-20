@@ -1,39 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Heidi’s Peak Estate Vineyard Limited",
-  "location": "Okanagan Falls, BC",
-  "address": "2140 Sun Valley Way, Okanagan Falls, BC, V0H1R2",
+  "entity_name": "Ferme Rustique",
+  "location": "Sainte-Croix, Québec",
+  "address": "4553 4e Rang Ouest, Sainte-Croix, Québec, G0S 2H0",
   "lat": null,
   "lng": null,
-  "email": "heidichristine@outlook.com",
-  "phone": "5198818372",
-  "website": "www.heidisvineyard.com",
-  "profile_url": "https://regenerationcanada.org/en/heidis-peak-estate-vineyard-limited/",
-  "categories": "rpc10",
-  "products": "Wine grapes",
-  "services": "rss4, rss6, rss8",
-  "how_to_buy": "I sell to a local winery where my wine grapes are offered to the public.",
-  "size": "7.5 acres",
-  "results": "With the application of compost to the vineyard, the organic matter has increased by 0.5% and reduced the pH level from 8.2 to 7.5, therefore increasing nutrient uptake by the vines.|*|I have mounted bluebird nest boxes to attract Western bluebird populations to the vineyard.",
-  "quote": "Regenerative agriculture means looking after the soil (no tillage, compost application, cover crops), encouraging biodiversity (habitat steward and pollinator partner) and minimal reduced irrigation to conserve water.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Logo.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Logo-300x150.jpg",
-  "category_codes": [
-    "rpc10"
-  ],
-  "service_codes": [
-    "rss4",
-    "rss6",
-    "rss8"
-  ],
-  "category_names": [
-    "rpc10"
-  ],
-  "service_names": [
-    "rss4",
-    "rss6",
-    "rss8"
-  ],
-  "category_names_str": "rpc10",
-  "service_names_str": "rss4; rss6; rss8"
+  "email": "fermerustique@hotmail.com",
+  "phone": "4189300390 ",
+  "website": "fermerustique.com",
+  "profile_url": "https://regenerationcanada.org/en/ferme-rustique/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Screenshot_20221024_084714.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Screenshot_20221024_084714-300x226.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

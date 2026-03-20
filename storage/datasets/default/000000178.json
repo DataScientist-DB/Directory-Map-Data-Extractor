@@ -1,45 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Green Beach Farm and Food",
-  "location": "Strathclair , Manitoba",
-  "address": "Box 57, Strathclair , Manitoba, R0J 2C0",
+  "entity_name": "Coen Farm",
+  "location": "Ferintosh, AB",
+  "address": "Box 165, Ferintosh, AB, T0B 1M0",
   "lat": null,
   "lng": null,
-  "email": "greenbeachfarm@gmail.com",
-  "phone": "204-365-6358",
-  "website": "greenbeachfarm.com",
-  "profile_url": "https://regenerationcanada.org/en/green-beach-farm-and-food/",
-  "categories": "rpc1, rpc2, rpc3",
-  "products": "Grass-finished Beef, Forest-raised pork, pastured chickens, pastured eggs, certified organic small grains, certified organic chicken feed .",
-  "services": "rss5, rss6, rss7, rss9",
-  "how_to_buy": "Direct from farm. (<a href=\\'http://greenbeachfarm.com\\' target=\\'_blank\\'>greenbeachfarm.com</a>)",
-  "size": "750 acres",
-  "results": "Improved forage diversity|*|Increased wildlife presence|*|Improved water infiltration |*|Healthier livestock |*|Enhanced soil biological activity (Haney test &amp;amp; PLFA)|*|Increase in forage yields|*|Longer grazing season with cattle",
-  "quote": "Regenerative agriculture is an approach to farming &amp; food production that restores soil and agroecosystem function, and has the ability to revive our rural communities.",
-  "logo": "",
-  "logo_medium": "",
-  "category_codes": [
-    "rpc1",
-    "rpc2",
-    "rpc3"
-  ],
-  "service_codes": [
-    "rss5",
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc2",
-    "rpc3"
-  ],
-  "service_names": [
-    "rss5",
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names_str": "rpc1; rpc2; rpc3",
-  "service_names_str": "rss5; rss6; rss7; rss9"
+  "email": "",
+  "phone": "",
+  "website": "www.coenfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/coen-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/COEN-FARM-ALL-LOGO-FILES_COEN-NAME-ONLY-B.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/COEN-FARM-ALL-LOGO-FILES_COEN-NAME-ONLY-B-300x94.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

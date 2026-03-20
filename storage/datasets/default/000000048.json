@@ -1,37 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Aliksir",
-  "location": "Grondines, QC",
-  "address": "1040 Chemin du Roy, Grondines, QC, G0A 1W0",
+  "entity_name": "Just Food Community Farm",
+  "location": "Gloucester, Ontario",
+  "address": "2391 Pepin Court, Gloucester, Ontario, K1B 4Z3",
   "lat": null,
   "lng": null,
-  "email": "lucie.mainguy@aliksir.com",
-  "phone": "(418)268-3406",
-  "website": "aliksir.com",
-  "profile_url": "https://regenerationcanada.org/en/aliksir/",
-  "categories": "rpc100",
-  "products": "Essential oils and derived products",
-  "services": "rss1, rss7",
-  "how_to_buy": "At one of our two stores and on our website. We also do export sales of regional specialties.",
-  "size": "72 acres",
-  "results": "a clay soil became rich and organic: 40 years of organic matter return to the soil|*|full of birds, full of earthworms, deer, turkeys, ducks",
-  "quote": "Regenerative agriculture represents the survival and happiness of humanity. It\\'s not the lack of toxins, it\\'s the presence of life.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/LOGOaliksir2.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/LOGOaliksir2-300x127.jpg",
-  "category_codes": [
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss7"
-  ],
-  "category_names": [
-    "rpc100"
-  ],
-  "service_names": [
-    "rss1",
-    "rss7"
-  ],
-  "category_names_str": "rpc100",
-  "service_names_str": "rss1; rss7"
+  "email": "info@justfood.ca",
+  "phone": "613-824-7771",
+  "website": "justfood.ca",
+  "profile_url": "https://regenerationcanada.org/en/just-food-community-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Logo-Just-Food-colour-bilingual.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Logo-Just-Food-colour-bilingual-1000x293.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

@@ -1,39 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Benjamin Bridge",
-  "location": "Gaspereau, Nova Scotia",
-  "address": "1966 White Rock Road, Gaspereau, Nova Scotia, B4P2R1",
+  "entity_name": "The Knotted Willow Farm and Nursery",
+  "location": "Muirkirk, Ontario",
+  "address": "14559 Talbot Line, Muirkirk, Ontario, N0L1X0",
   "lat": null,
   "lng": null,
-  "email": "wines@benjaminbridge.com",
-  "phone": "1-902-542-1560",
-  "website": "benjaminbridge.com",
-  "profile_url": "https://regenerationcanada.org/en/benjamin-bridge/",
-  "categories": "rpc10",
-  "products": "wine, wine experiences, tours and tastings",
-  "services": "rss6, rss7, rss9",
-  "how_to_buy": "Via our online shop at benjaminbridge.com, in person at our wine shop in the Gaspereau Valley, and through retailers across Canada (listed under stockists on our website).",
-  "size": "100",
-  "results": "Increased diversity of wildlife throughout the farm.|*|Increased soil structure protection. |*|Increased biodiversity in riparian buffer areas.|*|Soil biology diversity is higher. |*|Apiary is thriving on both perennial pollinator garden, cover crops, and wild foliage.",
-  "quote": "Regenerative agriculture is an intuitive, inclusive methodology for sustainably stewarding productive land. Our top priority is improving soil health in the holistic context of the ecological system, and guides all other practices, including our collaborative, collective-style work environment.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Circular-BB-logo.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Circular-BB-logo-295x300.png",
-  "category_codes": [
-    "rpc10"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names": [
-    "rpc10"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names_str": "rpc10",
-  "service_names_str": "rss6; rss7; rss9"
+  "email": "aguyitt@gmail.com",
+  "phone": "519-702-7304",
+  "website": "theknottedwillowfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/knotted-willow-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/the-knotted-Willow-jpef.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/the-knotted-Willow-jpef-300x158.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

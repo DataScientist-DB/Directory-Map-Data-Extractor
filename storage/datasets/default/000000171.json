@@ -1,41 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Lightfoot & Wolfville Vineyards",
-  "location": "Wolfville, Nova Scotia",
-  "address": "11143 Evangeline Trail, Wolfville, Nova Scotia, B4P 2R1",
+  "entity_name": "Blue Sky Beef",
+  "location": "Arthur, Ontario",
+  "address": "8648 Highway 6, Arthur, Ontario, N0G 1A0",
   "lat": null,
   "lng": null,
-  "email": "info@lightfootandwolfville.com",
-  "phone": "902-542-7774",
-  "website": "lightfootandwolfville.com",
-  "profile_url": "https://regenerationcanada.org/en/lightfoot-wolfville-vineyards/",
-  "categories": "rpc10",
-  "products": "wine, wine grapes",
-  "services": "rss1, rss6, rss7, rss9",
-  "how_to_buy": "https://lightfootandwolfville.com/ , through our farm-winery store at 11143 Evangeline Trail, Wolfville NS, at the NSLC https://www.mynslc.com/",
-  "size": "40 acres",
-  "results": "Return of wildlife - birds. snakes, deer|*|Improved soil health - texture, minimal compaction|*|Product quality - even ripeness and flavour development",
-  "quote": "We see regenerative agriculture as an essential and responsible way forward that is not only better for the environment but also better for product quality. Living soils grow healthy, balanced vines that bear better quality fruit, and, ultimately, wines that convey the purest spirit of place. It is of utmost importance to us to leave our land to future generations in a healthier state, our soils enriched and free from chemicals.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/LightfootWolfville_LOGO.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/LightfootWolfville_LOGO-300x118.png",
-  "category_codes": [
-    "rpc10"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names": [
-    "rpc10"
-  ],
-  "service_names": [
-    "rss1",
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names_str": "rpc10",
-  "service_names_str": "rss1; rss6; rss7; rss9"
+  "email": "jwecraig@gmail.com",
+  "phone": " 519-831-2445",
+  "website": "",
+  "profile_url": "https://regenerationcanada.org/en/blue-sky-beef/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/IMG_6104.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/IMG_6104-300x300.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

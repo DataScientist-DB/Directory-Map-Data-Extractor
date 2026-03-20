@@ -1,41 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Wilderland Botanicals",
-  "location": "Whitehorse, Yukon",
-  "address": "53A Linville Road, 10495, Whitehorse, Yukon, Y1A 7A1",
+  "entity_name": "Tawse Family Vineyards",
+  "location": "Vineland, Ontario",
+  "address": "3955 Cherry Ave, Vineland, Ontario, L0R 2C0",
   "lat": null,
   "lng": null,
-  "email": "info@wilderlandbotanicals.com",
-  "phone": "867-993-3698",
-  "website": "wilderlandbotanicals.com",
-  "profile_url": "https://regenerationcanada.org/en/wilderland-botanicals/",
-  "categories": "rpc11, rpc15, rpc100",
-  "products": "Rhodiola rosea, Calendula, Camomile, Arnica, Stinging Nettle, Oat Straw, Yarrow, Tinctures, Wet and Dried Roots, Biochar, Compost",
-  "services": "rss6, rss7",
-  "how_to_buy": "Online and on the farm in person",
-  "size": "7.4 acres",
-  "results": "Abundance of pollinators and beneficial insects|*|Minimal crop damage due to pests or disease|*|Rich biodiversity |*|No water run off|*|Highly stable and strong soil structure |*|No soil erosion and minimal compaction|*|Premium quality crops|*|Strong yields|*|Our farm is raw and rugged, full of natural abundance and awe-inspiring beauty!",
-  "quote": "Regenerative agriculture means farmers have agency in nourishing humanity and reversing climate change. It doesn\\'t get any cooler than that!",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Wilderland_Primary_Green.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Wilderland_Primary_Green-300x232.png",
-  "category_codes": [
-    "rpc11",
-    "rpc15",
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7"
-  ],
-  "category_names": [
-    "rpc11",
-    "rpc15",
-    "rpc100"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7"
-  ],
-  "category_names_str": "rpc11; rpc15; rpc100",
-  "service_names_str": "rss6; rss7"
+  "email": "info@tawsewinery.ca",
+  "phone": "9055629500",
+  "website": "tawsewinery.ca",
+  "profile_url": "https://regenerationcanada.org/en/tawse-family-vineyards/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/TAWSE-WINERY-2023-ENGRAV-STACK.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/TAWSE-WINERY-2023-ENGRAV-STACK-1000x980.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

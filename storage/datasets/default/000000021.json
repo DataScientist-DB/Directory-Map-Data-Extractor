@@ -1,45 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Field Good Farms / La ferme j\\'me champ bien",
-  "location": "Cache Bay, Ontario",
-  "address": "1345 Levac Road, Cache Bay, Ontario, P0H 1G0",
+  "entity_name": "Hayfield Farm",
+  "location": "Saint-Armand, Québec",
+  "address": "377 chemin Dutch, Saint-Armand, Québec, J0J 1T0",
   "lat": null,
   "lng": null,
-  "email": "info@fieldgoodfarms.ca",
-  "phone": "7059781664",
-  "website": "fieldgoodfarms.ca",
-  "profile_url": "https://regenerationcanada.org/en/field-good-farms-la-ferme-jme-champ-bien/",
-  "categories": "rpc5, rpc8, rpc100",
-  "products": "Vegetables, Herbal Teas, Berries",
-  "services": "rss6, rss8, rss9, rss10",
-  "how_to_buy": "CSA baskets, Click Fork Online Farmers\\' Market, Local grocers",
-  "size": "5 acres",
-  "results": "Soil organic matter increase of 0.5%/year|*|Species at risk return including bobolinks, tree swallows and barn swallows.",
-  "quote": "Using agricultural practices that increase biodiversity, improve biome health indicators such as water and soil quality, produce healthy foods, reduce/eliminate waste, and an understanding that working toward a healthy farm biome will be of great benefit for all beings.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/FGF-Logo-Trnsprnt.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/FGF-Logo-Trnsprnt-300x300.jpg",
-  "category_codes": [
-    "rpc5",
-    "rpc8",
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss8",
-    "rss9",
-    "rss10"
-  ],
-  "category_names": [
-    "rpc5",
-    "rpc8",
-    "rpc100"
-  ],
-  "service_names": [
-    "rss6",
-    "rss8",
-    "rss9",
-    "rss10"
-  ],
-  "category_names_str": "rpc5; rpc8; rpc100",
-  "service_names_str": "rss6; rss8; rss9; rss10"
+  "email": "",
+  "phone": "",
+  "website": "hayfieldfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/hayfield-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/red-chicken.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/red-chicken-1000x1000.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

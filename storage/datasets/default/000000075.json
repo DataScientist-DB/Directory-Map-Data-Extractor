@@ -1,45 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Leaf & Lyre Urban Farms",
-  "location": "Calgary, AB, CA",
-  "address": "4607 81 St NW, Calgary, Alberta, T3B 2P5, Canada",
+  "entity_name": "Hodgins Farm",
+  "location": "Lenore, Manitoba",
+  "address": "Box 925, Lenore, Manitoba, R0M 1E0",
   "lat": null,
   "lng": null,
-  "email": "rod.olson@gmail.com",
-  "phone": "403-703-3217",
-  "website": "leafandlyre.net",
-  "profile_url": "https://regenerationcanada.org/en/leaf-lyre-urban-farms/",
-  "categories": " rpc5",
-  "products": "Kale, Sunchokes, Beets, Zucchini, Cabbage, Preserves, Radicchio",
-  "services": "rss1, rss6, rss7, rss8, rss9, rss10",
-  "how_to_buy": "Directly or through YYC Growers and Distributors Cooperative Inc (I am one of the 15 farmer owners). We offer a weekly harvest box all year round in Calgary.",
-  "size": "5 acres",
-  "results": "Compacted heavy clay soil loosened|*| Greater pest resistance (grey aphids on kale)|*| Better emotional connection to the living ecosystem|*| Improvements (more volume of growth) with companion planting",
-  "quote": "The soil is our greatest teacher and guide and as such she must have a prominent seat at the table where any decisions are made. Giving voice to the soil means that we can share the burdens of the ecosystem while continually be amazed by soil\\'s grace and generosity on the path for wellness for all.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/New-Logo.JPG",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/New-Logo-300x290.jpg",
-  "category_codes": [
-    "rpc5"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss6",
-    "rss7",
-    "rss8",
-    "rss9",
-    "rss10"
-  ],
-  "category_names": [
-    "rpc5"
-  ],
-  "service_names": [
-    "rss1",
-    "rss6",
-    "rss7",
-    "rss8",
-    "rss9",
-    "rss10"
-  ],
-  "category_names_str": "rpc5",
-  "service_names_str": "rss1; rss6; rss7; rss8; rss9; rss10"
+  "email": "hodgins_lisa@hotmail.com",
+  "phone": "204-838-2285",
+  "website": "https://www.hodginsfarm.com/",
+  "profile_url": "https://regenerationcanada.org/en/hodgins-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo-hodginsfarm-lrg1.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo-hodginsfarm-lrg1-300x300.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

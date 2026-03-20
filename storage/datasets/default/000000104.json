@@ -1,43 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Vallée Des Prairies",
-  "location": "St-François-de-la-Rivière-du-Sud, Québec",
-  "address": "99 chemin Aqueduc, St-François-de-la-Rivière-du-Sud, Québec, G0R 3A0",
+  "entity_name": "Persephone Garden Market",
+  "location": "Allenford, ON",
+  "address": "241063 Conc 3 Keppel, R.R. # 3, Allenford, ON, N0H 1A0",
   "lat": null,
   "lng": null,
-  "email": "bio@valleedesprairies.com",
-  "phone": "418-809-7763",
-  "website": "www.valleedesprairies.com",
-  "profile_url": "https://regenerationcanada.org/en/vallee-des-prairies/",
-  "categories": "rpc3, rpc5",
-  "products": "Vegetables, Buckwheat, Teff",
-  "services": "rss6, rss7, rss8, rss11",
-  "how_to_buy": "Organic basket, website, Québec local markets, local online market La chèvre et le choux, at the farm.",
-  "size": "100 acres",
-  "results": "More earthworms in the soil",
-  "quote": "Regenerative agriculture means respect for life, harmony with the earth, and the vitality of the soil, crops, animals and people.",
-  "logo": "",
-  "logo_medium": "",
-  "category_codes": [
-    "rpc3",
-    "rpc5"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7",
-    "rss8",
-    "rss11"
-  ],
-  "category_names": [
-    "rpc3",
-    "rpc5"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7",
-    "rss8",
-    "rss11"
-  ],
-  "category_names_str": "rpc3; rpc5",
-  "service_names_str": "rss6; rss7; rss8; rss11"
+  "email": "kristine@persephonedays.ca",
+  "phone": "519-935-3005",
+  "website": "https://www.persephonemarketgarden.ca/",
+  "profile_url": "https://regenerationcanada.org/en/persephone-market-garden/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Persphone-Logo-Vector.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Persphone-Logo-Vector.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

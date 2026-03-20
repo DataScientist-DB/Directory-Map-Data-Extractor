@@ -1,37 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Wildwood Flowr",
-  "location": "Westcock, NB",
-  "address": "102A Route 935, Westcock, NB, E4L 2E7",
+  "entity_name": "Pépinière du bocage",
+  "location": "Frelighsburg, Québec",
+  "address": "33 chemin de Dunham, Frelighsburg, Québec, J0J1C0",
   "lat": null,
   "lng": null,
-  "email": "av@fs-cannabis.com",
-  "phone": "+1 902 698 0454",
-  "website": "",
-  "profile_url": "https://regenerationcanada.org/en/wildwood-flowr/",
-  "categories": "rpc100",
-  "products": "Cannabis",
-  "services": "rss1, rss6",
-  "how_to_buy": "Eventually through licensed cannabis retailers",
-  "size": "0.25 acres",
-  "results": "Increased plant productivity while reducing our external inputs. Visual increase in beneficial insects and balanced breakdown of organic matter",
-  "quote": "Regenerative agriculture requires a deep understanding that humans aren\\'t stewards of nature but we are nature and that our agricultural practices must reflect that interconnectivity.",
-  "logo": "",
-  "logo_medium": "",
-  "category_codes": [
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss6"
-  ],
-  "category_names": [
-    "rpc100"
-  ],
-  "service_names": [
-    "rss1",
-    "rss6"
-  ],
-  "category_names_str": "rpc100",
-  "service_names_str": "rss1; rss6"
+  "email": "info@bocage.eco",
+  "phone": "4389881418",
+  "website": "bocage.eco",
+  "profile_url": "https://regenerationcanada.org/en/pepiniere-du-bocage/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo_final.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo_final-1000x727.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

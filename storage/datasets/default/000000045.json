@@ -1,39 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "La Fermette",
-  "location": "Hemmingford, Quebec",
-  "address": "146 ch de Covey Hill, Hemmingford, Quebec, J0L1H0",
+  "entity_name": "Ferme Au Bon Vieux Temps",
+  "location": "Cap-Santé, Québec",
+  "address": "112 rue Gauthier, Cap-Santé, Québec, G0A1L0",
   "lat": null,
   "lng": null,
-  "email": "info@lafermette.ca",
-  "phone": "514-799-7188",
-  "website": "lafermette.ca",
-  "profile_url": "https://regenerationcanada.org/en/la-fermette/",
-  "categories": "rpc2, rpc5",
-  "products": "Tomatoes, cucumbers, peppers, eggplant, beans, mesclun, lettuce, carrots, radishes, turnips, peas, beets, onions, green onions, herbs, celery, zucchini, eggs, +++",
-  "services": "rss1, rss9",
-  "how_to_buy": "At the Marché Fermier des Éclusiers and via the sales platform: marcheatable.com/lafermette",
-  "size": "1.5 acres",
-  "results": "Observations of a greater quantity and diversity of birds, insects, amphibians",
-  "quote": "Regenerative agriculture is an approach to farming that seeks to give as much or more than it takes and contributes to the preservation of the life of the soil, our waterways, our environment and our community.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Fermette-Logo-2.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Fermette-Logo-2-1000x723.png",
-  "category_codes": [
-    "rpc2",
-    "rpc5"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss9"
-  ],
-  "category_names": [
-    "rpc2",
-    "rpc5"
-  ],
-  "service_names": [
-    "rss1",
-    "rss9"
-  ],
-  "category_names_str": "rpc2; rpc5",
-  "service_names_str": "rss1; rss9"
+  "email": "panier.capsante@gmail.com",
+  "phone": "",
+  "website": "facebook.com/panier.capsante",
+  "profile_url": "https://regenerationcanada.org/en/ferme-au-bon-vieux-temps/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/received_901358181573718.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/received_901358181573718.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

@@ -1,43 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Persephone Brewing Company Farm",
-  "location": "Gibsons, BC",
-  "address": "1053 Stewart Road, Gibsons, BC, V0N 1V7",
+  "entity_name": "Divine Colour Acres",
+  "location": "Almonte, ON",
+  "address": "1178 Upper Perth Rd, Almonte, ON, K0A 1A0",
   "lat": null,
   "lng": null,
-  "email": "brian@thebeerfarm.ca",
-  "phone": "7784623007",
-  "website": "https://www.persephonebrewing.com/our-farm",
-  "profile_url": "https://regenerationcanada.org/en/persephone-brewing-company/",
-  "categories": "rpc2, rpc5, rpc7, rpc8, rpc15",
-  "products": "Raspberries, Apples, Greens, Blueberries",
-  "services": "rss7",
-  "how_to_buy": "PBC Farm is open to visitors year-round.",
-  "size": "9 acres",
-  "results": "Abundance of pollinators, birds and other wildlife - sometimes too much!",
-  "quote": "Regenerative agriculture is the land and all that it produces is part of our community, as critical as any other component.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Persephone-Logo-SmallNoTexture-2C-BlackRed1795C-POS-RGB-copy.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Persephone-Logo-SmallNoTexture-2C-BlackRed1795C-POS-RGB-copy-300x215.jpg",
-  "category_codes": [
-    "rpc2",
-    "rpc5",
-    "rpc7",
-    "rpc8",
-    "rpc15"
-  ],
-  "service_codes": [
-    "rss7"
-  ],
-  "category_names": [
-    "rpc2",
-    "rpc5",
-    "rpc7",
-    "rpc8",
-    "rpc15"
-  ],
-  "service_names": [
-    "rss7"
-  ],
-  "category_names_str": "rpc2; rpc5; rpc7; rpc8; rpc15",
-  "service_names_str": "rss7"
+  "email": "divinecolouracres@gmail.com",
+  "phone": "",
+  "website": "https://www.divinecolouracres.ca/",
+  "profile_url": "https://regenerationcanada.org/en/divine-colour-acres/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/divine-colour-acres_5vvm8hYYyodY_0.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/divine-colour-acres_5vvm8hYYyodY_0.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

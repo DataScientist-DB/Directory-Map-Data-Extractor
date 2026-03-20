@@ -1,39 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Howpark Farms",
-  "location": "Brandon, Manitoba",
-  "address": "R.R. #4 Box 25, Brandon, Manitoba, R7A 5Y4",
+  "entity_name": "Cold Springs Organics",
+  "location": "Campbellcroft, Ontario",
+  "address": "8869 Spruce Grove Road, Campbellcroft, Ontario, L0A1B0",
   "lat": null,
   "lng": null,
-  "email": "info@howpark.ca",
-  "phone": "204-725-1006",
-  "website": "www.howpark.ca",
-  "profile_url": "https://regenerationcanada.org/en/howpark-farms/",
-  "categories": "rpc1, rpc3",
-  "products": "Grass-fed Organic Beef, Pasture Pork, Pasture Chickens, Organic Flax, Organic Wheat, Organic Barley",
-  "services": "rss6, rss7",
-  "how_to_buy": "Through our online store on our website",
-  "size": "2000 acres",
-  "results": "Increased pasture production|*|Native species conservation and return|*|Greater water infiltration|*|More birds due to native pasture and regen practices|*|Higher organic matter",
-  "quote": "Regenerative agriculture involves increasing soil and ecosystem health to provide nutrient-dense food.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/howpark-logo.jpeg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/howpark-logo-300x300.jpeg",
-  "category_codes": [
-    "rpc1",
-    "rpc3"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc3"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7"
-  ],
-  "category_names_str": "rpc1; rpc3",
-  "service_names_str": "rss6; rss7"
+  "email": "coldspringsorganics@gmail.com",
+  "phone": "4162099196",
+  "website": "coldspringsorganics.com",
+  "profile_url": "https://regenerationcanada.org/en/cold-springs-organics/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Profile-Picture-from-Email.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Profile-Picture-from-Email-1000x1000.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

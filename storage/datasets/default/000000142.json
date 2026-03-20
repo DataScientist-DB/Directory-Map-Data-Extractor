@@ -1,37 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Cicada Seeds",
-  "location": "Errington, British Columbia",
-  "address": "1671 McKibben Road, Errington, British Columbia, V0R 1V0",
+  "entity_name": "Organics Farm",
+  "location": "Markham, Ontario",
+  "address": "7550 19th Ave, Markham, Ontario, L6B 1A8",
   "lat": null,
   "lng": null,
-  "email": "cicadaseeds@gmail.com",
-  "phone": "",
-  "website": "cicadaseeds.ca",
-  "profile_url": "https://regenerationcanada.org/en/cicada-seeds/",
-  "categories": "rpc12, rpc100",
-  "products": "Perennial vegetable seeds, seeds, flower seeds, herb seeds, plant starts",
-  "services": "rss1",
-  "how_to_buy": "Online and at Seedy Saturday events in the spring",
-  "size": "1 acres",
-  "results": "The return of endangered pollinator species|*|Increased soil organic matter|*|Increased soil water holding capacity",
-  "quote": "Growing the capacity of the land to support humans and wildlife",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Cicada-Seeds-Cicada-Only.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Cicada-Seeds-Cicada-Only-1000x1000.jpg",
-  "category_codes": [
-    "rpc12",
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss1"
-  ],
-  "category_names": [
-    "rpc12",
-    "rpc100"
-  ],
-  "service_names": [
-    "rss1"
-  ],
-  "category_names_str": "rpc12; rpc100",
-  "service_names_str": "rss1"
+  "email": "info@organicsfarm.ca",
+  "phone": "905-640-5206",
+  "website": "www.organicsfarm.ca",
+  "profile_url": "https://regenerationcanada.org/en/organics-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Organics_Logo-pdf.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Organics_Logo-pdf-300x232.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

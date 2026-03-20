@@ -1,43 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "What the Hill Farm",
-  "location": "Kakabeka Falls, ON",
-  "address": "6260 Hwy 11 & 17, Kakabeka Falls, ON, P0T 1W0",
+  "entity_name": "Snowy Mountain Farm",
+  "location": "Cawston, British Columbia",
+  "address": "1050 Chopaka Road, Cawston, BC, V0X1C3",
   "lat": null,
   "lng": null,
-  "email": "info@whatthehillfarm.ca",
-  "phone": "8076306779",
-  "website": "whatthehillfarm.ca",
-  "profile_url": "https://regenerationcanada.org/en/what-the-hill-farm/",
-  "categories": "rpc1, rpc7, rpc13, rpc14, rpc100",
-  "products": "Lamb, Wool, Birch Syrup, Apples, Mushrooms",
-  "services": "rss3",
-  "how_to_buy": "Through word of mouth and through contact from the website",
-  "size": "55 acres",
-  "results": "Having only accessed this land in the past 3 years, there were many open fields with large areas of bare soil.  Initial soil testing revealed low organic matter and nutrient deficits from years of haying with no regeneration/inputs whatsoever. Repeat soil testing to be done in 2023.|*|Gentle return to use of pasture/hayfield does not seem to have impacted wildlife negatively.  |*|Deer are frequently grazing in improved hayfields, and multiple species of insects/birds/mammals are seen either during fieldwork or on trail cams.|*|Bare areas with no vegetation are now filling in, and I\\'ve seen an increased vigour of grasses and fields staying greener through summer months.",
-  "quote": "Regenerative agriculture means giving back to the land and ecosystem as it gives to us.  It is learning and working in harmony with the soil, plants, insects, animals, and environment.  To not simply take what we can, but to become part of the entire farm\\'s and area\\'s ecology.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Logo.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Logo-754x1000.png",
-  "category_codes": [
-    "rpc1",
-    "rpc7",
-    "rpc13",
-    "rpc14",
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss3"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc7",
-    "rpc13",
-    "rpc14",
-    "rpc100"
-  ],
-  "service_names": [
-    "rss3"
-  ],
-  "category_names_str": "rpc1; rpc7; rpc13; rpc14; rpc100",
-  "service_names_str": "rss3"
+  "email": "snowymountainfarm@gmail.com",
+  "phone": "2504992115",
+  "website": "snowymountainfarm.com",
+  "profile_url": "https://regenerationcanada.org/en/snowy-mountain-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Mountain-Logo-Transparent-Small.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Mountain-Logo-Transparent-Small-1000x679.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

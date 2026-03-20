@@ -1,45 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Les Bontés de la Vallée",
-  "location": "Havelock, Québec",
-  "address": "300 Rang St-Charles, Havelock, Québec, J0S 2C0",
+  "entity_name": "Ferme Florale Libella Inc.",
+  "location": "Bury, Quebec",
+  "address": "894 QC-214, Bury, Quebec, J0B 1J0, Canada",
   "lat": null,
   "lng": null,
-  "email": "info@lesbontes.org",
-  "phone": "438-883-2401",
-  "website": "www.lesbontes.org",
-  "profile_url": "https://regenerationcanada.org/en/les-bontes-de-la-vallee/",
-  "categories": "rpc5, rpc7, rpc12",
-  "products": "Garlic, Amaranth, Dill, Eggplant, Basil, Swiss chard, Beetroot, Bok choi, Broccoli, Chamomile, Cantaloupe, Carrot, Celery, Celeriac, Chervil, Ground cherry, Cherry, Chicory, Cabbage, Chinese cabbage, Cauliflower, Cauliflower, Kohlrabi, Chrysanthemum, Chives, Miner's lettuce, Cucumber, Coriander, Squash, Watercress, Cumin, Daikon, Shallot, Spinach, Fennel, Flowers, Beans, Kale, Lettuce, Lamb's lettuce, Melons, Mesclun, Onions, Sorrel, Parsnip, Pepper, Leek, Peas, Pepper, Purslane, Turnip, Radish, Herbs, Rapini, Arugula, Rutabaga, Tomato, Tomatillo, Zucchini, Greens",
-  "services": "rss1, rss6, rss8, rss10",
-  "how_to_buy": "Organic produce baskets, Farmers markets",
-  "size": "12 acres",
-  "results": "Better water infiltration and retention in the fields even after a heavy rain|*| Presence of mushrooms on the crop beds|*| Less diseases in the crops|*| Notable increase in crop quality (vegetables are full of vitality)|*| Increased presence of beneficial insects|*| Increased yields|*| Increased presence of birds (including vulnerable species)|*| Less &quot;weed&quot; pressure|*| Less soil compaction|*| Increased presence of wild animals (in cover crops)|*| A more beautiful environment!",
-  "quote": "Regenerative agriculture is a way of feeding ourselves that puts us on a path towards abundance and respect for life!",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Logo_LesBontes_nb.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Logo_LesBontes_nb-295x300.jpg",
-  "category_codes": [
-    "rpc5",
-    "rpc7",
-    "rpc12"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss6",
-    "rss8",
-    "rss10"
-  ],
-  "category_names": [
-    "rpc5",
-    "rpc7",
-    "rpc12"
-  ],
-  "service_names": [
-    "rss1",
-    "rss6",
-    "rss8",
-    "rss10"
-  ],
-  "category_names_str": "rpc5; rpc7; rpc12",
-  "service_names_str": "rss1; rss6; rss8; rss10"
+  "email": "charleneaudreychou@gmail.com",
+  "phone": "819-560-1894",
+  "website": "fermefloralelibella.com",
+  "profile_url": "https://regenerationcanada.org/en/ferme-florale-libella-inc/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Logo-temporaire-RC.jpeg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Logo-temporaire-RC-300x300.jpeg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

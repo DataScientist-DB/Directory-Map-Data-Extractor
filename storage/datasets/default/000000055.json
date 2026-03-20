@@ -1,35 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Edible Plant Source",
-  "location": "Saanich, BC",
-  "address": "390 Brookleigh rd, Saanich, BC, V9E2J2",
+  "entity_name": "Lost Savanna Farm",
+  "location": "Black Creek, BC",
+  "address": "7521 Sturgess Rd., Black Creek, BC, V9J 1G7",
   "lat": null,
   "lng": null,
-  "email": "Edibleplantsource@gmail.com",
-  "phone": "2505382380",
-  "website": "Www.edibleplantsource.com",
-  "profile_url": "https://regenerationcanada.org/en/edible-plant-source/",
-  "categories": "rpc12",
-  "products": "Permaculture and food forestry edible perennial plants, currants, Blueberries, Goumi, Nut trees, Fruit trees, Nitrogen Fixing Shrubs, Honeyberry, Sour Cherry, Hardy Edible Perennials, Perennial Vegetables, Raspberries",
-  "services": "rss1",
-  "how_to_buy": "At the farm by appointment or during open hours as updated on Google Maps. Local delivery is also an options to the Victoria area.",
-  "size": "",
-  "results": "Major increase in pollinator populations, bird activity, tree frog presence and other wildlife",
-  "quote": "A beautiful and necessary means of working with the land in order for us to thrive on all levels as we move forward on our human path.",
-  "logo": "",
-  "logo_medium": "",
-  "category_codes": [
-    "rpc12"
-  ],
-  "service_codes": [
-    "rss1"
-  ],
-  "category_names": [
-    "rpc12"
-  ],
-  "service_names": [
-    "rss1"
-  ],
-  "category_names_str": "rpc12",
-  "service_names_str": "rss1"
+  "email": "lostsavannafarm@gmail.com",
+  "phone": "250-202-2729",
+  "website": "lostsavannafarm.com",
+  "profile_url": "https://regenerationcanada.org/en/lost-savanna-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo-300x268.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

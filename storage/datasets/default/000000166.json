@@ -9,31 +9,19 @@
   "phone": "613-799-7990",
   "website": "ferme-reveuse.ca",
   "profile_url": "https://regenerationcanada.org/en/ferme-reveuse/",
-  "categories": "rpc1, rpc2",
-  "products": "milk, chicken, eggs, kombucha, sauerkraut",
-  "services": "rss6, rss7",
-  "how_to_buy": "farmers markets, home delivery, farm gate sales",
-  "size": "330 acres",
-  "results": "better soil health, better animal health|*|increased wildlife diversity",
-  "quote": "Regenerative agriculture is in sink with the environment and with the purpose to heal the land",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
   "logo": "https://regenerationcanada.org/wp-content/uploads/Ferme-Reveuse-Logo-BW-Text.jpg",
   "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Ferme-Reveuse-Logo-BW-Text-300x300.jpg",
-  "category_codes": [
-    "rpc1",
-    "rpc2"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc2"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7"
-  ],
-  "category_names_str": "rpc1; rpc2",
-  "service_names_str": "rss6; rss7"
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

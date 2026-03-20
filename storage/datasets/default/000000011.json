@@ -1,37 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Ferme Vimo (2010) Inc.",
-  "location": "Hatley, Québec",
-  "address": "458 chemin du Ruisseau, Hatley, Québec, J0B4B0",
+  "entity_name": "Cicada Seeds",
+  "location": "Errington, British Columbia",
+  "address": "1671 McKibben Road, Errington, British Columbia, V0R 1V0",
   "lat": null,
   "lng": null,
-  "email": "fermevimo@hotmail.com",
-  "phone": "819-560-1325",
-  "website": "",
-  "profile_url": "https://regenerationcanada.org/en/ferme-vimo/",
-  "categories": "rpc3, rpc6",
-  "products": "Milk (Commercial sale), Wheat (Commercial sale)",
-  "services": "rss3",
-  "how_to_buy": "",
-  "size": "500 acres",
-  "results": "Soils that are more resilient to drought and heavy rains",
-  "quote": "Regenerative agriculture means leaving healthier soil for future generations, having a positive impact on climate change and bringing back biodiversity.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/ferme-vimo-2010-inc_7iNJMxC324v9_0.jpeg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/ferme-vimo-2010-inc_7iNJMxC324v9_0-300x185.jpeg",
-  "category_codes": [
-    "rpc3",
-    "rpc6"
-  ],
-  "service_codes": [
-    "rss3"
-  ],
-  "category_names": [
-    "rpc3",
-    "rpc6"
-  ],
-  "service_names": [
-    "rss3"
-  ],
-  "category_names_str": "rpc3; rpc6",
-  "service_names_str": "rss3"
+  "email": "cicadaseeds@gmail.com",
+  "phone": "",
+  "website": "cicadaseeds.ca",
+  "profile_url": "https://regenerationcanada.org/en/cicada-seeds/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Cicada-Seeds-Cicada-Only.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Cicada-Seeds-Cicada-Only-1000x1000.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

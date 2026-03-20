@@ -1,45 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Barnyard Organics Ltd",
-  "location": "Freetown, PEI",
-  "address": "1934 North Freetown Road, Freetown, PEI, C0B1M0",
+  "entity_name": "La Ferme Végétale",
+  "location": "labrecque, Quebec",
+  "address": "4700 9e rang ouest, labrecque, Quebec, G0W 1Y0",
   "lat": null,
   "lng": null,
-  "email": "info@barnyardorganics.com",
-  "phone": "902-887-3188",
-  "website": "barnyardorganics.com",
-  "profile_url": "https://regenerationcanada.org/en/barnyard-organics-ltd/",
-  "categories": "rpc1, rpc2, rpc3, rpc100",
-  "products": "Organic feed, eggs, beef, grains",
-  "services": "rss1, rss6, rss12",
-  "how_to_buy": "Eggs direct at the farm and local health food store. Beef via farm boxes. Chicken via CSA(sold out), feed at many feed stores in the Maritime area and here at the farm.",
-  "size": "550 acres",
-  "results": "More biodiversity, new bird species|*|Better soil tilth",
-  "quote": "",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/bo-logo-bw.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/bo-logo-bw.jpg",
-  "category_codes": [
-    "rpc1",
-    "rpc2",
-    "rpc3",
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss6",
-    "rss12"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc2",
-    "rpc3",
-    "rpc100"
-  ],
-  "service_names": [
-    "rss1",
-    "rss6",
-    "rss12"
-  ],
-  "category_names_str": "rpc1; rpc2; rpc3; rpc100",
-  "service_names_str": "rss1; rss6; rss12"
+  "email": "lafermevegetale@hotmail.com",
+  "phone": "4186906001",
+  "website": "lafermevegetale.ca",
+  "profile_url": "https://regenerationcanada.org/en/la-ferme-vegetale/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo_final_pour_video-removebg-.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo_final_pour_video-removebg-.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

@@ -1,37 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Vignoble de la Bauge",
-  "location": "Brigham, Québec",
-  "address": "155, des Érables, Brigham, Québec, J2K 4E1",
+  "entity_name": "Ferme de l\\'odyssee",
+  "location": "Sainte-Monique, Québec",
+  "address": "3240 Rang le Petit-Saint-Esprit, Nicolet, Québec, J3T 1T7",
   "lat": null,
   "lng": null,
-  "email": "vignoble.labauge@gmail.com",
-  "phone": "450-525-2149",
-  "website": "labauge.com",
-  "profile_url": "https://regenerationcanada.org/en/vignoble-de-la-bauge/",
-  "categories": "rpc10",
-  "products": "Vins",
-  "services": "rss1, rss7",
-  "how_to_buy": "Direct tasting and sales at the vineyard, in restaurants and delicatessens, and at the Société des Alcools du Québec.",
-  "size": "21 acres",
-  "results": "Increased active matter in the soil|*|Recurrent presence of birds (tree swallows) in vineyard plots|*|Presence of pollinating insects|*|Stable, well-distributed fertilization of grazing animal manure of vines|*|Decreased use of tractors, fewer passes in the field and less compaction by them",
-  "quote": "A personal and professional commitment to healthy, organic and ecological farming to foster a resilient, healthy ecosystem for plants, livestock, wildlife and the people who work and live there.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Logo-Blanc-HD.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Logo-Blanc-HD-835x1000.jpg",
-  "category_codes": [
-    "rpc10"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss7"
-  ],
-  "category_names": [
-    "rpc10"
-  ],
-  "service_names": [
-    "rss1",
-    "rss7"
-  ],
-  "category_names_str": "rpc10",
-  "service_names_str": "rss1; rss7"
+  "email": "sebastien.angers.regen@gmail.com",
+  "phone": "819-448-2383",
+  "website": "www.fermedelodyssee.ca",
+  "profile_url": "https://regenerationcanada.org/en/ferme-de-lodyssee/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo-ferme-de-lodysee.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo-ferme-de-lodysee-300x300.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

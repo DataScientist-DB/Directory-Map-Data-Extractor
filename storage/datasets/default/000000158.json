@@ -1,45 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Merkaba Acres",
-  "location": "Bobcaygeon, Ontario",
-  "address": "432 County Rd. 49, Bobcaygeon, Ontario, K0M 1A0",
+  "entity_name": "Ferme maraîchère le Baluchon s.e.n.c.",
+  "location": "Rigaud, Québec",
+  "address": "576, Ch. du Haut-de-la-Chute, Rigaud, Québec, J0P 1P0",
   "lat": null,
   "lng": null,
-  "email": "info@merkabaacres.com",
-  "phone": "416-726-8866",
-  "website": "merkabaacres.com",
-  "profile_url": "https://regenerationcanada.org/en/merkaba-acres/",
-  "categories": "rpc1, rpc2, rpc5, rpc11",
-  "products": "grass-fed beef, pasture raised eggs, vegetables, flowers",
-  "services": "rss4, rss6, rss8",
-  "how_to_buy": "In 2023, you can support our farm by visiting our farm store.",
-  "size": "55 acres acres",
-  "results": "We have only used regenerative practices on the farm since arriving in 2019.|*|There are many species of wildlife and plants that thrive on the property.",
-  "quote": "Using practices that support and balance natural ecosystems to improve soil, biodiversity and the well being of the environment.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Artboard-5-copy-45@3x.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Artboard-5-copy-45@3x-1000x1000.png",
-  "category_codes": [
-    "rpc1",
-    "rpc2",
-    "rpc5",
-    "rpc11"
-  ],
-  "service_codes": [
-    "rss4",
-    "rss6",
-    "rss8"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc2",
-    "rpc5",
-    "rpc11"
-  ],
-  "service_names": [
-    "rss4",
-    "rss6",
-    "rss8"
-  ],
-  "category_names_str": "rpc1; rpc2; rpc5; rpc11",
-  "service_names_str": "rss4; rss6; rss8"
+  "email": "info@fermelebaluchon.com",
+  "phone": "450-451-1116",
+  "website": "www.fermelebaluchon.com",
+  "profile_url": "https://regenerationcanada.org/en/ferme-le-baluchon/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/logo_baluchon_jaune_oval.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/logo_baluchon_jaune_oval-300x157.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

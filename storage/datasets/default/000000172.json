@@ -1,41 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Fishburn Ranch",
-  "location": "Pincher Creek, Alberta",
-  "address": "Box 2622, Pincher Creek, Alberta, T0K1W0",
+  "entity_name": "Ferme Guayclair",
+  "location": "Brownsburg-Chatham, Québec",
+  "address": "235 Montée la Branche, Brownsburg-Chatham, Québec, J8G 2E5",
   "lat": null,
   "lng": null,
-  "email": "casey@fishburnranch.com",
-  "phone": "403-627-9887 ",
-  "website": "www.fishburnranch.com",
-  "profile_url": "https://regenerationcanada.org/en/fishburn-ranch/",
-  "categories": "rpc1",
-  "products": "Grass-finished beef, Pastured poultry, Seasonal garden produce, Saskatoon berries",
-  "services": "rss2, rss5, rss6, rss7",
-  "how_to_buy": "HSCA Farmers Market, in Calgary; YYC Growers; Direct Sales, Website",
-  "size": "3000 acres",
-  "results": "5 x organic matter|*| 4 x carrying capacity|*| Native species returning|*| Game birds returned|*| Less gopher problems|*| Increased water carrying capacity|*| Healthy riparian areas|*| Healthy food - Healthy animals - Happy people",
-  "quote": "Regenerative agriculture means working in harmony with nature, not against her.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Fishburn-Ranch-Logo-Pincher.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Fishburn-Ranch-Logo-Pincher-300x171.jpg",
-  "category_codes": [
-    "rpc1"
-  ],
-  "service_codes": [
-    "rss2",
-    "rss5",
-    "rss6",
-    "rss7"
-  ],
-  "category_names": [
-    "rpc1"
-  ],
-  "service_names": [
-    "rss2",
-    "rss5",
-    "rss6",
-    "rss7"
-  ],
-  "category_names_str": "rpc1",
-  "service_names_str": "rss2; rss5; rss6; rss7"
+  "email": "guayclair@live.ca",
+  "phone": "514-705-9902",
+  "website": "www.fermeguayclair.com",
+  "profile_url": "https://regenerationcanada.org/en/ferme-guayclair/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/0212215B-8535-48FA-9A3A-37411D5F7ED3.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/0212215B-8535-48FA-9A3A-37411D5F7ED3-300x300.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

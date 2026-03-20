@@ -9,27 +9,19 @@
   "phone": "306-447-4600",
   "website": "",
   "profile_url": "https://regenerationcanada.org/en/98-ranch-2/",
-  "categories": "rpc1",
-  "products": "Grassfed Beef, Eggs, Forage developed bulls as part of Pharo Cattle Co. Network",
-  "services": "rss1",
-  "how_to_buy": "We supply to Beretta Farms and A&W Food Services Canada Inc. We also sell direct off the ranch",
-  "size": "5000 acres",
-  "results": "The native prairie grasslands we steward are diverse and managed for resilience|*| We have an array of wetland and upland areas that provide a diversity of habitat types for soil microbiology and plant diversity and wildlife habitat|*| We are involved in capturing songbird occurrence data and participate in species-at-risk stewardship programs",
-  "quote": "Regenerative agriculture represents the interaction and facilitation of the soil, plant, animal and ultimately human health",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
   "logo": "https://regenerationcanada.org/wp-content/uploads/98-Ranch-Logo.jpeg",
   "logo_medium": "https://regenerationcanada.org/wp-content/uploads/98-Ranch-Logo-300x219.jpeg",
-  "category_codes": [
-    "rpc1"
-  ],
-  "service_codes": [
-    "rss1"
-  ],
-  "category_names": [
-    "rpc1"
-  ],
-  "service_names": [
-    "rss1"
-  ],
-  "category_names_str": "rpc1",
-  "service_names_str": "rss1"
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

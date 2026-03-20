@@ -1,39 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Ferme Florale Libella Inc.",
-  "location": "Bury, Quebec",
-  "address": "894 QC-214, Bury, Quebec, J0B 1J0, Canada",
+  "entity_name": "À l\\'Herbe! Bouvillons de pâturage",
+  "location": "Pont-Rouge, Québec",
+  "address": "701 Chemin du Bois de l\\'Ail, Pont-Rouge, Québec, G3H 2G8",
   "lat": null,
   "lng": null,
-  "email": "charleneaudreychou@gmail.com",
-  "phone": "819-560-1894",
-  "website": "fermefloralelibella.com",
-  "profile_url": "https://regenerationcanada.org/en/ferme-florale-libella-inc/",
-  "categories": "rpc11",
-  "products": "Cut flowers, Edible flowers, Floral arrangements",
-  "services": "rss6, rss7, rss11",
-  "how_to_buy": "At the farm, markets, grocery stores, or on the website",
-  "size": "3 acres",
-  "results": "Monarch butterfly and bird sightings (ex. Common kestrel)|*| Significant return of biodiversity",
-  "quote": "I am a flower farmer, but above all, I am an activist. Owner of a magnificent 50 acres of land, I am committed to practising, educating, and striving to bring regenerative agriculture to light through the beauty of flowers.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Logo-temporaire-RC.jpeg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Logo-temporaire-RC-300x300.jpeg",
-  "category_codes": [
-    "rpc11"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7",
-    "rss11"
-  ],
-  "category_names": [
-    "rpc11"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7",
-    "rss11"
-  ],
-  "category_names_str": "rpc11",
-  "service_names_str": "rss6; rss7; rss11"
+  "email": "info@alherbe.ca",
+  "phone": "418-285-7784",
+  "website": "www.alherbe.ca",
+  "profile_url": "https://regenerationcanada.org/en/a-lherbe/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/ALH-1217_AlHerbe_Logo.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/ALH-1217_AlHerbe_Logo-300x289.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

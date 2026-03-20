@@ -2,7 +2,10 @@
   "actorSpecification": 1,
   "name": "actor-6-directory-listing-extractor",
   "title": "Directory Listing Extractor",
+  "description": "Extract organization listings from directory and map-based websites. Export CSV/XLSX for lead generation and research.",
   "version": "0.1",
-  "input": "INPUT_SCHEMA.json",
-  "dockerfile": "./Dockerfile"
+  "buildTag": "latest",
+  "storages": {
+    "dataset": "./dataset_schema.json"
+  }
 }

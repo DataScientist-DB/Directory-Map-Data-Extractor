@@ -1,37 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Organics Farm",
-  "location": "Markham, Ontario",
-  "address": "7550 19th Ave, Markham, Ontario, L6B 1A8",
+  "entity_name": "Rustik Bison",
+  "location": "Saint-Herménégilde, Quebec / Québec",
+  "address": "1248 Chemin Caron, Saint-Herménégilde, Québec, J0B 2W0",
   "lat": null,
   "lng": null,
-  "email": "info@organicsfarm.ca",
-  "phone": "905-640-5206",
-  "website": "www.organicsfarm.ca",
-  "profile_url": "https://regenerationcanada.org/en/organics-farm/",
-  "categories": "rpc7, rpc8",
-  "products": "Strawberries, Apples",
-  "services": "rss5",
-  "how_to_buy": "On farm only, either in our on-farm market/bakery or pick-your-own",
-  "size": "55 acres",
-  "results": "Improved soil tilth|*| Increased bird presence|*| Increased insect presence",
-  "quote": "Regenerative agriculture means leaving our land in a healthier, more proactive state than when we began managing these lands.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Organics_Logo-pdf.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Organics_Logo-pdf-300x232.jpg",
-  "category_codes": [
-    "rpc7",
-    "rpc8"
-  ],
-  "service_codes": [
-    "rss5"
-  ],
-  "category_names": [
-    "rpc7",
-    "rpc8"
-  ],
-  "service_names": [
-    "rss5"
-  ],
-  "category_names_str": "rpc7; rpc8",
-  "service_names_str": "rss5"
+  "email": "anoukcaron@rustikbison.ca",
+  "phone": "8193497023",
+  "website": "rustikbison.com",
+  "profile_url": "https://regenerationcanada.org/en/rustik-bison/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Rustik-Bison-logo-stamp.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Rustik-Bison-logo-stamp-1000x750.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

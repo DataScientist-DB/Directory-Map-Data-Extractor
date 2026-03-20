@@ -1,39 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Arch Lea Farm",
-  "location": "Cumberland, ON",
-  "address": "3846 Wilhaven Drive, Cumberland, ON, K4C 1J8",
+  "entity_name": "Ferme Rejo Holstein",
+  "location": "Wotton, Québec",
+  "address": "243 2e rang, Wotton, Québec, J0A 1NO",
   "lat": null,
   "lng": null,
-  "email": "archleafarm@gmail.com",
-  "phone": "",
-  "website": "https://www.archleafarm.com/",
-  "profile_url": "https://regenerationcanada.org/en/arch-lea-farm/",
-  "categories": "rpc1, rpc3",
-  "products": "Grass-fed beef, Pastured chicken",
-  "services": "rss4, rss6",
-  "how_to_buy": "Direct from the farm",
-  "size": "170 acres",
-  "results": "Healthier &amp;amp; more productive pastures|*|Reduced soil erosion from water &amp;amp; wind",
-  "quote": "A better way to grow food.",
-  "logo": "",
-  "logo_medium": "",
-  "category_codes": [
-    "rpc1",
-    "rpc3"
-  ],
-  "service_codes": [
-    "rss4",
-    "rss6"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc3"
-  ],
-  "service_names": [
-    "rss4",
-    "rss6"
-  ],
-  "category_names_str": "rpc1; rpc3",
-  "service_names_str": "rss4; rss6"
+  "email": "rejoholstein@gmail.com",
+  "phone": "819-571-5837",
+  "website": "www.facebook.com/profile.php?id=61551898040298",
+  "profile_url": "https://regenerationcanada.org/en/ferme-rejo-holstein/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/Facebook-Cover-Blue.png",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Facebook-Cover-Blue-1000x563.png",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

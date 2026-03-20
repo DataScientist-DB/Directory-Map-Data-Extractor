@@ -1,43 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Southbrook Vineyards",
-  "location": "Niagara on the Lake, Ontario",
-  "address": "581 Niagara Stone Road, Niagara on the Lake, Ontario, L0S 1J0",
+  "entity_name": "KPU Farm",
+  "location": "Richmond, British Columbia",
+  "address": "Garden City Rd, Richmond, British Columbia, V6X4H9",
   "lat": null,
   "lng": null,
-  "email": "info@southbrook.com",
-  "phone": "905-380-9095",
-  "website": "www.southbrook.com",
-  "profile_url": "https://regenerationcanada.org/en/southbrook-vineyard/",
-  "categories": "rpc1, rpc2, rpc10, rpc100",
-  "products": "Wine, Lamb, Pork, Beef, Eggs",
-  "services": "rss6, rss7",
-  "how_to_buy": "Online store, SAQ, LCBO",
-  "size": "150 acres",
-  "results": "Improved organic matter in soils|*| Improved friability|*| Improved mycorrhizae|*| Greater biodiversity|*| More beneficial insects|*| Less pest problems",
-  "quote": "Regenerative agriculture means \"keeping it green\". We cover our soils with a diverse mix of flowering plants to keep something growing and flowering at all times during the growing season. We want roots everywhere, all year around. These conditions keep soil temperatures cool which improves wine character.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Southbrook_OrganicVineyards_logo_BLK.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Southbrook_OrganicVineyards_logo_BLK-300x105.jpg",
-  "category_codes": [
-    "rpc1",
-    "rpc2",
-    "rpc10",
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss6",
-    "rss7"
-  ],
-  "category_names": [
-    "rpc1",
-    "rpc2",
-    "rpc10",
-    "rpc100"
-  ],
-  "service_names": [
-    "rss6",
-    "rss7"
-  ],
-  "category_names_str": "rpc1; rpc2; rpc10; rpc100",
-  "service_names_str": "rss6; rss7"
+  "email": "kpufarm@kpu.ca",
+  "phone": "",
+  "website": "kpu.ca/agriculture/farms",
+  "profile_url": "https://regenerationcanada.org/en/kpu-farm/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "",
+  "logo_medium": "",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

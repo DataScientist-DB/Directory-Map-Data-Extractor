@@ -1,43 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Axten Farms",
-  "location": "Minton, Saskatchewan",
-  "address": "Box 181, Minton, Saskatchewan, S0C 1T0",
+  "entity_name": "Integrated Farms",
+  "location": "Coldwater, Ontario",
+  "address": "5091 Line 10 N, Coldwater, Ontario, L0K1E0",
   "lat": null,
   "lng": null,
-  "email": "tannis@axtenfarms.ca",
-  "phone": "",
-  "website": "www.axtenfarms.ca",
-  "profile_url": "https://regenerationcanada.org/en/axten-farms-2/",
-  "categories": "rpc3, rpc4",
-  "products": "GRAINS:Winter peas, chickling vetch, fall rye, Spring Wheat Blend, Red fife, spelt, buckwheat, flax, mustard, Khorasan, desi chickpeas, einkorn, camelina, lentils WHOLE GRAIN FLOURS: Spring Wheat Blend, Spelt, Red Fife, Rye, Buckwheat, Chickpea, Khorasan, Einkorn",
-  "services": "rss1, rss6, rss7, rss9",
-  "how_to_buy": "Contact us by email",
-  "size": "10000 acres",
-  "results": "Increased water infiltration and retention|*|Increase in soil biology diversity",
-  "quote": "To us, regenerative agriculture means using practices that allow us to continually improve the health of our soils.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Axten-Farms-Logo-pdf-1.jpg",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Axten-Farms-Logo-pdf-1-300x214.jpg",
-  "category_codes": [
-    "rpc3",
-    "rpc4"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names": [
-    "rpc3",
-    "rpc4"
-  ],
-  "service_names": [
-    "rss1",
-    "rss6",
-    "rss7",
-    "rss9"
-  ],
-  "category_names_str": "rpc3; rpc4",
-  "service_names_str": "rss1; rss6; rss7; rss9"
+  "email": "info@ifarmfresh.ca",
+  "phone": "7058350551",
+  "website": "info@ifarmfresh.ca",
+  "profile_url": "https://regenerationcanada.org/en/integrated-farms/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/integrated_farms_pastured_chicken_logo_black-01.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/integrated_farms_pastured_chicken_logo_black-01-300x267.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }

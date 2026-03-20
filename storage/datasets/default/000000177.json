@@ -1,45 +1,27 @@
 {
   "source_url": "https://regenerationcanada.org/en/map/",
-  "entity_name": "Millefolia - Ferme Biologique",
-  "location": "Sainte-Ursule, Québec",
-  "address": "3170 rang Fontarabie, Sainte-Ursule, Québec, J0K3M0",
+  "entity_name": "Whole Village Property Co-operative",
+  "location": "Caledon, Ontario",
+  "address": "20725 Shaws Creek Rd, Caledon, Ontario, L7K 1L7",
   "lat": null,
   "lng": null,
-  "email": "info@terramillefolia.com",
-  "phone": "",
-  "website": "terramillefolia.com",
-  "profile_url": "https://regenerationcanada.org/en/ferme-terra-millefolia/",
-  "categories": "rpc12, rpc100",
-  "products": "Medicinal and Aromatic Herbs, Luffas, Herb Seedlings, Vegetable Garden Seedlings, Indigenous Plant Seedlings",
-  "services": "rss1, rss5, rss6, rss7, rss12",
-  "how_to_buy": "At the farm shop or online (www.terramillefolia.com)",
-  "size": "3 acres",
-  "results": "Use of the site by new species of birds (great blue heron, several species of swallows and ducks, etc.), amphibians, insects and bats, some of them in abundance|*|Increased soil fertility, visibly superior to that of conventionally cultivated neighbours|*|Reduction of areas of water accumulation thanks to the use of green manures to decompact the soil|*|Reduction of invasive weeds in favour of native species by rebalancing habitats",
-  "quote": "Regenerative agriculture is our way of reclaiming our place within nature, and recognizing and paying tribute to its strength and resilience.",
-  "logo": "https://regenerationcanada.org/wp-content/uploads/Final-Logo-Revamped.png",
-  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/Final-Logo-Revamped.png",
-  "category_codes": [
-    "rpc12",
-    "rpc100"
-  ],
-  "service_codes": [
-    "rss1",
-    "rss5",
-    "rss6",
-    "rss7",
-    "rss12"
-  ],
-  "category_names": [
-    "rpc12",
-    "rpc100"
-  ],
-  "service_names": [
-    "rss1",
-    "rss5",
-    "rss6",
-    "rss7",
-    "rss12"
-  ],
-  "category_names_str": "rpc12; rpc100",
-  "service_names_str": "rss1; rss5; rss6; rss7; rss12"
+  "email": "info@wholevillage.org",
+  "phone": "519-942-4010",
+  "website": "www.wholevillage.org",
+  "profile_url": "https://regenerationcanada.org/en/whole-village-property-cooperative/",
+  "categories": null,
+  "products": null,
+  "services": null,
+  "how_to_buy": null,
+  "size": null,
+  "results": null,
+  "quote": null,
+  "logo": "https://regenerationcanada.org/wp-content/uploads/whole-village-property-co-operative_NFDdcr2BMPDl_0.jpg",
+  "logo_medium": "https://regenerationcanada.org/wp-content/uploads/whole-village-property-co-operative_NFDdcr2BMPDl_0-300x224.jpg",
+  "category_codes": [],
+  "service_codes": [],
+  "category_names": [],
+  "service_names": [],
+  "category_names_str": "",
+  "service_names_str": ""
 }
