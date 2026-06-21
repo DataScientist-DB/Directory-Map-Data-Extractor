@@ -15,6 +15,7 @@ from src.taxonomy import (
     try_parse_json,
 )
 from src.modes.generic_cards import extract_generic_cards
+from src.modes.generic_directory import extract_generic_directory_page
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -423,7 +424,6 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
     if not start_urls:
         raise ValueError("Input must include startUrls.")
-
     if mode == "dom":
         if not listing_selector:
             raise ValueError("DOM mode: Input must include listingSelector.")
@@ -436,10 +436,17 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
     elif mode == "generic_cards":
         pass
 
+    elif mode == "generic_directory":
+        pass
+
     else:
         raise ValueError(
-            "mode must be 'dom', 'embedded_js', or 'generic_cards'"
+            "mode must be 'dom', 'embedded_js', 'generic_cards', or 'generic_directory'"
         )
+
+    # ✅ MUST be defined before Playwright + while-loop
+    to_visit = [u["url"] if isinstance(u, dict) else str(u) for u in start_urls]
+
 
     # ✅ MUST be defined before Playwright + while-loop
     to_visit = [u["url"] if isinstance(u, dict) else str(u) for u in start_urls]
@@ -534,6 +541,54 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
             if infinite_enabled:
                 await _scroll_to_load_more(page, scroll_delay_ms, max_scrolls)
+
+            # -------------------------
+            # GENERIC DIRECTORY MODE
+            # -------------------------
+
+            if mode == "generic_directory":
+
+                html = await page.content()
+
+                result = extract_generic_directory_page(
+                    html=html,
+                    source_url=url,
+                )
+
+                if debug:
+                    print(f"DEBUG generic_directory stats: {result.get('stats')}")
+                    print(f"DEBUG generic_directory selectors: {result.get('selectors')[:3]}")
+
+                for record in result.get("records", []):
+
+                    if pushed >= max_listings:
+                        break
+
+                    key = (
+                            record.get("website")
+                            or record.get("email")
+                            or record.get("name")
+                    )
+
+                    if key in seen_keys:
+                        continue
+
+                    seen_keys.add(key)
+
+                    await Actor.push_data({
+                        "entity_name": record.get("name"),
+                        "website": record.get("website"),
+                        "email": record.get("email"),
+                        "phone": record.get("phone"),
+                        "source_url": record.get("source_url"),
+                        "services": record.get("description"),
+                        "social_links": record.get("social_links"),
+                    })
+
+                    pushed += 1
+
+                continue
+
             # -------------------------
             # GENERIC CARDS MODE
             # -------------------------

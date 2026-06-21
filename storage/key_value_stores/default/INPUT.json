@@ -1,5 +1,5 @@
 {
-  "mode": "generic_cards",
+  "mode": "generic_directory",
   "startUrls": [
     {
       "url": "https://www.scrapethissite.com/pages/simple/"
@@ -9,6 +9,6 @@
   "maxPages": 1,
   "outputCsv": true,
   "outputXlsx": true,
-  "outputBaseName": "generic_cards_simple_test",
+  "outputBaseName": "generic_directory_test",
   "debug": true
 }

@@ -10,16 +10,18 @@
       "type": "string",
       "default": "generic_cards",
       "editor": "select",
-      "enum": [
-        "generic_cards",
-        "embedded_js",
-        "dom"
-      ],
+     "enum": [
+  "generic_directory",
+  "generic_cards",
+  "embedded_js",
+  "dom"
+],
       "enumTitles": [
-        "Generic Cards - automatic business directory extraction",
-        "Embedded JS - map/JavaScript directory extraction",
-        "DOM - custom selector extraction"
-      ]
+  "Generic Directory - automatic directory discovery",
+  "Generic Cards - automatic business directory extraction",
+  "Embedded JS - map/JavaScript directory extraction",
+  "DOM - custom selector extraction"
+]
     },
     "startUrls": {
       "title": "Start URLs",
