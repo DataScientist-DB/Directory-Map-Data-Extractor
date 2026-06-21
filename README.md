@@ -1,127 +1,400 @@
-Directory Listing Extractor
-Clean, structured, Excel-ready directories from interactive maps and listing pages
-This Actor extracts high-quality, analysis-ready datasets from directory and map pages such as NGO directories, agricultural maps, association member listings, partner registries, and store locators.
-It is optimized for JavaScript-heavy websites where listing data is embedded directly in HTML or inline JavaScript objects (rather than rendered line-by-line in the DOM).
-The output is designed to be immediately usable in Excel, Google Sheets, BI tools, or research workflows.
-________________________________________
-What this Actor does
-For each organization, farm, or business listing found on a directory or map page, the Actor extracts structured information including:
-Core fields
-•	Entity / organization name
-•	Location (city, region, country)
-•	Address (when available)
-•	Website
-•	Profile or detail page URL
-•	Public email address
-•	Public phone number
-Classification & enrichment
-•	Categories (decoded into human-readable names)
-•	Services (decoded into human-readable names)
-•	Products (if available)
-•	Semantic alignment of product labels to standardized categories
-Optional descriptive fields
-When available in the source data:
-•	Size
-•	Results / outcomes
-•	Quotes / descriptions
-•	Logos
-Each listing is saved as one dataset item, normalized and ready for export.
-________________________________________
-Typical use cases
-•	NGO and non-profit directories
-•	Agricultural, food system, and sustainability maps
-•	Association or member registries
-•	Partner, supplier, or producer listings
-•	Store locators and business directories
-•	Market research, benchmarking, and data enrichment projects
-Most users analyze results by entity name, category, or services, not by street-level geocoding.
-________________________________________
-Supported extraction modes
-embedded_js (recommended)
-Use this mode when listing data is embedded directly in the page HTML or JavaScript.
-You configure:
-•	embedded.anchorKey – a field that reliably exists in every listing object (used to detect listings)
-•	embedded.keys – raw fields to extract from embedded objects
-•	embedded.fieldMap – mapping from raw keys to clean output field names
-This mode is:
-•	Fast
-•	Reliable
-•	Stable on JS-heavy pages
-•	Does not require clicking or pagination simulation
-auto (future)
-A future version may include automatic heuristics combining multiple extraction strategies.
-________________________________________
-Category & service decoding (important)
-Many directories store categories and services as internal codes (for example: rpc5, rpc12, rss6).
-These codes are not user-friendly on their own.
-This Actor supports:
-•	Static canonical taxonomies (built-in)
-•	Automatic detection from embedded HTML or JavaScript (when available)
-•	Manual overrides via input:
-o	taxonomy.categoryMap
-o	taxonomy.serviceMap
-The output includes:
-•	category_codes / service_codes (raw values)
-•	category_names / service_names (human-readable, Excel-friendly)
-This makes the dataset immediately usable for filtering, grouping, and reporting.
-________________________________________
-Product category normalization
-Some directories expose product filters in the UI that are not stored as canonical categories.
-This Actor:
-•	Aligns product labels (e.g. Meat & poultry, Eggs, Vegetables) to standardized category codes
-•	Preserves transparency between filters, products, and true entity categories
-•	Avoids guessing or over-assignment
-This is especially important for research-grade or policy-oriented datasets.
-________________________________________
-Quick start (default test)
-The Actor includes a working default configuration:
-•	Start URL:
-https://regenerationcanada.org/en/map/
-•	Mode: embedded_js
-•	Max pages: 1
-Simply click Run in the Apify Console to see results.
-________________________________________
-Input parameters (overview)
-•	mode – Extraction strategy (default: embedded_js)
-•	startUrls – One or more directory or map pages
-•	maxListings – Safety cap on extracted listings
-•	maxPages – Safety cap on visited pages
-•	embedded.anchorKey – Field identifying listing objects
-•	embedded.keys – Fields to extract from embedded objects
-•	embedded.fieldMap – Rename raw fields to clean output fields
-•	taxonomy.categoryMap – Optional manual category decoding
-•	taxonomy.serviceMap – Optional manual service decoding
-•	debug – Enable verbose logging for troubleshooting
-________________________________________
-Example output
-Each dataset item is a normalized object, for example:
+# Directory Listing Extractor
+
+## Extract Structured Directory Listings from Interactive Maps and Business Directories
+
+Transform interactive maps, business directories, association registries, NGO databases, supplier networks, member directories, and producer listings into clean, structured, Excel-ready datasets.
+
+The Directory Listing Extractor is optimized for modern JavaScript-powered websites where listing information is embedded in HTML, JSON, or JavaScript objects rather than rendered directly in the page content.
+
+The Actor automatically extracts business details, websites, emails, phone numbers, categories, services, products, and other metadata and exports them into structured datasets ready for analysis.
+
+---
+
+# Screenshots
+
+## Structured Directory Listings
+
+![Structured Directory Listings](images/screenshot-1-structured-listings.png)
+
+Extract clean organization records with locations, websites, categories, and services.
+
+---
+
+## Category & Service Classification
+
+![Category & Service Classification](images/screenshot-2-category-service-classification.png)
+
+Decode internal category and service codes into human-readable business intelligence fields.
+
+---
+
+## Excel Export
+
+![Excel Export](images/screenshot-3-excel-export.png)
+
+Export ready-to-use CSV and Excel files for Google Sheets, CRM systems, and BI tools.
+
+---
+
+## Actor Configuration
+
+![Actor Configuration](images/screenshot-4-actor-configuration.png)
+
+Configure target directory URLs, output format, and extraction limits.
+
+
+# What This Actor Extracts
+
+For each organization, business, farm, supplier, member, or directory listing discovered, the Actor extracts structured information including:
+
+## Core Fields
+
+- Entity name
+- Location
+- Address
+- Website
+- Profile URL
+- Public email address
+- Public phone number
+
+## Classification & Enrichment
+
+- Category codes
+- Service codes
+- Category names
+- Service names
+- Products
+- Classification mappings
+
+## Additional Metadata
+
+When available:
+
+- Size
+- Results
+- Descriptions
+- Quotes
+- Logos
+
+Each listing is normalized into a clean dataset item.
+
+---
+## Recommended Output
+
+For non-technical users, use the generated files in Key-Value Store:
+
+- `output.xlsx`
+- `output.csv`
+
+These files include cleaned, Excel-ready fields with decoded category and service names.
+
+The Apify Dataset is also available for developers and API users, but it may include raw internal fields such as category and service codes.
+
+# Example Output
+
+```json
 {
   "entity_name": "Southbrook Vineyards",
-  "category_names": "Fruit; Value-added products",
-  "service_names": "Farm tour (for general public)",
-  "products": "Wine; Beef; Eggs",
+  "location": "Niagara-on-the-Lake, Ontario",
+  "website": "https://www.southbrook.com",
   "email": "info@southbrook.com",
   "phone": "905-380-9095",
-  "website": "https://www.southbrook.com",
-  "location": "Niagara-on-the-Lake, Ontario",
+  "category_names_str": "Fruit; Value-added products",
+  "service_names_str": "Farm tour (for general public)",
+  "products": "Wine; Beef; Eggs",
   "profile_url": "https://regenerationcanada.org/en/southbrook-vineyard/",
   "source_url": "https://regenerationcanada.org/en/map/"
 }
-________________________________________
-CSV / XLSX output (for clients & non-technical users)
-Although data is processed internally as JSON, no JSON handling is required.
-Delivered formats
-•	CSV
-•	XLSX (Excel)
-Files are:
-•	UTF-8 encoded
-•	Excel-safe
-•	Ready for Google Sheets or BI tools
-Exporting from Apify Console
-1.	Open the Actor run
-2.	Go to the Dataset tab
-3.	Click Export
-4.	Choose CSV or XLSX
-5.	Download
-No additional configuration is required.
+```
 
+---
+
+# Typical Use Cases
+
+### Business Directories
+
+- Company directories
+- Local business listings
+- Store locators
+- Supplier directories
+
+### Associations
+
+- Member registries
+- Professional organizations
+- Industry directories
+
+### NGOs & Nonprofits
+
+- NGO databases
+- Community networks
+- Nonprofit ecosystems
+
+### Agriculture & Sustainability
+
+- Farm directories
+- Producer networks
+- Sustainability maps
+- Food system ecosystems
+
+### Research & Intelligence
+
+- Market research
+- Competitor analysis
+- Industry mapping
+- Data enrichment
+
+---
+
+# Supported Extraction Mode
+
+## embedded_js (Recommended)
+
+Use this mode when listing information is embedded inside:
+
+- JavaScript variables
+- JSON objects
+- Inline scripts
+- Structured page data
+
+Advantages:
+
+- Fast
+- Reliable
+- Stable
+- Works on modern websites
+- No browser interaction required
+
+---
+
+# Category & Service Classification
+
+Many directory websites store classifications using internal codes.
+
+Examples:
+
+```text
+rpc1
+rpc5
+rpc12
+
+rss6
+rss10
+```
+
+The Actor automatically converts them into human-readable values.
+
+Examples:
+
+```text
+rpc1  → Beef
+rpc5  → Vegetables
+rpc12 → Value-added products
+
+rss6  → Farm tour (for other farmers)
+rss10 → Wwoofing
+```
+
+Output fields include:
+
+```text
+category_codes
+service_codes
+
+category_names
+service_names
+
+category_names_str
+service_names_str
+```
+
+This makes the output immediately usable in Excel, Power BI, Tableau, and CRM systems.
+
+---
+
+# Product Classification
+
+The Actor also performs semantic alignment between products and categories.
+
+Examples:
+
+| Product    | Category             |
+|------------|----------------------|
+| Eggs       | Poultry              |
+| Honey      | Honey & bee products |
+| Vegetables | Vegetables           |
+| Dairy      | Dairy                |
+| Wine       | Value-added products |
+
+This improves reporting and downstream analytics.
+
+---
+
+# Export Formats
+
+The Actor automatically generates:
+
+## CSV Export
+
+```text
+output.csv
+```
+
+## Excel Export
+
+```text
+output.xlsx
+```
+
+Files are:
+
+- UTF-8 encoded
+- Excel compatible
+- Google Sheets compatible
+- BI-tool ready
+
+---
+
+# Sample Results
+
+The Actor successfully extracts records such as:
+
+| Entity              | Category                  | Services                       |
+|---------------------|---------------------------|--------------------------------|
+| Vallée Des Prairies | Pork; Vegetables          | Farm tours; Volunteer program  |
+| Benjamin Bridge     | Beef; Dairy               | Direct sales                   |
+| Rustik Bison        | Beef                      | Farm tours; Events             |
+| South Glanton Farms | Beef; Pork; Lamb          | Farm tours; Internship program |
+| Juniper Farm        | Beef; Poultry; Vegetables | Pick-your-own                  |
+
+---
+
+# Quick Start
+
+Default test configuration:
+
+```json
+{
+  "mode": "embedded_js",
+  "startUrls": [
+    {
+      "url": "https://regenerationcanada.org/en/map/"
+    }
+  ],
+  "maxListings": 500,
+  "outputCsv": true,
+  "outputXlsx": true
+}
+```
+
+Click **Run** and review the generated dataset.
+
+---
+
+# Input Parameters
+
+| Parameter            | Description                 |
+|----------------------|-----------------------------|
+| mode                 | Extraction strategy         |
+| startUrls            | One or more directory URLs  |
+| maxListings          | Maximum number of listings  |
+| maxPages             | Maximum pages to process    |
+| embedded.anchorKey   | Listing detection field     |
+| embedded.keys        | Fields to extract           |
+| embedded.fieldMap    | Field mapping configuration |
+| taxonomy.categoryMap | Custom category mappings    |
+| taxonomy.serviceMap  | Custom service mappings     |
+| outputCsv            | Generate CSV export         |
+| outputXlsx           | Generate Excel export       |
+| debug                | Enable verbose logging      |
+
+---
+
+# Output Columns
+
+## Default Export
+
+```text
+entity_name
+location
+address
+phone
+email
+website
+profile_url
+category_names_str
+service_names_str
+products
+source_url
+```
+
+## Additional Fields
+
+```text
+category_codes
+service_codes
+category_names
+service_names
+logo
+logo_medium
+lat
+lng
+quote
+size
+results
+```
+
+---
+
+# Ideal For
+
+✅ Business Intelligence
+
+✅ Lead Generation
+
+✅ Market Research
+
+✅ Supplier Discovery
+
+✅ Association Directories
+
+✅ NGO Mapping
+
+✅ Agricultural Networks
+
+✅ CRM Enrichment
+
+✅ Competitive Analysis
+
+✅ Ecosystem Intelligence
+
+---
+
+# Exporting Results
+
+1. Run the Actor
+2. Open the Dataset tab
+3. Click Export
+4. Choose CSV or XLSX
+5. Download the file
+
+No additional processing is required.
+
+---
+
+# Why Use This Actor?
+
+Unlike generic web scrapers, this Actor is specifically designed for structured directory and map websites where data is hidden inside JavaScript objects and embedded content.
+
+Key benefits:
+
+- Structured extraction
+- Category decoding
+- Service decoding
+- Excel-ready output
+- Contact information extraction
+- Product classification
+- Fast execution
+- Research-grade datasets
+
+Perfect for analysts, researchers, consultants, lead-generation teams, NGOs, and market intelligence professionals.

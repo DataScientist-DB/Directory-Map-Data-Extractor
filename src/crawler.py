@@ -14,6 +14,7 @@ from src.taxonomy import (
     extract_taxonomy_maps_from_json,
     try_parse_json,
 )
+from src.modes.generic_cards import extract_generic_cards
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -101,7 +102,52 @@ def _normalize_url(base_url: str, maybe_relative: Optional[str]) -> Optional[str
 def _is_empty(v: Any) -> bool:
     return v is None or (isinstance(v, str) and v.strip() == "")
 
+def _split_products_into_category_and_services(products: Any) -> tuple[list[str], list[str]]:
+    """
+    Regeneration Canada stores product/category and regenerative practice text
+    inside the `products` field.
 
+    Before 'REGENERATIVE PRACTICES' = product/category information.
+    After 'REGENERATIVE PRACTICES' = service/practice information.
+    """
+    if not products:
+        return [], []
+
+    text = _html.unescape(str(products)).strip()
+    if not text:
+        return [], []
+
+    markers = ["REGENERATIVE PRACTICES", "OBSERVATIONS"]
+    upper = text.upper()
+
+    product_part = text
+    practice_part = ""
+
+    if "REGENERATIVE PRACTICES" in upper:
+        idx = upper.find("REGENERATIVE PRACTICES")
+        product_part = text[:idx]
+        practice_part = text[idx:].replace("REGENERATIVE PRACTICES", "").strip()
+
+    if "OBSERVATIONS" in practice_part.upper():
+        idx = practice_part.upper().find("OBSERVATIONS")
+        practice_part = practice_part[:idx]
+
+    def clean_parts(value: str) -> list[str]:
+        parts = []
+        for x in value.split(";"):
+            x = " ".join(x.split()).strip(" .:-")
+            if x:
+                parts.append(x)
+
+        seen = set()
+        out = []
+        for x in parts:
+            if x not in seen:
+                seen.add(x)
+                out.append(x)
+        return out
+
+    return clean_parts(product_part), clean_parts(practice_part)
 async def _scroll_to_load_more(page, scroll_delay_ms: int = 800, max_scrolls: int = 30) -> None:
     last_height = await page.evaluate("document.body.scrollHeight")
     for _ in range(max_scrolls):
@@ -164,22 +210,76 @@ async def _extract_field(card, base_url: str, spec: FieldSpec) -> Optional[str]:
 
 def _extract_fields_from_js_object(js_obj: str, keys: list[str]) -> dict:
     out: dict = {}
+
     for k in keys:
+        # 1) String value: key: "value"
         m = re.search(r"\b" + re.escape(k) + r'\s*:\s*"([^"]*)"', js_obj)
-        out[k] = m.group(1) if m else None
+        if m:
+            out[k] = _html.unescape(m.group(1)).strip()
+            continue
+
+        # 2) Array value: key: ["a","b"] or key: [ ... ]
+        m = re.search(r"\b" + re.escape(k) + r"\s*:\s*\[([^\]]*)\]", js_obj, re.S)
+        if m:
+            raw = m.group(1)
+            values = re.findall(r'"([^"]+)"', raw)
+            if values:
+                out[k] = "; ".join(_html.unescape(v).strip() for v in values if v.strip())
+            else:
+                out[k] = raw.strip()
+            continue
+
+        # 3) Object value: key: { ... }
+        m = re.search(r"\b" + re.escape(k) + r"\s*:\s*\{([^{}]*)\}", js_obj, re.S)
+        if m:
+            raw = m.group(1)
+            values = re.findall(r'"([^"]+)"', raw)
+            if values:
+                out[k] = "; ".join(_html.unescape(v).strip() for v in values if v.strip())
+            else:
+                out[k] = raw.strip()
+            continue
+
+        out[k] = None
+
     return out
 
-
 def _extract_embedded_objects(html: str, anchor_key: str, keys: Optional[list[str]] = None) -> list[dict]:
-    pattern = re.compile(r"\{[^{}]*" + re.escape(anchor_key) + r'\s*:\s*"[^"]*"[^{}]*\}')
-    matches = pattern.findall(html)
+    """
+    Extract embedded listing objects from JavaScript/HTML.
 
+    The old version captured only a small {...logoMedium...} object.
+    Some fields such as products/services/results may be outside that small object,
+    so this version extracts a wider window around each listing.
+    """
     if not keys:
-        keys = ["name", "loc", "address", "email", "tel", "website", "pageURL", "logo", "logoMedium"]
+        keys = [
+            "name", "loc", "address", "lat", "lng", "email", "tel",
+            "website", "pageURL", "categories", "products", "services",
+            "buy", "size", "results", "quote", "logo", "logoMedium"
+        ]
 
-    return [_extract_fields_from_js_object(m, keys) for m in matches]
+    objects = []
+    seen = set()
 
+    for m in re.finditer(re.escape(anchor_key), html):
+        start = max(0, m.start() - 8000)
+        end = min(len(html), m.end() + 8000)
+        window = html[start:end]
 
+        obj = _extract_fields_from_js_object(window, keys)
+
+        key = obj.get("pageURL") or obj.get("website") or obj.get("name") or obj.get("logoMedium")
+        if not key:
+            continue
+
+        if key in seen:
+            continue
+
+        seen.add(key)
+        objects.append(obj)
+
+    return objects
 # -------------------------
 # Taxonomy code helpers
 # -------------------------
@@ -329,10 +429,17 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
             raise ValueError("DOM mode: Input must include listingSelector.")
         if not isinstance(fields, dict) or not fields:
             raise ValueError("DOM mode: Input must include fields mapping.")
+
     elif mode == "embedded_js":
         pass
+
+    elif mode == "generic_cards":
+        pass
+
     else:
-        raise ValueError("mode must be 'dom' or 'embedded_js'")
+        raise ValueError(
+            "mode must be 'dom', 'embedded_js', or 'generic_cards'"
+        )
 
     # ✅ MUST be defined before Playwright + while-loop
     to_visit = [u["url"] if isinstance(u, dict) else str(u) for u in start_urls]
@@ -427,7 +534,53 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
             if infinite_enabled:
                 await _scroll_to_load_more(page, scroll_delay_ms, max_scrolls)
+            # -------------------------
+            # GENERIC CARDS MODE
+            # -------------------------
 
+            if mode == "generic_cards":
+
+                html = await page.content()
+
+                records = extract_generic_cards(
+                    html=html,
+                    source_url=url,
+                )
+
+                if debug:
+                    print(
+                        f"DEBUG generic_cards: extracted {len(records)} records"
+                    )
+
+                for record in records:
+
+                    if pushed >= max_listings:
+                        break
+
+                    key = (
+                            record.get("website")
+                            or record.get("email")
+                            or record.get("name")
+                    )
+
+                    if key in seen_keys:
+                        continue
+
+                    seen_keys.add(key)
+
+                    await Actor.push_data({
+                        "entity_name": record.get("name"),
+                        "website": record.get("website"),
+                        "email": record.get("email"),
+                        "phone": record.get("phone"),
+                        "source_url": record.get("source_url"),
+                        "services": record.get("description"),
+                        "social_links": record.get("social_links"),
+                    })
+
+                    pushed += 1
+
+                continue
             # ---------- EMBEDDED JS MODE ----------
             if mode == "embedded_js":
                 await _wait_for_embedded_data(page, anchor_key=anchor_key, timeout_ms=45000)
@@ -484,6 +637,35 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     if all(_is_empty(record.get(k)) for k in record.keys() if k != "source_url"):
                         continue
 
+                    def _fallback_list(*values):
+                        out = []
+                        for value in values:
+                            if not value:
+                                continue
+
+                            if isinstance(value, list):
+                                for x in value:
+                                    if x:
+                                        out.append(str(x).strip())
+                            elif isinstance(value, dict):
+                                for x in value.values():
+                                    if x:
+                                        out.append(str(x).strip())
+                            else:
+                                s = str(value).strip()
+                                if s:
+                                    out.append(s)
+
+                        # remove duplicates
+                        seen = set()
+                        clean = []
+                        for x in out:
+                            if x and x not in seen:
+                                seen.add(x)
+                                clean.append(x)
+
+                        return clean
+
                     cat_codes = _extract_codes_any(record.get("categories"), kind="rpc")
                     srv_codes = _extract_codes_any(record.get("services"), kind="rss")
 
@@ -493,8 +675,41 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     record["category_names"] = _map_codes(cat_codes, all_cat)
                     record["service_names"] = _map_codes(srv_codes, all_srv)
 
-                    record["category_names_str"] = "; ".join(record["category_names"]) if record["category_names"] else ""
+                    # Regeneration Canada fallback:
+                    # products contains both product/category info and regenerative practices.
+                    product_categories, regenerative_services = _split_products_into_category_and_services(
+                        record.get("products")
+                    )
+
+                    if not record["category_names"] and product_categories:
+                        record["category_names"] = product_categories
+
+                    if not record["service_names"] and regenerative_services:
+                        record["service_names"] = regenerative_services
+
+                    record["category_names_str"] = "; ".join(record["category_names"]) if record[
+                        "category_names"] else ""
                     record["service_names_str"] = "; ".join(record["service_names"]) if record["service_names"] else ""
+                    # Strong fallback: use products/categories when decoded taxonomy is empty
+                    if not record["category_names"]:
+                        record["category_names"] = _fallback_list(
+                            record.get("products"),
+                            record.get("category"),
+                            record.get("categories"),
+                        )
+
+                    # Strong fallback: use services/how_to_buy when decoded taxonomy is empty
+                    if not record["service_names"]:
+                        record["service_names"] = _fallback_list(
+                            record.get("services"),
+                            record.get("service"),
+                            record.get("how_to_buy"),
+                        )
+
+                    record["category_names_str"] = "; ".join(record["category_names"]) if record[
+                        "category_names"] else ""
+                    record["service_names_str"] = "; ".join(record["service_names"]) if record["service_names"] else ""
+
 
                     await Actor.push_data(record)
                     pushed += 1
@@ -525,6 +740,12 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     continue
                 seen_keys.add(key)
 
+                if record.get("products"):
+                    product_categories, regenerative_services = _split_products_into_category_and_services(
+                        record.get("products"))
+                    record["category_names_str"] = "; ".join(product_categories)
+                    record["service_names_str"] = "; ".join(regenerative_services)
+
                 await Actor.push_data(record)
                 pushed += 1
 
@@ -552,5 +773,16 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
         "STATS",
         {"pushed": pushed, "visited_pages": len(visited), "unique_keys": len(seen_keys), "mode": mode},
     )
+
+    # ---- Monetization: charge per validated business record ----
+    if pushed > 0:
+        try:
+            await Actor.charge(
+                event_name="business_result",
+                count=pushed,
+            )
+            Actor.log.info(f"Charged business_result event for {pushed} business records.")
+        except Exception as e:
+            Actor.log.warning(f"Could not charge business_result event: {e}")
 
     return {"category_map": all_cat, "service_map": all_srv}

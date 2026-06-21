@@ -1,0 +1,21 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "Directory Listing Extractor Output",
+  "properties": {
+    "dataset": {
+      "type": "string",
+      "title": "Extracted directory listings",
+      "template": "{{links.defaultDatasetUrl}}"
+    },
+    "csv": {
+      "type": "string",
+      "title": "CSV export",
+      "template": "{{links.defaultKeyValueStoreUrl}}/records/output.csv"
+    },
+    "xlsx": {
+      "type": "string",
+      "title": "Excel export",
+      "template": "{{links.defaultKeyValueStoreUrl}}/records/output.xlsx"
+    }
+  }
+}

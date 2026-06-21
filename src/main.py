@@ -30,7 +30,6 @@ def _normalize_tax_map(m: Dict[Any, Any]) -> Dict[str, str]:
 
 
 def _cell(v: Any) -> str:
-    """Make values safe for CSV/XLSX."""
     if v is None:
         return ""
     if isinstance(v, (str, int, float, bool)):
@@ -40,6 +39,91 @@ def _cell(v: Any) -> str:
     if isinstance(v, dict):
         return json.dumps(v, ensure_ascii=False)
     return str(v)
+
+
+def _codes_to_names(value: Any, mapping: Dict[Any, Any]) -> str:
+    if not value:
+        return ""
+
+    normalized_map = _normalize_tax_map(mapping)
+
+    if isinstance(value, str):
+        codes = [x.strip().lower() for x in value.replace(",", ";").split(";")]
+    elif isinstance(value, (list, tuple, set)):
+        codes = [str(x).strip().lower() for x in value]
+    else:
+        codes = [str(value).strip().lower()]
+
+    names = []
+    seen = set()
+
+    for code in codes:
+        if not code:
+            continue
+
+        name = normalized_map.get(code, code)
+
+        if name and name not in seen:
+            seen.add(name)
+            names.append(name)
+
+    return "; ".join(names)
+
+
+def _clean_text(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, (list, tuple, set)):
+        value = "; ".join(str(x) for x in value if x)
+    elif isinstance(value, dict):
+        value = "; ".join(str(x) for x in value.values() if x)
+    else:
+        value = str(value)
+
+    value = html.unescape(value)
+    return " ".join(value.split()).strip()
+
+
+def _clean_semicolon(value: Any) -> str:
+    value = _clean_text(value)
+    if not value:
+        return ""
+
+    parts = []
+    seen = set()
+
+    for part in value.split(";"):
+        p = " ".join(part.split()).strip(" .:-")
+        if not p:
+            continue
+        if p.upper() in {"REGENERATIVE PRACTICES", "OBSERVATIONS"}:
+            continue
+        if p not in seen:
+            seen.add(p)
+            parts.append(p)
+
+    return "; ".join(parts)
+
+
+def _split_source_text(value: Any) -> tuple[str, str]:
+    text = _clean_text(value)
+    if not text:
+        return "", ""
+
+    upper = text.upper()
+    category_part = text
+    service_part = ""
+
+    if "REGENERATIVE PRACTICES" in upper:
+        idx = upper.find("REGENERATIVE PRACTICES")
+        category_part = text[:idx]
+        service_part = text[idx + len("REGENERATIVE PRACTICES"):]
+
+    if "OBSERVATIONS" in service_part.upper():
+        idx = service_part.upper().find("OBSERVATIONS")
+        service_part = service_part[:idx]
+
+    return _clean_semicolon(category_part), _clean_semicolon(service_part)
 
 
 async def export_dataset_to_kv(
@@ -52,12 +136,70 @@ async def export_dataset_to_kv(
     data = await ds.get_data(limit=999999)
     items = data.items or []
 
-    # filter out probe rows if any exist
     items = [r for r in items if not (isinstance(r, dict) and r.get("_probe"))]
 
-    Actor.log.info(f"EXPORT: dataset items={len(items)}")
+    rows_with_products = 0
+    rows_with_results = 0
+    rows_with_quote = 0
+    filled_categories = 0
+    filled_services = 0
 
-    # ---- CURATED STORE-READY COLUMNS ----
+    for r in items:
+        if not isinstance(r, dict):
+            continue
+
+        if r.get("category_codes"):
+            r["category_names_str"] = _codes_to_names(
+                r.get("category_codes"),
+                RPC_CATEGORY_MAP,
+            )
+
+        if r.get("service_codes"):
+            r["service_names_str"] = _codes_to_names(
+                r.get("service_codes"),
+                RSS_SERVICE_MAP,
+            )
+
+        if _clean_text(r.get("products")):
+            rows_with_products += 1
+        if _clean_text(r.get("results")):
+            rows_with_results += 1
+        if _clean_text(r.get("quote")):
+            rows_with_quote += 1
+
+        source_text = (
+            _clean_text(r.get("products"))
+            or _clean_text(r.get("results"))
+            or _clean_text(r.get("quote"))
+            or _clean_text(r.get("categories"))
+            or _clean_text(r.get("services"))
+        )
+
+        category_text, service_text = _split_source_text(source_text)
+
+        if not _clean_text(r.get("category_names_str")) and category_text:
+            r["category_names_str"] = category_text
+            filled_categories += 1
+
+        if not _clean_text(r.get("service_names_str")) and service_text:
+            r["service_names_str"] = service_text
+            filled_services += 1
+
+
+
+    Actor.log.info(f"EXPORT: dataset items={len(items)}")
+    if items:
+        sample = next(
+            (
+                r for r in items
+                if r.get("products") or r.get("category_names_str") or r.get("service_names_str")
+            ),
+            items[0],
+        )
+
+
+        Actor.log.info(f"EXPORT: dataset items={len(items)}")
+
     DEFAULT_COLUMNS = [
         "entity_name",
         "location",
@@ -68,6 +210,7 @@ async def export_dataset_to_kv(
         "profile_url",
         "category_names_str",
         "service_names_str",
+        "products",
         "source_url",
     ]
 
@@ -82,7 +225,6 @@ async def export_dataset_to_kv(
         "lat",
         "lng",
         "quote",
-        "products",
         "services",
         "how_to_buy",
         "size",
@@ -91,7 +233,6 @@ async def export_dataset_to_kv(
 
     cols = ALL_COLUMNS if (columns_mode or "").strip().lower() == "all" else DEFAULT_COLUMNS
 
-    # ---------- CSV ----------
     if write_csv:
         buf = io.StringIO()
         w = csv.writer(buf)
@@ -106,7 +247,6 @@ async def export_dataset_to_kv(
         )
         Actor.log.info(f"Uploaded KV: {out_base}.csv")
 
-    # ---------- XLSX ----------
     if write_xlsx:
         from openpyxl import Workbook
 
@@ -133,13 +273,11 @@ async def main() -> None:
     async with Actor:
         input_data = await Actor.get_input() or {}
 
-        # Backward compatible: accept either startUrls (old) or startUrl (new schema)
         if not input_data.get("startUrls"):
             su = (input_data.get("startUrl") or "").strip()
             if su:
                 input_data["startUrls"] = [{"url": su}]
 
-        # If input is empty, apply safe demo defaults
         if not input_data:
             input_data = {
                 "mode": "embedded_js",
@@ -149,6 +287,27 @@ async def main() -> None:
                 "embedded": {
                     "enabled": True,
                     "preferJsonLd": True,
+                    "anchorKey": "logoMedium",
+                    "keys": [
+                        "name",
+                        "loc",
+                        "address",
+                        "lat",
+                        "lng",
+                        "email",
+                        "tel",
+                        "website",
+                        "pageURL",
+                        "categories",
+                        "products",
+                        "services",
+                        "buy",
+                        "size",
+                        "results",
+                        "quote",
+                        "logo",
+                        "logoMedium",
+                    ],
                     "fieldMap": {
                         "name": "entity_name",
                         "loc": "location",
@@ -182,20 +341,19 @@ async def main() -> None:
 
         start_url = (input_data.get("startUrls") or [{}])[0].get("url")
 
-        # KV probe only (do NOT pollute Dataset)
         await Actor.set_value(
             "PROBE.json",
             {"_probe": True, "message": "KV store works", "start_url": start_url},
             content_type="application/json",
         )
 
-        # --- Run crawler (crawler pushes rows via Actor.push_data) ---
         crawl_info = await run_crawler(input_data) or {}
 
         ds = await Actor.open_dataset()
         peek = await ds.get_data(limit=3)
         Actor.log.info(
-            f"DATASET AFTER CRAWL count={len(peek.items or [])} keys={list((peek.items or [{}])[0].keys()) if (peek.items or []) else []}"
+            f"DATASET AFTER CRAWL count={len(peek.items or [])} "
+            f"keys={list((peek.items or [{}])[0].keys()) if (peek.items or []) else []}"
         )
 
         auto_cat = crawl_info.get("category_map", {}) or {}
@@ -238,7 +396,6 @@ async def main() -> None:
             content_type="application/json",
         )
 
-        # Export from dataset -> KV
         Actor.log.info("Starting dataset export to KV...")
         await export_dataset_to_kv(
             out_base=input_data.get("outputBaseName", "output"),
@@ -252,3 +409,4 @@ if __name__ == "__main__":
     import asyncio
 
     asyncio.run(main())
+

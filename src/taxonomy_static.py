@@ -22,6 +22,7 @@ RPC_CATEGORY_MAP: Dict[str, str] = {
     "rpc11": "Honey & bee products",
     "rpc12": "Value-added products",
     "rpc13": "Mixed farming",
+    "rpc14": "Herbs & medicinal plants",
     "rpc15": "Other / multiple categories",
     "rpc100": "Other / multiple categories",
 }

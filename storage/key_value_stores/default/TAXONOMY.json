@@ -1,5 +1,5 @@
 {
-  "source_url": "https://regenerationcanada.org/en/map/",
+  "source_url": "https://www.scrapethissite.com/pages/simple/",
   "category_map": {
     "rpc1": "Beef",
     "rpc2": "Poultry",
@@ -14,6 +14,7 @@
     "rpc11": "Honey & bee products",
     "rpc12": "Value-added products",
     "rpc13": "Mixed farming",
+    "rpc14": "Herbs & medicinal plants",
     "rpc15": "Other / multiple categories",
     "rpc100": "Other / multiple categories"
   },
@@ -36,7 +37,7 @@
     "auto_services": 0,
     "manual_categories": 0,
     "manual_services": 0,
-    "final_categories": 15,
+    "final_categories": 16,
     "final_services": 12
   }
 }

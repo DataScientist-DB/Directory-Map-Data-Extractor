@@ -1,23 +1,36 @@
 {
   "title": "Directory Listing Extractor - Input",
-  "description": "Configure directory/map extraction from embedded JS objects or DOM listings.",
+  "description": "Configure universal business directory extraction from generic cards, embedded JS objects, or DOM listings.",
   "type": "object",
   "schemaVersion": 1,
   "properties": {
     "mode": {
-      "title": "Mode",
-      "description": "Extraction mode. Use embedded_js for JS-embedded listing objects. Use dom for HTML listing cards.",
+      "title": "Extraction Mode",
+      "description": "Choose how the Actor extracts listings. embedded_js is for JS/map directories, dom is for configured HTML selectors, generic_cards is for automatic extraction from common business directory cards.",
       "type": "string",
-      "default": "embedded_js",
+      "default": "generic_cards",
       "editor": "select",
-      "enum": ["embedded_js", "dom"]
+      "enum": [
+        "generic_cards",
+        "embedded_js",
+        "dom"
+      ],
+      "enumTitles": [
+        "Generic Cards - automatic business directory extraction",
+        "Embedded JS - map/JavaScript directory extraction",
+        "DOM - custom selector extraction"
+      ]
     },
     "startUrls": {
       "title": "Start URLs",
       "description": "One or more directory/map pages to crawl.",
       "type": "array",
       "editor": "requestListSources",
-      "default": [{ "url": "https://regenerationcanada.org/en/map/" }]
+      "default": [
+        {
+          "url": "https://regenerationcanada.org/en/map/"
+        }
+      ]
     },
     "maxListings": {
       "title": "Max listings",
@@ -59,7 +72,10 @@
       "type": "string",
       "default": "default",
       "editor": "select",
-      "enum": ["default", "all"]
+      "enum": [
+        "default",
+        "all"
+      ]
     },
     "outputBaseName": {
       "title": "Output base name",
@@ -141,6 +157,9 @@
       "additionalProperties": true
     }
   },
-  "required": ["mode", "startUrls"],
+  "required": [
+    "mode",
+    "startUrls"
+  ],
   "additionalProperties": true
 }

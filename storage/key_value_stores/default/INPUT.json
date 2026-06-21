@@ -2,13 +2,13 @@
   "mode": "generic_cards",
   "startUrls": [
     {
-      "url": "https://www.bark.com/en/us/services/web-design/"
+      "url": "https://www.scrapethissite.com/pages/simple/"
     }
   ],
   "maxListings": 20,
   "maxPages": 1,
   "outputCsv": true,
   "outputXlsx": true,
-  "outputBaseName": "generic_cards_test",
+  "outputBaseName": "generic_cards_simple_test",
   "debug": true
 }
