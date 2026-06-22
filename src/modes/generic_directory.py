@@ -36,6 +36,9 @@ SECURITY_TERMS = [
     "ddos protection",
     "enable javascript",
     "verify you are human",
+    "awswaf",
+    "token.awswaf.com",
+    "challenge.js",
 ]
 
 def discover_card_selectors(html: str) -> List[Dict[str, Any]]:

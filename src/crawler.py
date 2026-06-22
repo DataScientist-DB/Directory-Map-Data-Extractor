@@ -690,7 +690,14 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
             if mode == "generic_cards":
 
-                html = await page.content()
+                try:
+                    await page.wait_for_load_state("domcontentloaded", timeout=15000)
+                    await page.wait_for_timeout(2000)
+                    html = await page.content()
+                except Exception as e:
+                    if debug:
+                        print("WARNING: could not capture page HTML:", url, repr(e))
+                    continue
 
                 records = extract_generic_cards(
                     html=html,
