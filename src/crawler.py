@@ -21,6 +21,7 @@ from src.modes.confidence import (
     calculate_confidence,
     confidence_level,
 )
+from src.modes.profile_matching import match_profile_url
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -607,7 +608,13 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     if pushed >= max_listings:
                         break
 
-                    profile_url = profile_links[idx] if idx < len(profile_links) else ""
+                    profile_url = match_profile_url(
+                        record,
+                        profile_links,
+                    )
+
+                    if not profile_url and idx < len(profile_links):
+                        profile_url = profile_links[idx]
 
                     merged = {
                         "entity_name": record.get("name"),
