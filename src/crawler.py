@@ -518,12 +518,12 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                 ct = (resp.headers.get("content-type") or "").lower()
                 url2 = (resp.url or "").lower()
 
-                if all_cat.get("_blocked"):
-                    result["stats"]["blocked"] = True
+
 
                 if "token.awswaf.com" in url2 or "challenge.js" in url2:
                     all_cat["_blocked"] = "aws_waf"
                     return
+
                 # Keep this permissive; many sites send JSON as text/html or text/plain
                 if any(x in url2 for x in (".png", ".jpg", ".jpeg", ".webp", ".svg", ".css", ".woff", ".woff2")):
                     return
