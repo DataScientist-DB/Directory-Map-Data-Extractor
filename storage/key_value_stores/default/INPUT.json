@@ -2,13 +2,13 @@
   "mode": "generic_directory",
   "startUrls": [
     {
-      "url": "https://www.scrapethissite.com/pages/simple/"
+      "url": "https://www.goodfirms.co/directory/platform/app-development"
     }
   ],
   "maxListings": 20,
   "maxPages": 1,
   "outputCsv": true,
   "outputXlsx": true,
-  "outputBaseName": "generic_directory_test",
+  "outputBaseName": "goodfirms_directory_test",
   "debug": true
 }

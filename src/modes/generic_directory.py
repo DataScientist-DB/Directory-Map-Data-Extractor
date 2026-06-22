@@ -21,7 +21,14 @@ CANDIDATE_SELECTORS = [
     ".profile",
     "li",
 ]
-
+SECURITY_TERMS = [
+    "security verification",
+    "verify you are not a bot",
+    "cf-challenge",
+    "cloudflare",
+    "captcha",
+    "attention required",
+]
 
 def discover_card_selectors(html: str) -> List[Dict[str, Any]]:
     soup = BeautifulSoup(html, "html.parser")
@@ -109,6 +116,23 @@ def extract_generic_directory_page(
     - extracted business cards
     - possible profile/detail links
     """
+
+
+    html_lower = html.lower()
+
+    if any(term in html_lower for term in SECURITY_TERMS):
+        return {
+            "source_url": source_url,
+            "selectors": [],
+            "records": [],
+            "profile_links": [],
+            "stats": {
+                "blocked": True,
+                "selector_candidates": 0,
+                "records": 0,
+                "profile_links": 0,
+            },
+        }
 
     selectors = discover_card_selectors(html)
     cards = extract_generic_cards(html, source_url)

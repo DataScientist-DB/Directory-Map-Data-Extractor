@@ -550,6 +550,8 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
                 html = await page.content()
 
+                await Actor.set_value("DEBUG_PAGE.html", html, content_type="text/html")
+
                 result = extract_generic_directory_page(
                     html=html,
                     source_url=url,
@@ -558,6 +560,17 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                 if debug:
                     print(f"DEBUG generic_directory stats: {result.get('stats')}")
                     print(f"DEBUG generic_directory selectors: {result.get('selectors')[:3]}")
+
+                if debug:
+                    print(
+                        f"DEBUG generic_directory stats: "
+                        f"{result.get('stats')}"
+                    )
+
+                    print(
+                        f"DEBUG profile links found: "
+                        f"{len(result.get('profile_links', []))}"
+                    )
 
                 for record in result.get("records", []):
 
