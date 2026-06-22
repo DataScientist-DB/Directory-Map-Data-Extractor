@@ -30,6 +30,12 @@ SECURITY_TERMS = [
     "challenge-platform",
     "captcha",
     "attention required",
+    "just a moment",
+    "please wait",
+    "checking your browser",
+    "ddos protection",
+    "enable javascript",
+    "verify you are human",
 ]
 
 def discover_card_selectors(html: str) -> List[Dict[str, Any]]:
