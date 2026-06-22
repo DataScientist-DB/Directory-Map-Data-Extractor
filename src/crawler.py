@@ -410,6 +410,26 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
     max_pages = int(input_data.get("maxPages", 50))
     debug = bool(input_data.get("debug", False))
 
+    enable_profile_enrichment = bool(
+        input_data.get("enableProfileEnrichment", True)
+    )
+
+    max_profile_pages = int(
+        input_data.get("maxProfilePages", 5)
+    )
+
+    confidence_threshold = int(
+        input_data.get("confidenceThreshold", 0)
+    )
+
+    if debug:
+        print(
+            "CONFIG:",
+            enable_profile_enrichment,
+            max_profile_pages,
+            confidence_threshold,
+        )
+
     listing_selector = input_data.get("listingSelector")
     fields: Dict[str, FieldSpec] = input_data.get("fields") or {}
 
@@ -576,7 +596,10 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
                 # Push records found directly on directory page
                 records = result.get("records", [])
-                profile_links = result.get("profile_links", [])[:5]
+                profile_links = result.get(
+                    "profile_links",
+                    []
+                )[:max_profile_pages]
 
                 used_profiles = set()
 
@@ -598,7 +621,11 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                         "blocked": False,
                     }
 
-                    if profile_url and profile_url not in used_profiles:
+                    if (
+                            enable_profile_enrichment
+                            and profile_url
+                            and profile_url not in used_profiles
+                    ):
                         try:
                             await page.goto(
                                 profile_url,
@@ -630,6 +657,10 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     merged["confidence_level"] = confidence_level(
                         merged["confidence_score"]
                     )
+
+                    if merged["confidence_score"] < confidence_threshold:
+                        continue
+
                     key = (
                             merged.get("website")
                             or merged.get("email")
