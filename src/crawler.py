@@ -572,11 +572,18 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     continue
 
                 # Push records found directly on directory page
-                for record in result.get("records", []):
+                records = result.get("records", [])
+                profile_links = result.get("profile_links", [])[:5]
+
+                used_profiles = set()
+
+                for idx, record in enumerate(records):
                     if pushed >= max_listings:
                         break
 
-                    out = {
+                    profile_url = profile_links[idx] if idx < len(profile_links) else ""
+
+                    merged = {
                         "entity_name": record.get("name"),
                         "website": record.get("website"),
                         "email": record.get("email"),
@@ -584,77 +591,54 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                         "source_url": record.get("source_url"),
                         "services": record.get("description"),
                         "social_links": record.get("social_links"),
+                        "profile_url": profile_url,
                         "blocked": False,
                     }
 
-                    out["confidence_score"] = calculate_confidence(out)
+                    if profile_url and profile_url not in used_profiles:
+                        try:
+                            await page.goto(
+                                profile_url,
+                                wait_until="domcontentloaded",
+                                timeout=30000,
+                            )
+
+                            detail_html = await page.content()
+                            enrichment = enrich_detail_page(detail_html)
+                            socials = enrichment.get("socials", {}) or {}
+
+                            merged["website"] = merged.get("website") or enrichment.get("website", "")
+                            merged["email"] = merged.get("email") or enrichment.get("email", "")
+                            merged["phone"] = merged.get("phone") or enrichment.get("phone", "")
+
+                            merged["linkedin"] = enrichment.get("linkedin") or socials.get("linkedin", "")
+                            merged["facebook"] = enrichment.get("facebook") or socials.get("facebook", "")
+                            merged["instagram"] = enrichment.get("instagram") or socials.get("instagram", "")
+                            merged["youtube"] = enrichment.get("youtube") or socials.get("youtube", "")
+                            merged["twitter"] = enrichment.get("twitter") or socials.get("twitter", "")
+
+                            used_profiles.add(profile_url)
+
+                        except Exception as e:
+                            if debug:
+                                print("DETAIL PAGE ERROR:", profile_url, repr(e))
+
+                    merged["confidence_score"] = calculate_confidence(merged)
 
                     key = (
-                            out.get("website")
-                            or out.get("email")
-                            or out.get("phone")
-                            or out.get("entity_name")
+                            merged.get("website")
+                            or merged.get("email")
+                            or merged.get("phone")
+                            or merged.get("entity_name")
+                            or merged.get("profile_url")
                     )
 
                     if key in seen_keys:
                         continue
 
                     seen_keys.add(key)
-                    await Actor.push_data(out)
+                    await Actor.push_data(merged)
                     pushed += 1
-
-                # Visit profile/detail pages and enrich contacts/socials
-                profile_links = result.get("profile_links", [])[:5]
-
-                for profile_url in profile_links:
-                    if pushed >= max_listings:
-                        break
-
-                    if profile_url in seen_keys:
-                        continue
-
-                    try:
-                        await page.goto(
-                            profile_url,
-                            wait_until="domcontentloaded",
-                            timeout=30000,
-                        )
-
-                        detail_html = await page.content()
-                        enrichment = enrich_detail_page(detail_html)
-
-                        socials = enrichment.get("socials", {}) or {}
-
-                        out = {
-                            "entity_name": "",
-                            "website": enrichment.get("website", ""),
-                            "email": (
-                                    enrichment.get("email")
-                                    or "; ".join(enrichment.get("emails", []) or [])
-                            ),
-                            "phone": (
-                                    enrichment.get("phone")
-                                    or "; ".join(enrichment.get("phones", []) or [])
-                            ),
-                            "linkedin": enrichment.get("linkedin") or socials.get("linkedin", ""),
-                            "facebook": enrichment.get("facebook") or socials.get("facebook", ""),
-                            "instagram": enrichment.get("instagram") or socials.get("instagram", ""),
-                            "youtube": enrichment.get("youtube") or socials.get("youtube", ""),
-                            "twitter": enrichment.get("twitter") or socials.get("twitter", ""),
-                            "profile_url": profile_url,
-                            "source_url": url,
-                            "blocked": False,
-                        }
-
-                        out["confidence_score"] = calculate_confidence(out)
-
-                        seen_keys.add(profile_url)
-                        await Actor.push_data(out)
-                        pushed += 1
-
-                    except Exception as e:
-                        if debug:
-                            print("DETAIL PAGE ERROR:", profile_url, repr(e))
 
                 continue
             # -------------------------
