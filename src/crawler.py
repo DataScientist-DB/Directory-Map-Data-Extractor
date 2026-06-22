@@ -17,7 +17,10 @@ from src.taxonomy import (
 from src.modes.generic_cards import extract_generic_cards
 from src.modes.generic_directory import extract_generic_directory_page
 from src.modes.detail_page_enrichment import enrich_detail_page
-from src.modes.confidence import calculate_confidence
+from src.modes.confidence import (
+    calculate_confidence,
+    confidence_level,
+)
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -624,7 +627,9 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                                 print("DETAIL PAGE ERROR:", profile_url, repr(e))
 
                     merged["confidence_score"] = calculate_confidence(merged)
-
+                    merged["confidence_level"] = confidence_level(
+                        merged["confidence_score"]
+                    )
                     key = (
                             merged.get("website")
                             or merged.get("email")

@@ -14,3 +14,11 @@ def calculate_confidence(record):
         score += 10
 
     return min(score, 100)
+
+
+def confidence_level(score: int) -> str:
+    if score >= 90:
+        return "High"
+    elif score >= 70:
+        return "Medium"
+    return "Low"
