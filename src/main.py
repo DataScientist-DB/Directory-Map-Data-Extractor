@@ -202,15 +202,20 @@ async def export_dataset_to_kv(
 
     DEFAULT_COLUMNS = [
         "entity_name",
-        "location",
-        "address",
-        "phone",
-        "email",
         "website",
+        "email",
+        "phone",
+
+        "linkedin",
+        "facebook",
+        "instagram",
+        "youtube",
+        "twitter",
+
         "profile_url",
-        "category_names_str",
-        "service_names_str",
-        "products",
+        "confidence_score",
+        "blocked",
+
         "source_url",
     ]
 

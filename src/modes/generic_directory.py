@@ -22,10 +22,12 @@ CANDIDATE_SELECTORS = [
     "li",
 ]
 SECURITY_TERMS = [
-    "security verification",
+    "performing security verification",
     "verify you are not a bot",
+    "checking if the site connection is secure",
     "cf-challenge",
-    "cloudflare",
+    "cf-turnstile",
+    "challenge-platform",
     "captcha",
     "attention required",
 ]

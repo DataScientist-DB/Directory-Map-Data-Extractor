@@ -1,14 +1,14 @@
 {
-  "mode": "generic_directory",
+  "mode": "generic_cards",
   "startUrls": [
     {
-      "url": "https://www.goodfirms.co/directory/platform/app-development"
+      "url": "https://www.scrapethissite.com/pages/advanced/"
     }
   ],
   "maxListings": 20,
   "maxPages": 1,
   "outputCsv": true,
   "outputXlsx": true,
-  "outputBaseName": "goodfirms_directory_test",
+  "outputBaseName": "advanced_cards_test",
   "debug": true
 }

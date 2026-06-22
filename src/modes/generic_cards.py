@@ -8,9 +8,33 @@ from src.modes.card_scoring import is_business_card
 
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+
 PHONE_RE = re.compile(
     r"(?:\+\d{1,3}[\s.-]+)?(?:\(?\d{2,4}\)?[\s.-]+)\d{2,4}[\s.-]+\d{3,4}"
 )
+
+BAD_NAMES = {
+    "per page",
+    "next",
+    "previous",
+    "search",
+    "submit",
+    "filter",
+    "sort",
+    "view",
+    "more",
+    "home",
+}
+
+BAD_NAME_PHRASES = {
+    "hockey teams",
+    "countries of the world",
+    "forms, searching and pagination",
+    "simple example",
+    "scrape this site",
+    "public sandbox",
+    "learn web scraping",
+}
 
 
 def clean_text(value: str) -> str:
@@ -19,18 +43,25 @@ def clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+def is_bad_name(name: str) -> bool:
+    n = clean_text(name).lower()
+
+    if not n:
+        return True
+
+    if n in BAD_NAMES:
+        return True
+
+    if any(phrase in n for phrase in BAD_NAME_PHRASES):
+        return True
+
+    if len(n.split()) > 12:
+        return True
+
+    return False
+
+
 def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
-    """
-    Generic business-card extractor.
-
-    Works for directory pages where businesses appear as repeated cards:
-    - company name
-    - website
-    - phone
-    - email
-    - address / description text
-    """
-
     soup = BeautifulSoup(html, "html.parser")
 
     candidate_selectors = [
@@ -82,12 +113,35 @@ def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
                 url = link["url"]
                 lower = url.lower()
 
-                if any(s in lower for s in ["linkedin.com", "facebook.com", "instagram.com", "twitter.com", "x.com"]):
+                if any(
+                    s in lower
+                    for s in [
+                        "linkedin.com",
+                        "facebook.com",
+                        "instagram.com",
+                        "twitter.com",
+                        "x.com",
+                        "youtube.com",
+                    ]
+                ):
                     social_links.append(url)
-                elif not website:
+                elif not website and not any(
+                        x in lower for x in [
+                            "/profile",
+                            "/company",
+                            "/business",
+                            "/member",
+                            "/listing",
+                            "view-profile",
+                            "view_profile",
+                        ]
+                    ):
                     website = url
 
             name = guess_name(card)
+
+            if is_bad_name(name):
+                continue
 
             key = (name.lower(), website.lower(), text[:80].lower())
             if key in seen:
@@ -101,23 +155,25 @@ def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
             phone_value = dedupe(phones)
 
             if not is_business_card(
-                    name=name,
-                    website=website,
-                    email=email_value,
-                    phone=phone_value,
-                    text=text,
+                name=name,
+                website=website,
+                email=email_value,
+                phone=phone_value,
+                text=text,
             ):
                 continue
 
-            records.append({
-                "name": name,
-                "website": website,
-                "email": email_value,
-                "phone": phone_value,
-                "social_links": dedupe(social_links),
-                "description": text[:500],
-                "source_url": source_url,
-            })
+            records.append(
+                {
+                    "name": name,
+                    "website": website,
+                    "email": email_value,
+                    "phone": phone_value,
+                    "social_links": dedupe(social_links),
+                    "description": text[:500],
+                    "source_url": source_url,
+                }
+            )
 
         if len(records) >= 3:
             break
@@ -126,10 +182,6 @@ def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
 
 
 def guess_name(card) -> str:
-    """
-    Guess company/business name from headings or strong link text.
-    """
-
     for selector in ["h1", "h2", "h3", "h4", ".title", ".name", "strong", "a"]:
         el = card.select_one(selector)
         if el:

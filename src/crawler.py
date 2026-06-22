@@ -16,6 +16,8 @@ from src.taxonomy import (
 )
 from src.modes.generic_cards import extract_generic_cards
 from src.modes.generic_directory import extract_generic_directory_page
+from src.modes.detail_page_enrichment import enrich_detail_page
+from src.modes.confidence import calculate_confidence
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -449,7 +451,7 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
 
     # ✅ MUST be defined before Playwright + while-loop
-    to_visit = [u["url"] if isinstance(u, dict) else str(u) for u in start_urls]
+
     visited: Set[str] = set()
     seen_keys: Set[str] = set()
     pushed = 0
@@ -550,7 +552,11 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
                 html = await page.content()
 
-                await Actor.set_value("DEBUG_PAGE.html", html, content_type="text/html")
+                await Actor.set_value(
+                    "DEBUG_PAGE.html",
+                    html,
+                    content_type="text/html",
+                )
 
                 result = extract_generic_directory_page(
                     html=html,
@@ -560,35 +566,17 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                 if debug:
                     print(f"DEBUG generic_directory stats: {result.get('stats')}")
                     print(f"DEBUG generic_directory selectors: {result.get('selectors')[:3]}")
+                    print(f"DEBUG profile links found: {len(result.get('profile_links', []))}")
 
-                if debug:
-                    print(
-                        f"DEBUG generic_directory stats: "
-                        f"{result.get('stats')}"
-                    )
+                if result.get("stats", {}).get("blocked"):
+                    continue
 
-                    print(
-                        f"DEBUG profile links found: "
-                        f"{len(result.get('profile_links', []))}"
-                    )
-
+                # Push records found directly on directory page
                 for record in result.get("records", []):
-
                     if pushed >= max_listings:
                         break
 
-                    key = (
-                            record.get("website")
-                            or record.get("email")
-                            or record.get("name")
-                    )
-
-                    if key in seen_keys:
-                        continue
-
-                    seen_keys.add(key)
-
-                    await Actor.push_data({
+                    out = {
                         "entity_name": record.get("name"),
                         "website": record.get("website"),
                         "email": record.get("email"),
@@ -596,12 +584,79 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                         "source_url": record.get("source_url"),
                         "services": record.get("description"),
                         "social_links": record.get("social_links"),
-                    })
+                        "blocked": False,
+                    }
 
+                    out["confidence_score"] = calculate_confidence(out)
+
+                    key = (
+                            out.get("website")
+                            or out.get("email")
+                            or out.get("phone")
+                            or out.get("entity_name")
+                    )
+
+                    if key in seen_keys:
+                        continue
+
+                    seen_keys.add(key)
+                    await Actor.push_data(out)
                     pushed += 1
 
-                continue
+                # Visit profile/detail pages and enrich contacts/socials
+                profile_links = result.get("profile_links", [])[:5]
 
+                for profile_url in profile_links:
+                    if pushed >= max_listings:
+                        break
+
+                    if profile_url in seen_keys:
+                        continue
+
+                    try:
+                        await page.goto(
+                            profile_url,
+                            wait_until="domcontentloaded",
+                            timeout=30000,
+                        )
+
+                        detail_html = await page.content()
+                        enrichment = enrich_detail_page(detail_html)
+
+                        socials = enrichment.get("socials", {}) or {}
+
+                        out = {
+                            "entity_name": "",
+                            "website": enrichment.get("website", ""),
+                            "email": (
+                                    enrichment.get("email")
+                                    or "; ".join(enrichment.get("emails", []) or [])
+                            ),
+                            "phone": (
+                                    enrichment.get("phone")
+                                    or "; ".join(enrichment.get("phones", []) or [])
+                            ),
+                            "linkedin": enrichment.get("linkedin") or socials.get("linkedin", ""),
+                            "facebook": enrichment.get("facebook") or socials.get("facebook", ""),
+                            "instagram": enrichment.get("instagram") or socials.get("instagram", ""),
+                            "youtube": enrichment.get("youtube") or socials.get("youtube", ""),
+                            "twitter": enrichment.get("twitter") or socials.get("twitter", ""),
+                            "profile_url": profile_url,
+                            "source_url": url,
+                            "blocked": False,
+                        }
+
+                        out["confidence_score"] = calculate_confidence(out)
+
+                        seen_keys.add(profile_url)
+                        await Actor.push_data(out)
+                        pushed += 1
+
+                    except Exception as e:
+                        if debug:
+                            print("DETAIL PAGE ERROR:", profile_url, repr(e))
+
+                continue
             # -------------------------
             # GENERIC CARDS MODE
             # -------------------------
