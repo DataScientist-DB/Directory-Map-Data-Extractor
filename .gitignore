@@ -14,3 +14,4 @@ storage/
 
 # macOS
 .DS_Store
+run.log
