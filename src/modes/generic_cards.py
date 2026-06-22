@@ -34,6 +34,9 @@ BAD_NAME_PHRASES = {
     "scrape this site",
     "public sandbox",
     "learn web scraping",
+    "no results found",
+    "no results",
+    "results not found",
 }
 
 
