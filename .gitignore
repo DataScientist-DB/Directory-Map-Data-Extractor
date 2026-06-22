@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Local Apify storage
+storage/
+
+# Test exports
+*.csv
+*.xlsx
+
+# macOS
+.DS_Store
+
+# Virtual env
+.venv/
