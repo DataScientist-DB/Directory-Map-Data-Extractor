@@ -518,11 +518,16 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                 ct = (resp.headers.get("content-type") or "").lower()
                 url2 = (resp.url or "").lower()
 
-
-
-                if "token.awswaf.com" in url2 or "challenge.js" in url2:
+                if "token.awswaf.com" in url2:
                     all_cat["_blocked"] = "aws_waf"
                     return
+
+                if "cdn-cgi/challenge-platform" in url2:
+                    all_cat["_blocked"] = "cloudflare"
+                    return
+
+                if "recaptcha" in url2:
+                    all_cat["_blocked"] = "recaptcha"
 
                 # Keep this permissive; many sites send JSON as text/html or text/plain
                 if any(x in url2 for x in (".png", ".jpg", ".jpeg", ".webp", ".svg", ".css", ".woff", ".woff2")):
@@ -592,6 +597,23 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     html=html,
                     source_url=url,
                 )
+                if all_cat.get("_blocked"):
+                    reason_map = {
+                        "aws_waf": "AWS WAF",
+                        "cloudflare": "Cloudflare Challenge",
+                        "recaptcha": "reCAPTCHA",
+                    }
+
+                    await Actor.push_data({
+                        "source_url": url,
+                        "status": "blocked",
+                        "blocked_reason": reason_map.get(all_cat.get("_blocked"), all_cat.get("_blocked")),
+                        "records_found": 0,
+                        "crawl_mode": mode,
+                    })
+
+                    continue
+
                 if all_cat.get("_blocked"):
                     result["stats"]["blocked"] = True
 
