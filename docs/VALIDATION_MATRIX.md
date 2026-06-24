@@ -4,35 +4,22 @@
 
 ### Validated Architectures
 
-| Architecture | Validation Site     | Status |
-| ------------ | ------------------- | ------ |
-| Embedded JS  | Regeneration Canada | PASS   |
-| Simpleview   | Buy Local RI        | PASS   |
-| CivicPlus    | South Portland      | PASS   |
+| Architecture / Capability | Status                |
+| ------------------------- | --------------------- |
+| Embedded JS               | ✅ Regeneration Canada |
+| Simpleview                | ✅ Buy Local RI        |
+| CivicPlus                 | ✅ South Portland      |
+| ChamberMaster             | ✅ Hobbs Chamber       |
+| AWS WAF                   | ✅ Europages           |
+| Cloudflare                | ✅ San Diego Chamber   |
+| reCAPTCHA Enterprise      | ✅ Fort Worth Chamber  |
 
-### Validated Protections
+Current Project Score
 
-| Protection           | Validation Site    | Status |
-| -------------------- | ------------------ | ------ |
-| AWS WAF              | Europages          | PASS   |
-| Cloudflare           | San Diego Chamber  | PASS   |
-| reCAPTCHA Enterprise | Fort Worth Chamber | PASS   |
-
-### Extraction Results
-
-| Site                | Records |
-| ------------------- | ------- |
-| Regeneration Canada | 161     |
-
-### New Features
-
-* Architecture detection
-* Architecture intelligence dataset output
-* Business-card classification
-* Improved generic_cards validation
-* Blocked-site intelligence reporting
-
-### Commit
-
-2b5f902
-
+A| Area                   | Status |
+| ----------------------- | ------ |
+| Architecture Detection  | 8.5/10 |
+| Extraction Engine       | 7/10   |
+| Anti-Bot Intelligence   | 9/10   |
+| Validation Coverage     | 7/10   |
+| Product Differentiation | 8.5/10 |
