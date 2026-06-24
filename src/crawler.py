@@ -35,13 +35,14 @@ _SS_RE = re.compile(r"\bss\d+\b", re.I)  # some pages show ss1
 def detect_directory_architecture(html: str, url: str = "") -> str:
     h = (html or "").lower()
     u = (url or "").lower()
+
     if (
-            "growthzoneapp.com" in h
-            or "growthzoneapp.com" in u
-            or "gzcontent/publicwidgets" in h
-            or "publicwidgets/partners.js" in h
-            or "/public/js/mmp/" in h
-            or "/public/css/mmp/" in h
+        "growthzoneapp.com" in h
+        or "growthzoneapp.com" in u
+        or "gzcontent/publicwidgets" in h
+        or "publicwidgets/partners.js" in h
+        or "/public/js/mmp/" in h
+        or "/public/css/mmp/" in h
     ):
         return "growthzone"
 
@@ -51,13 +52,18 @@ def detect_directory_architecture(html: str, url: str = "") -> str:
     if "resourcedirectoryrwd.js" in h or "enhancedbusinessdirectory" in h:
         return "civicplus"
 
-    if "chambermaster" in h or "business." in u and "/list" in u:
+    if (
+        "chambermaster" in h
+        or "content/bundles/mni" in h
+        or ("business." in u and "/list" in u)
+    ):
         return "chambermaster"
 
-    if "growthzone" in h or "growthzoneapp" in h:
-        return "growthzone"
-
-    if "wildapricot" in h:
+    if (
+        "wildapricot" in h
+        or "wildapricot" in u
+        or "powered by wild apricot" in h
+    ):
         return "wildapricot"
 
     if "wix-thunderbolt" in h or "static.parastorage.com" in h:
