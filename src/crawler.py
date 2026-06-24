@@ -35,6 +35,15 @@ _SS_RE = re.compile(r"\bss\d+\b", re.I)  # some pages show ss1
 def detect_directory_architecture(html: str, url: str = "") -> str:
     h = (html or "").lower()
     u = (url or "").lower()
+    if (
+            "growthzoneapp.com" in h
+            or "growthzoneapp.com" in u
+            or "gzcontent/publicwidgets" in h
+            or "publicwidgets/partners.js" in h
+            or "/public/js/mmp/" in h
+            or "/public/css/mmp/" in h
+    ):
+        return "growthzone"
 
     if "custom_listings_lib.js" in h or "simpleview" in h:
         return "simpleview"
@@ -609,6 +618,27 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
             if mode == "generic_directory":
 
                 html = await page.content()
+
+                architecture = detect_directory_architecture(html, page.url)
+
+                if debug:
+                    print(f"DEBUG architecture detected: {architecture}")
+
+                if architecture != "unknown":
+                    await Actor.push_data({
+                        "source_url": page.url,
+                        "status": "architecture_detected",
+                        "architecture": architecture,
+                        "records_found": 0,
+                        "crawl_mode": mode,
+                        "note": "Known directory platform detected. Dedicated adapter recommended."
+                    })
+                    return {
+                        "status": "architecture_detected",
+                        "architecture": architecture,
+                        "records_found": 0,
+                        "crawl_mode": mode,
+                    }
 
                 await Actor.set_value(
                     "DEBUG_PAGE.html",
