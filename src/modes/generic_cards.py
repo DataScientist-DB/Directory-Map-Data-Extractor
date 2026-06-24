@@ -63,28 +63,112 @@ def is_bad_name(name: str) -> bool:
 
     return False
 
+def is_likely_business_card(name: str, text: str, website: str, email: str, phone: str) -> bool:
+    name_l = (name or "").lower()
+    text_l = (text or "").lower()
+
+    reject_terms = [
+        "event",
+        "events",
+        "tickets",
+        "festival",
+        "tour",
+        "class",
+        "classes",
+        "workshop",
+        "marketplace",
+        "bazaar",
+        "cruise",
+        "parking",
+        "blog",
+        "story",
+        "stories",
+        "announcement",
+        "celebration",
+        "calendar",
+    ]
+
+    if any(term in name_l for term in reject_terms):
+        return False
+
+    if any(term in text_l[:300] for term in reject_terms):
+        return False
+
+    business_signals = 0
+
+    if website:
+        business_signals += 1
+    if email:
+        business_signals += 1
+    if phone:
+        business_signals += 1
+
+    business_words = [
+        "llc",
+        "inc",
+        "company",
+        "co.",
+        "services",
+        "restaurant",
+        "studio",
+        "market",
+        "shop",
+        "store",
+        "agency",
+        "group",
+        "center",
+        "solutions",
+        "consulting",
+        "construction",
+        "plumbing",
+        "roofing",
+        "electric",
+        "realty",
+        "insurance",
+        "bank",
+        "clinic",
+        "salon",
+        "cafe",
+        "bakery",
+    ]
+
+    if any(word in name_l for word in business_words):
+        business_signals += 1
+
+    return business_signals >= 1
 
 def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
     soup = BeautifulSoup(html, "html.parser")
 
     candidate_selectors = [
-        "article",
-        ".card",
+        ".directory-item",
         ".listing",
         ".business",
-        ".result",
         ".company",
-        ".directory-item",
+        ".member",
+        ".member-card",
+        ".business-card",
         ".search-result",
-        "li",
-        "div",
+        ".result",
+        ".card",
+        "article",
     ]
 
     records = []
     seen = set()
+    rejected_debug = []
 
     for selector in candidate_selectors:
         cards = soup.select(selector)
+
+        for sample in cards[:3]:
+            txt = clean_text(sample.get_text(" ", strip=True))
+            print(
+                f"DEBUG SAMPLE [{selector}]:",
+                txt[:150]
+            )
+
+        print(f"DEBUG selector={selector} cards={len(cards)}")
 
         for card in cards:
             text = clean_text(card.get_text(" ", strip=True))
@@ -128,17 +212,19 @@ def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
                     ]
                 ):
                     social_links.append(url)
+
                 elif not website and not any(
-                        x in lower for x in [
-                            "/profile",
-                            "/company",
-                            "/business",
-                            "/member",
-                            "/listing",
-                            "view-profile",
-                            "view_profile",
-                        ]
-                    ):
+                    x in lower
+                    for x in [
+                        "/profile",
+                        "/company",
+                        "/business",
+                        "/member",
+                        "/listing",
+                        "view-profile",
+                        "view_profile",
+                    ]
+                ):
                     website = url
 
             name = guess_name(card)
@@ -146,16 +232,60 @@ def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
             if is_bad_name(name):
                 continue
 
-            key = (name.lower(), website.lower(), text[:80].lower())
-            if key in seen:
-                continue
-            seen.add(key)
-
-            if not name and not website and not phones and not emails:
-                continue
-
             email_value = dedupe(emails)
             phone_value = dedupe(phones)
+
+            if not name and not website and not phone_value and not email_value:
+                continue
+
+            # Stronger validation:
+            # A real business card should have a usable name plus at least
+            # one contact/business signal.
+            signal_count = 0
+
+            if website:
+                signal_count += 1
+            if email_value:
+                signal_count += 1
+            if phone_value:
+                signal_count += 1
+            if social_links:
+                signal_count += 1
+
+            bad_exact_names = {
+                "contact us",
+                "resource directory module search",
+                "south portland city hall",
+                "search",
+                "home",
+                "menu",
+                "privacy policy",
+                "site map",
+                "login",
+                "register",
+                "about us",
+                "about",
+                "directory search",
+                "search directory",
+            }
+
+            lname = name.lower().strip()
+
+            if lname in bad_exact_names:
+                rejected_debug.append((name, phone_value, website))
+                continue
+
+            if len(name) < 3:
+                rejected_debug.append((name, phone_value, website))
+                continue
+
+            if name.replace("-", "").replace(" ", "").isdigit():
+                rejected_debug.append((name, phone_value, website))
+                continue
+
+            if signal_count < 1:
+                rejected_debug.append((name, phone_value, website))
+                continue
 
             if not is_business_card(
                 name=name,
@@ -164,6 +294,29 @@ def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
                 phone=phone_value,
                 text=text,
             ):
+                rejected_debug.append((name, phone_value, website))
+                continue
+
+            key = (
+                name.lower(),
+                website.lower(),
+                phone_value.lower(),
+                email_value.lower(),
+            )
+
+            if key in seen:
+                continue
+
+            seen.add(key)
+
+            if not is_likely_business_card(
+                    name=name,
+                    text=text,
+                    website=website,
+                    email=email_value,
+                    phone=phone_value,
+            ):
+                rejected_debug.append((name, phone_value, website))
                 continue
 
             records.append(
@@ -181,8 +334,10 @@ def extract_generic_cards(html: str, source_url: str = "") -> List[Dict]:
         if len(records) >= 3:
             break
 
-    return records
+    for item in rejected_debug[:20]:
+        print("REJECTED CARD:", item)
 
+    return records
 
 def guess_name(card) -> str:
     for selector in ["h1", "h2", "h3", "h4", ".title", ".name", "strong", "a"]:

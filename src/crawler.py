@@ -32,6 +32,29 @@ FieldSpec = Union[str, Dict[str, Any]]
 _RPC_RE = re.compile(r"\brpc\d+\b", re.I)
 _RSS_RE = re.compile(r"\brss\d+\b", re.I)
 _SS_RE = re.compile(r"\bss\d+\b", re.I)  # some pages show ss1
+def detect_directory_architecture(html: str, url: str = "") -> str:
+    h = (html or "").lower()
+    u = (url or "").lower()
+
+    if "custom_listings_lib.js" in h or "simpleview" in h:
+        return "simpleview"
+
+    if "resourcedirectoryrwd.js" in h or "enhancedbusinessdirectory" in h:
+        return "civicplus"
+
+    if "chambermaster" in h or "business." in u and "/list" in u:
+        return "chambermaster"
+
+    if "growthzone" in h or "growthzoneapp" in h:
+        return "growthzone"
+
+    if "wildapricot" in h:
+        return "wildapricot"
+
+    if "wix-thunderbolt" in h or "static.parastorage.com" in h:
+        return "wix"
+
+    return "unknown"
 
 import json
 from typing import Callable, Awaitable
@@ -724,6 +747,56 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     await page.wait_for_load_state("domcontentloaded", timeout=15000)
                     await page.wait_for_timeout(2000)
                     html = await page.content()
+
+                    architecture = detect_directory_architecture(html, page.url)
+
+                    if debug:
+                        print(f"DEBUG architecture detected: {architecture}")
+
+                        if architecture != "unknown":
+                            await Actor.push_data(
+                                {
+                                    "source_url": page.url,
+                                    "status": "architecture_detected",
+                                    "architecture": architecture,
+                                    "records_found": 0,
+                                    "crawl_mode": mode,
+                                    "note": "Known directory platform detected. Dedicated adapter recommended."
+                                }
+                            )
+                            return {
+                                "status": "architecture_detected",
+                                "architecture": architecture,
+                                "records_found": 0,
+                                "crawl_mode": mode,
+                            }
+
+                        await Actor.push_data(
+                            {
+                                "source_url": page.url,
+                                "status": "architecture_detected",
+                                "architecture": architecture,
+                                "crawl_mode": mode,
+                                "records_found": 0,
+                            }
+                        )
+
+                        if architecture in {
+                            "simpleview",
+                            "civicplus",
+                            "chambermaster",
+                            "growthzone",
+                            "wildapricot",
+                            "wix",
+                        }:
+
+                            return {
+                                "status": "architecture_detected",
+                                "architecture": architecture,
+                                "records_found": 0,
+                                "crawl_mode": mode,
+                            }
+
                 except Exception as e:
                     if debug:
                         print("WARNING: could not capture page HTML:", url, repr(e))
