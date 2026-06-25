@@ -22,6 +22,7 @@ from src.modes.confidence import (
     confidence_level,
 )
 from src.modes.profile_matching import match_profile_url
+from src.adapters.router import get_adapter
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -620,45 +621,12 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
             if infinite_enabled:
                 await _scroll_to_load_more(page, scroll_delay_ms, max_scrolls)
 
-            # -------------------------
-            # AUTO MODE: detect architecture first
-            # -------------------------
-            if mode == "auto":
-                html = await page.content()
-                architecture = detect_directory_architecture(html, page.url)
-
-                if debug:
-                    print(f"DEBUG architecture detected: {architecture}")
-
-                if architecture != "unknown":
-                    await Actor.push_data(
-                        {
-                            "source_url": page.url,
-                            "status": "architecture_detected",
-                            "architecture": architecture,
-                            "records_found": 0,
-                            "crawl_mode": "auto",
-                            "recommended_strategy": f"{architecture}_adapter",
-                            "note": "Known directory platform detected. Dedicated adapter recommended.",
-                        }
-                    )
-                    pushed += 1
-                    return {
-                        "status": "architecture_detected",
-                        "architecture": architecture,
-                        "records_found": 0,
-                        "crawl_mode": "auto",
-                        "recommended_strategy": f"{architecture}_adapter",
-                    }
-
-                # If architecture is unknown, fall back to generic directory extraction.
-                mode = "generic_directory"
 
             # -------------------------
             # GENERIC DIRECTORY MODE
             # -------------------------
 
-            if mode == "generic_directory":
+            if mode in {"generic_directory", "auto"}:
 
                 html = await page.content()
 
@@ -668,19 +636,49 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     print(f"DEBUG architecture detected: {architecture}")
 
                 if architecture != "unknown":
+                    adapter = get_adapter(
+                        architecture=architecture,
+                        source_url=page.url,
+                        debug=debug,
+                    )
+                    if debug:
+                        print("DEBUG adapter:", adapter)
+                        print("DEBUG mode:", mode)
+                        print("DEBUG architecture:", architecture)
+
+                    if mode == "auto" and adapter:
+                        adapter_records = adapter.extract_listings(html)
+                        if debug:
+                            print("DEBUG adapter records:", len(adapter_records))
+
+                        for record in adapter_records[:max_listings]:
+                            await Actor.push_data(record)
+                            pushed += 1
+
+                        return {
+                            "status": "adapter_extraction_complete",
+                            "architecture": architecture,
+                            "records_found": len(adapter_records),
+                            "crawl_mode": "auto",
+                            "recommended_strategy": f"{architecture}_adapter",
+                        }
+
                     await Actor.push_data({
                         "source_url": page.url,
                         "status": "architecture_detected",
                         "architecture": architecture,
                         "records_found": 0,
                         "crawl_mode": mode,
+                        "recommended_strategy": f"{architecture}_adapter",
                         "note": "Known directory platform detected. Dedicated adapter recommended."
                     })
+
                     return {
                         "status": "architecture_detected",
                         "architecture": architecture,
                         "records_found": 0,
                         "crawl_mode": mode,
+                        "recommended_strategy": f"{architecture}_adapter",
                     }
 
                 await Actor.set_value(
