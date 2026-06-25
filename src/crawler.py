@@ -503,9 +503,12 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
     elif mode == "generic_directory":
         pass
 
+    elif mode == "auto":
+        pass
+
     else:
         raise ValueError(
-            "mode must be 'dom', 'embedded_js', 'generic_cards', or 'generic_directory'"
+            "mode must be 'auto', 'dom', 'embedded_js', 'generic_cards', or 'generic_directory'"
         )
 
     # ✅ MUST be defined before Playwright + while-loop
@@ -616,6 +619,40 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
             if infinite_enabled:
                 await _scroll_to_load_more(page, scroll_delay_ms, max_scrolls)
+
+            # -------------------------
+            # AUTO MODE: detect architecture first
+            # -------------------------
+            if mode == "auto":
+                html = await page.content()
+                architecture = detect_directory_architecture(html, page.url)
+
+                if debug:
+                    print(f"DEBUG architecture detected: {architecture}")
+
+                if architecture != "unknown":
+                    await Actor.push_data(
+                        {
+                            "source_url": page.url,
+                            "status": "architecture_detected",
+                            "architecture": architecture,
+                            "records_found": 0,
+                            "crawl_mode": "auto",
+                            "recommended_strategy": f"{architecture}_adapter",
+                            "note": "Known directory platform detected. Dedicated adapter recommended.",
+                        }
+                    )
+                    pushed += 1
+                    return {
+                        "status": "architecture_detected",
+                        "architecture": architecture,
+                        "records_found": 0,
+                        "crawl_mode": "auto",
+                        "recommended_strategy": f"{architecture}_adapter",
+                    }
+
+                # If architecture is unknown, fall back to generic directory extraction.
+                mode = "generic_directory"
 
             # -------------------------
             # GENERIC DIRECTORY MODE
