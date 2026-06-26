@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Any, Dict, List
 
 
 class BaseDirectoryAdapter(ABC):
     """
     Base interface for all architecture-specific directory adapters.
-    Every adapter should return normalized business records.
+
+    Each adapter should know how to:
+    1. discover category/listing pages,
+    2. discover member/profile URLs,
+    3. extract business profiles,
+    4. return normalized UBDI records.
     """
 
     architecture: str = "unknown"
@@ -16,13 +21,38 @@ class BaseDirectoryAdapter(ABC):
         self.source_url = source_url
         self.debug = debug
 
-    @abstractmethod
     def extract_listings(self, html: str) -> List[Dict[str, Any]]:
         """
-        Extract business listing records from a directory page.
-        Records should use normalized UBDI fields.
+        Backward-compatible simple extraction method.
+        Existing adapters can continue using this.
         """
-        raise NotImplementedError
+        return []
+
+    async def discover_categories(self, page, html: str = "") -> List[str]:
+        """
+        Discover category/search pages from the main directory page.
+        """
+        return []
+
+    async def discover_member_urls(self, page, category_urls: List[str]) -> List[str]:
+        """
+        Visit category/search pages and collect member/profile URLs.
+        """
+        return []
+
+    async def extract_member(self, page, member_url: str) -> Dict[str, Any]:
+        """
+        Visit one member/profile page and extract a normalized business record.
+        """
+        return {}
+
+    async def crawl(self, page, max_records: int = 50) -> List[Dict[str, Any]]:
+        """
+        Full adapter crawler. Platform-specific adapters should override this
+        when they support multi-stage crawling.
+        """
+        html = await page.content()
+        return self.extract_listings(html)[:max_records]
 
     def scan(self, html: str) -> Dict[str, Any]:
         """

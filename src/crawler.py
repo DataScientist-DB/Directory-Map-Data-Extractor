@@ -647,7 +647,11 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                         print("DEBUG architecture:", architecture)
 
                     if mode == "auto" and adapter:
-                        adapter_records = adapter.extract_listings(html)
+                        adapter_records = await adapter.crawl(
+                            page,
+                            max_records=max_listings,
+                        )
+
                         if debug:
                             print("DEBUG adapter records:", len(adapter_records))
 
