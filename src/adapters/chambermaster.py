@@ -10,6 +10,8 @@ from src.adapters.base import BaseDirectoryAdapter
 from src.models.business_record import BusinessRecord
 
 
+
+
 class ChamberMasterAdapter(BaseDirectoryAdapter):
 
     architecture = "chambermaster"
@@ -109,36 +111,68 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return self._extract_category_links(html)
 
+    async def _discover_member_urls_from_category(self, page, category_url):
+        """
+        Visit one ChamberMaster category page and collect member profile URLs.
+        Pagination will be added here in Sprint 2.2.4.
+        """
+        urls = set()
+
+        if self.debug:
+            print("DEBUG ChamberMaster visiting category:", category_url)
+
+        await page.goto(
+            category_url,
+            wait_until="domcontentloaded",
+            timeout=30000,
+        )
+
+        await page.wait_for_timeout(500)
+
+        html = await page.content()
+        links = self._extract_member_links(html)
+
+        if self.debug:
+            print("DEBUG ChamberMaster member links on category:", len(links))
+
+        urls.update(links)
+
+        return sorted(urls)
+
     async def discover_member_urls(self, page, category_urls):
         """
         Visit ChamberMaster category/search pages and collect member profile URLs.
         """
         member_urls = set()
 
-        for category_url in category_urls:
+        for i, category_url in enumerate(category_urls, start=1):
             try:
                 if self.debug:
-                    print("DEBUG ChamberMaster visiting category:", category_url)
+                    print(
+                        f"DEBUG ChamberMaster category {i}/{len(category_urls)}:",
+                        category_url,
+                    )
 
-                await page.goto(
+                urls = await self._discover_member_urls_from_category(
+                    page,
                     category_url,
-                    wait_until="domcontentloaded",
-                    timeout=30000,
                 )
 
-                await page.wait_for_timeout(500)
-
-                html = await page.content()
-                links = self._extract_member_links(html)
+                member_urls.update(urls)
 
                 if self.debug:
-                    print("DEBUG ChamberMaster member links on page:", len(links))
-
-                member_urls.update(links)
+                    print(
+                        "DEBUG ChamberMaster unique member URLs so far:",
+                        len(member_urls),
+                    )
 
             except Exception as e:
                 if self.debug:
-                    print("DEBUG ChamberMaster category error:", category_url, repr(e))
+                    print(
+                        "DEBUG ChamberMaster category error:",
+                        category_url,
+                        repr(e),
+                    )
 
         result = sorted(member_urls)
 
@@ -153,8 +187,14 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         html = await page.content()
         if self.debug:
-            with open("member_debug.html", "w", encoding="utf-8") as f:
+            from pathlib import Path
+
+            debug_dir = Path("debug")
+            debug_dir.mkdir(exist_ok=True)
+
+            with open(debug_dir / "member_debug.html", "w", encoding="utf-8") as f:
                 f.write(html)
+                 
 
         soup = BeautifulSoup(html or "", "html.parser")
 
