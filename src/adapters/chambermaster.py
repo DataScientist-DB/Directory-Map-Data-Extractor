@@ -147,11 +147,46 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         return result
 
     async def extract_member(self, page, member_url):
-        """
-        Sprint 2.2
-        Will visit one member page and extract a complete record.
-        """
-        return {}
+        await page.goto(member_url, wait_until="domcontentloaded", timeout=30000)
+        await page.wait_for_timeout(500)
+
+        html = await page.content()
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        text = soup.get_text(" ", strip=True)
+
+        name = ""
+        h1 = soup.select_one("h1")
+        if h1:
+            name = self._clean_text(h1.get_text(" ", strip=True))
+
+        phone = ""
+        phone_match = re.search(r"\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}", text)
+        if phone_match:
+            phone = phone_match.group(0)
+
+        website = ""
+        for a in soup.select("a[href]"):
+            href = (a.get("href") or "").strip()
+            if href.startswith("http") and "chamber" not in href.lower():
+                website = href
+                break
+
+        email = ""
+        for a in soup.select("a[href^='mailto:']"):
+            email = a.get("href", "").replace("mailto:", "").strip()
+            break
+
+        return {
+            "entity_name": name,
+            "phone": phone,
+            "website": website,
+            "email": email,
+            "profile_url": member_url,
+            "source_url": self.source_url,
+            "architecture": self.architecture,
+            "crawl_mode": "adapter_chambermaster_profile_extraction",
+        }
 
     async def crawl(self, page, max_records=50):
         """
@@ -177,16 +212,26 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         records = []
 
-        for member_url in member_urls[:max_records]:
-            records.append(
-                {
-                    "entity_name": "",
-                    "profile_url": member_url,
-                    "source_url": self.source_url,
-                    "architecture": self.architecture,
-                    "crawl_mode": "adapter_chambermaster_member_url_discovery",
-                }
-            )
+        for i, member_url in enumerate(member_urls[:max_records], start=1):
+
+            if self.debug:
+                print(
+                    f"DEBUG ChamberMaster extracting {i}/{min(len(member_urls), max_records)}: {member_url}"
+                )
+
+            try:
+                record = await self.extract_member(page, member_url)
+
+                if record:
+                    records.append(record)
+
+            except Exception as e:
+                if self.debug:
+                    print(
+                        "DEBUG ChamberMaster extract_member error:",
+                        member_url,
+                        repr(e),
+                    )
 
         if self.debug:
             print("DEBUG ChamberMaster crawl returned:", len(records))
