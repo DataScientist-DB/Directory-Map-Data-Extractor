@@ -153,33 +153,45 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         """
         return {}
 
-    async def crawl(self):
-        categories = await self.discover_categories()
+    async def crawl(self, page, max_records=50):
+        """
+        Sprint 2.2.2:
+        Full ChamberMaster traversal up to member URL discovery.
 
-        logger.info("Categories found: %d", len(categories))
+        Pipeline:
+        directory page -> categories -> member profile URLs
 
-        member_urls = await self.discover_member_urls(categories)
+        For now, return lightweight records containing profile URLs.
+        Full extract_member() comes in the next sprint.
+        """
 
-        logger.info("Member profiles found: %d", len(member_urls))
+        categories = await self.discover_categories(page)
+
+        if self.debug:
+            print("DEBUG ChamberMaster categories found:", len(categories))
+
+        member_urls = await self.discover_member_urls(page, categories)
+
+        if self.debug:
+            print("DEBUG ChamberMaster unique member URLs:", len(member_urls))
 
         records = []
 
-        for url in member_urls:
-            try:
-                record = await self.extract_member(url)
+        for member_url in member_urls[:max_records]:
+            records.append(
+                {
+                    "entity_name": "",
+                    "profile_url": member_url,
+                    "source_url": self.source_url,
+                    "architecture": self.architecture,
+                    "crawl_mode": "adapter_chambermaster_member_url_discovery",
+                }
+            )
 
-                if record:
-                    records.append(record)
-
-            except Exception as e:
-                logger.warning("Failed %s : %s", url, e)
+        if self.debug:
+            print("DEBUG ChamberMaster crawl returned:", len(records))
 
         return records
-
-    if self.debug:
-    print("DEBUG crawl extracted:", len(records))
-
-        return records[:max_records]
 
     def extract_listings(self, html: str) -> List[Dict[str, Any]]:
         soup = BeautifulSoup(html or "", "html.parser")
