@@ -153,31 +153,31 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         """
         return {}
 
+    async def crawl(self):
+        categories = await self.discover_categories()
 
-    async def crawl(self, page, max_records=50):
-        """
-        Temporary implementation.
+        logger.info("Categories found: %d", len(categories))
 
-        Uses the existing parser until the full multi-stage
-        ChamberMaster crawler is implemented.
-        """
-        html = await page.content()
+        member_urls = await self.discover_member_urls(categories)
 
-        categories = await self.discover_categories(page, html)
+        logger.info("Member profiles found: %d", len(member_urls))
 
-        if self.debug:
-            print("=" * 60)
-            print("DEBUG CATEGORY DISCOVERY")
-            print("=" * 60)
-            print("Categories found:", len(categories))
+        records = []
 
-            for c in categories[:20]:
-                print(c)
+        for url in member_urls:
+            try:
+                record = await self.extract_member(url)
 
-        return []
+                if record:
+                    records.append(record)
 
-        if self.debug:
-            print("DEBUG crawl extracted:", len(records))
+            except Exception as e:
+                logger.warning("Failed %s : %s", url, e)
+
+        return records
+
+    if self.debug:
+    print("DEBUG crawl extracted:", len(records))
 
         return records[:max_records]
 
