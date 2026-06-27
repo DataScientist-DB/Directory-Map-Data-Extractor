@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from src.adapters.base import BaseDirectoryAdapter
+from src.models.business_record import BusinessRecord
 
 
 class ChamberMasterAdapter(BaseDirectoryAdapter):
@@ -177,16 +178,18 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             email = a.get("href", "").replace("mailto:", "").strip()
             break
 
-        return {
-            "entity_name": name,
-            "phone": phone,
-            "website": website,
-            "email": email,
-            "profile_url": member_url,
-            "source_url": self.source_url,
-            "architecture": self.architecture,
-            "crawl_mode": "adapter_chambermaster_profile_extraction",
-        }
+        record = BusinessRecord(
+            entity_name=name,
+            phone=phone,
+            email=email,
+            website=website,
+            profile_url=member_url,
+            source_url=self.source_url,
+            architecture=self.architecture,
+            crawl_mode="adapter_chambermaster_profile_extraction",
+        )
+
+        return record.to_dict()
 
     async def crawl(self, page, max_records=3):
         """

@@ -1,4 +1,5 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
+from typing import Any
 
 
 @dataclass
@@ -16,5 +17,8 @@ class BusinessRecord:
     architecture: str = ""
     crawl_mode: str = ""
 
-    def to_dict(self) -> dict:
+    raw_data: dict[str, Any] = field(default_factory=dict)
+    confidence: float = 1.0
+
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
