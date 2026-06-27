@@ -188,7 +188,7 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             "crawl_mode": "adapter_chambermaster_profile_extraction",
         }
 
-    async def crawl(self, page, max_records=50):
+    async def crawl(self, page, max_records=3):
         """
         Sprint 2.2.2:
         Full ChamberMaster traversal up to member URL discovery.
