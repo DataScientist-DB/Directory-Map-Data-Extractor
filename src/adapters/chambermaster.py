@@ -103,6 +103,19 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return sorted(member_urls)
 
+    def _extract_next_page(self, html: str) -> str | None:
+        """
+        Return the URL of the next category page, or None.
+        """
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        # ChamberMaster usually labels the next page as "Next"
+        next_link = soup.find("a", string=lambda s: s and s.strip().lower() == "next")
+
+        if next_link and next_link.get("href"):
+            return urljoin(self.source_url, next_link["href"])
+
+        return None
 
     async def discover_categories(self, page, html=""):
 
@@ -112,30 +125,36 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         return self._extract_category_links(html)
 
     async def _discover_member_urls_from_category(self, page, category_url):
-        """
-        Visit one ChamberMaster category page and collect member profile URLs.
-        Pagination will be added here in Sprint 2.2.4.
-        """
         urls = set()
+        current_url = category_url
 
-        if self.debug:
-            print("DEBUG ChamberMaster visiting category:", category_url)
+        while current_url:
 
-        await page.goto(
-            category_url,
-            wait_until="domcontentloaded",
-            timeout=30000,
-        )
+            if self.debug:
+                print("DEBUG ChamberMaster page:", current_url)
 
-        await page.wait_for_timeout(500)
+            await page.goto(
+                current_url,
+                wait_until="domcontentloaded",
+                timeout=30000,
+            )
 
-        html = await page.content()
-        links = self._extract_member_links(html)
+            await page.wait_for_timeout(500)
 
-        if self.debug:
-            print("DEBUG ChamberMaster member links on category:", len(links))
+            html = await page.content()
 
-        urls.update(links)
+            links = self._extract_member_links(html)
+            urls.update(links)
+
+            if self.debug:
+                print(
+                    "DEBUG member links:",
+                    len(links),
+                    "total:",
+                    len(urls),
+                )
+
+            current_url = self._extract_next_page(html)
 
         return sorted(urls)
 
