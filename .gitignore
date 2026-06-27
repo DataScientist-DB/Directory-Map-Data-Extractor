@@ -20,3 +20,6 @@ run.log
 # Local Apify/runtime storage
 storage/
 .DS_Store
+
+# Debug HTML
+member_debug.html
