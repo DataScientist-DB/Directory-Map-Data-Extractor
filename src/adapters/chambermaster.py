@@ -76,6 +76,33 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return categories
 
+    def _calculate_confidence(
+        self,
+        record: BusinessRecord,
+    ) -> float:
+        """
+        Calculate a simple completeness score.
+        """
+
+        score = 0.0
+
+        if record.entity_name:
+            score += 0.30
+
+        if record.phone:
+            score += 0.20
+
+        if record.website:
+            score += 0.20
+
+        if record.address:
+            score += 0.20
+
+        if record.city and record.state:
+            score += 0.10
+
+        return round(score, 2)
+
     def _extract_member_links(self, html: str) -> list[str]:
         """
         Extract ChamberMaster member/profile URLs from a category page.
@@ -260,8 +287,6 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             if postal_el:
                 postal_code = self._clean_text(postal_el.get_text(" ", strip=True))
 
-
-
         record = BusinessRecord(
             entity_name=name,
             phone=phone,
@@ -276,6 +301,8 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             architecture=self.architecture,
             crawl_mode="adapter_chambermaster_profile_extraction",
         )
+
+        record.confidence_score = self._calculate_confidence(record)
 
         return record.to_dict()
 

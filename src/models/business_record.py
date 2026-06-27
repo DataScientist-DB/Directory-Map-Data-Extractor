@@ -18,7 +18,7 @@ class BusinessRecord:
     crawl_mode: str = ""
 
     raw_data: dict[str, Any] = field(default_factory=dict)
-    confidence: float = 1.0
+    confidence_score: float = 0.0
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
