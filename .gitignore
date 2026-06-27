@@ -16,3 +16,7 @@ storage/
 .DS_Store
 run.log
 run.log
+
+# Local Apify/runtime storage
+storage/
+.DS_Store
