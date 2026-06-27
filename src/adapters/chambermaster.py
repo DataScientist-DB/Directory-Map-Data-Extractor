@@ -289,6 +289,16 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         phone_el = soup.select_one(".gz-card-phone span[itemprop='telephone']")
         if phone_el:
             phone = self._clean_text(phone_el.get_text(" ", strip=True))
+        fax = ""
+        fax_el = soup.select_one(".gz-card-fax span[itemprop='faxNumber']")
+        if fax_el:
+            fax = self._clean_text(fax_el.get_text(" ", strip=True))
+
+
+        if fax_el:
+            fax = self._clean_text(
+                fax_el.get_text(" ", strip=True)
+            )
 
         website = ""
         website_el = soup.select_one(".gz-card-website a[href]")
@@ -324,6 +334,7 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         record = BusinessRecord(
             entity_name=name,
             phone=phone,
+            fax=fax,
             email=email,
             website=website,
             address=address,
