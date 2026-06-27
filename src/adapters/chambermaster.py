@@ -152,37 +152,66 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         await page.wait_for_timeout(500)
 
         html = await page.content()
+        if self.debug:
+            with open("member_debug.html", "w", encoding="utf-8") as f:
+                f.write(html)
+
         soup = BeautifulSoup(html or "", "html.parser")
 
         text = soup.get_text(" ", strip=True)
 
         name = ""
-        h1 = soup.select_one("h1")
+        h1 = soup.select_one(".gz-pagetitle")
         if h1:
             name = self._clean_text(h1.get_text(" ", strip=True))
 
         phone = ""
-        phone_match = re.search(r"\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}", text)
-        if phone_match:
-            phone = phone_match.group(0)
+        phone_el = soup.select_one(".gz-card-phone span[itemprop='telephone']")
+        if phone_el:
+            phone = self._clean_text(phone_el.get_text(" ", strip=True))
 
         website = ""
-        for a in soup.select("a[href]"):
-            href = (a.get("href") or "").strip()
-            if href.startswith("http") and "chamber" not in href.lower():
-                website = href
-                break
+        website_el = soup.select_one(".gz-card-website a[href]")
+        if website_el:
+            website = (website_el.get("href") or "").strip()
 
         email = ""
-        for a in soup.select("a[href^='mailto:']"):
-            email = a.get("href", "").replace("mailto:", "").strip()
-            break
+        email_el = soup.select_one(".gz-card-email a[href^='mailto:']")
+        if email_el:
+            email = email_el.get("href", "").replace("mailto:", "").strip()
+
+        address = ""
+        city = ""
+        state = ""
+        postal_code = ""
+
+        address_el = soup.select_one(".gz-card-address")
+        if address_el:
+            street_el = address_el.select_one(".gz-street-address")
+            city_el = address_el.select_one(".gz-address-city")
+            state_el = address_el.select_one("[itemprop='addressRegion']")
+            postal_el = address_el.select_one("[itemprop='postalCode']")
+
+            if street_el:
+                address = self._clean_text(street_el.get_text(" ", strip=True))
+            if city_el:
+                city = self._clean_text(city_el.get_text(" ", strip=True))
+            if state_el:
+                state = self._clean_text(state_el.get_text(" ", strip=True))
+            if postal_el:
+                postal_code = self._clean_text(postal_el.get_text(" ", strip=True))
+
+
 
         record = BusinessRecord(
             entity_name=name,
             phone=phone,
             email=email,
             website=website,
+            address=address,
+            city=city,
+            state=state,
+            postal_code=postal_code,
             profile_url=member_url,
             source_url=self.source_url,
             architecture=self.architecture,
