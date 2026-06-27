@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 from typing import Any, Dict, List
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit, urlunsplit
 
 from bs4 import BeautifulSoup
 
@@ -10,10 +11,7 @@ from src.adapters.base import BaseDirectoryAdapter
 from src.models.business_record import BusinessRecord
 
 
-
-
 class ChamberMasterAdapter(BaseDirectoryAdapter):
-
     architecture = "chambermaster"
 
     BAD_TEXT = {
@@ -33,17 +31,52 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         "terms",
     }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.stats = {
+            "categories": 0,
+            "member_urls": 0,
+            "profiles_processed": 0,
+            "profiles_failed": 0,
+        }
+
+    def _debug(self, *args):
+        if self.debug:
+            print(*args)
+
+    def _clean_text(self, value: str) -> str:
+        return re.sub(r"\s+", " ", value or "").strip()
+
+    def _normalize_member_url(self, url: str) -> str:
+        """
+        Normalize ChamberMaster member/category URLs before deduplication.
+        Removes query strings, fragments, and trailing slashes.
+        """
+        if not url:
+            return ""
+
+        parts = urlsplit(urljoin(self.source_url, url))
+        path = parts.path.rstrip("/")
+
+        return urlunsplit(
+            (
+                parts.scheme.lower(),
+                parts.netloc.lower(),
+                path,
+                "",
+                "",
+            )
+        )
+
     def _extract_category_links(self, html: str) -> list[str]:
         """
-        Extract ChamberMaster category URLs from a directory page.
+        Extract ChamberMaster category/search URLs from a directory landing page.
         """
-
-        soup = BeautifulSoup(html, "html.parser")
-
+        soup = BeautifulSoup(html or "", "html.parser")
         categories = set()
 
         for a in soup.select("a[href]"):
-
             href = (a.get("href") or "").strip()
 
             if not href:
@@ -51,64 +84,26 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
             href_lower = href.lower()
 
-            # Typical ChamberMaster category URLs
             if "/list/category/" in href_lower:
-                categories.add(
-                    urljoin(self.source_url, href)
-                )
+                categories.add(urljoin(self.source_url, href))
 
-            # Some sites use category search URLs
-            elif "/list/search" in href_lower:
-                categories.add(
-                    urljoin(self.source_url, href)
-                )
+            elif "/list/search" in href_lower or "/list/searchalpha/" in href_lower:
+                categories.add(urljoin(self.source_url, href))
 
-        categories = sorted(categories)
+        result = sorted(categories)
 
-        if self.debug:
-            print("DEBUG ChamberMaster categories:", len(categories))
+        self._debug("DEBUG ChamberMaster categories:", len(result))
 
-            if categories:
-                print(
-                    "DEBUG ChamberMaster first categories:",
-                    categories[:5],
-                )
+        if result:
+            self._debug("DEBUG ChamberMaster first categories:", result[:5])
 
-        return categories
-
-    def _calculate_confidence(
-        self,
-        record: BusinessRecord,
-    ) -> float:
-        """
-        Calculate a simple completeness score.
-        """
-
-        score = 0.0
-
-        if record.entity_name:
-            score += 0.30
-
-        if record.phone:
-            score += 0.20
-
-        if record.website:
-            score += 0.20
-
-        if record.address:
-            score += 0.20
-
-        if record.city and record.state:
-            score += 0.10
-
-        return round(score, 2)
+        return result
 
     def _extract_member_links(self, html: str) -> list[str]:
         """
-        Extract ChamberMaster member/profile URLs from a category page.
+        Extract ChamberMaster member/profile URLs from a category/search page.
         """
         soup = BeautifulSoup(html or "", "html.parser")
-
         member_urls = set()
 
         for a in soup.select("a[href]"):
@@ -119,14 +114,12 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
             h = href.lower()
 
-            if (
-                    "/list/member/" in h
-                    or "/member/" in h
-            ):
+            if "/list/member/" in h or "/member/" in h:
                 if "newmemberapp" in h:
                     continue
 
-                member_urls.add(urljoin(self.source_url, href))
+                absolute_url = urljoin(self.source_url, href)
+                member_urls.add(self._normalize_member_url(absolute_url))
 
         return sorted(member_urls)
 
@@ -136,29 +129,72 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         """
         soup = BeautifulSoup(html or "", "html.parser")
 
-        # ChamberMaster usually labels the next page as "Next"
-        next_link = soup.find("a", string=lambda s: s and s.strip().lower() == "next")
+        next_link = soup.find(
+            "a",
+            string=lambda s: s and s.strip().lower() == "next",
+        )
 
         if next_link and next_link.get("href"):
             return urljoin(self.source_url, next_link["href"])
 
+        for a in soup.select("a[href]"):
+            text = self._clean_text(a.get_text(" ", strip=True)).lower()
+            aria = (a.get("aria-label") or "").strip().lower()
+            title = (a.get("title") or "").strip().lower()
+            klass = " ".join(a.get("class") or []).lower()
+
+            if "next" in {text, aria, title} or "next" in klass:
+                return urljoin(self.source_url, a["href"])
+
         return None
 
-    async def discover_categories(self, page, html=""):
+    def _calculate_confidence(self, record: BusinessRecord) -> float:
+        """
+        Calculate a simple completeness score for CRM/export quality.
+        """
+        score = 0.0
 
+        if record.entity_name:
+            score += 0.30
+        if record.phone:
+            score += 0.20
+        if record.website:
+            score += 0.20
+        if record.address:
+            score += 0.20
+        if record.city and record.state:
+            score += 0.10
+
+        return round(score, 2)
+
+    async def discover_categories(self, page, html: str = "") -> list[str]:
         if not html:
             html = await page.content()
 
         return self._extract_category_links(html)
 
-    async def _discover_member_urls_from_category(self, page, category_url):
+    async def _discover_member_urls_from_category(
+        self,
+        page,
+        category_url: str,
+    ) -> list[str]:
+        """
+        Visit one ChamberMaster category/search page and collect member profile URLs.
+        Includes pagination protection.
+        """
         urls = set()
         current_url = category_url
+        visited_pages = set()
 
         while current_url:
+            current_url = self._normalize_member_url(current_url)
 
-            if self.debug:
-                print("DEBUG ChamberMaster page:", current_url)
+            if current_url in visited_pages:
+                break
+
+            visited_pages.add(current_url)
+
+            self._debug("DEBUG ChamberMaster page:", current_url)
 
             await page.goto(
                 current_url,
@@ -173,31 +209,29 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             links = self._extract_member_links(html)
             urls.update(links)
 
-            if self.debug:
-                print(
-                    "DEBUG member links:",
-                    len(links),
-                    "total:",
-                    len(urls),
-                )
+            self._debug(
+                "DEBUG member links:",
+                len(links),
+                "total:",
+                len(urls),
+            )
 
             current_url = self._extract_next_page(html)
 
         return sorted(urls)
 
-    async def discover_member_urls(self, page, category_urls):
+    async def discover_member_urls(self, page, category_urls: list[str]) -> list[str]:
         """
-        Visit ChamberMaster category/search pages and collect member profile URLs.
+        Visit all ChamberMaster category/search pages and collect unique member URLs.
         """
         member_urls = set()
 
         for i, category_url in enumerate(category_urls, start=1):
             try:
-                if self.debug:
-                    print(
-                        f"DEBUG ChamberMaster category {i}/{len(category_urls)}:",
-                        category_url,
-                    )
+                self._debug(
+                    f"DEBUG ChamberMaster category {i}/{len(category_urls)}:",
+                    category_url,
+                )
 
                 urls = await self._discover_member_urls_from_category(
                     page,
@@ -206,45 +240,45 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
                 member_urls.update(urls)
 
-                if self.debug:
-                    print(
-                        "DEBUG ChamberMaster unique member URLs so far:",
-                        len(member_urls),
-                    )
+                self._debug(
+                    "DEBUG ChamberMaster unique member URLs so far:",
+                    len(member_urls),
+                )
 
             except Exception as e:
-                if self.debug:
-                    print(
-                        "DEBUG ChamberMaster category error:",
-                        category_url,
-                        repr(e),
-                    )
+                self.stats["profiles_failed"] += 1
+                self._debug(
+                    "DEBUG ChamberMaster category error:",
+                    category_url,
+                    repr(e),
+                )
 
         result = sorted(member_urls)
+        self.stats["member_urls"] = len(result)
 
-        if self.debug:
-            print("DEBUG ChamberMaster total member URLs:", len(result))
+        self._debug("DEBUG ChamberMaster total member URLs:", len(result))
 
         return result
 
-    async def extract_member(self, page, member_url):
-        await page.goto(member_url, wait_until="domcontentloaded", timeout=30000)
+    async def extract_member(self, page, member_url: str) -> dict[str, Any]:
+        await page.goto(
+            member_url,
+            wait_until="domcontentloaded",
+            timeout=30000,
+        )
+
         await page.wait_for_timeout(500)
 
         html = await page.content()
-        if self.debug:
-            from pathlib import Path
 
+        if self.debug:
             debug_dir = Path("debug")
             debug_dir.mkdir(exist_ok=True)
 
             with open(debug_dir / "member_debug.html", "w", encoding="utf-8") as f:
                 f.write(html)
-                 
 
         soup = BeautifulSoup(html or "", "html.parser")
-
-        text = soup.get_text(" ", strip=True)
 
         name = ""
         h1 = soup.select_one(".gz-pagetitle")
@@ -302,61 +336,64 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             crawl_mode="adapter_chambermaster_profile_extraction",
         )
 
-        record.confidence_score = self._calculate_confidence(record)
+        if hasattr(record, "confidence_score"):
+            record.confidence_score = self._calculate_confidence(record)
+        elif hasattr(record, "confidence"):
+            record.confidence = self._calculate_confidence(record)
 
         return record.to_dict()
 
-    async def crawl(self, page, max_records=3):
+    async def crawl(self, page, max_records: int = 3) -> list[dict[str, Any]]:
         """
-        Sprint 2.2.2:
-        Full ChamberMaster traversal up to member URL discovery.
+        ChamberMaster crawl pipeline:
 
-        Pipeline:
-        directory page -> categories -> member profile URLs
-
-        For now, return lightweight records containing profile URLs.
-        Full extract_member() comes in the next sprint.
+        directory page -> categories -> member profile URLs -> profile extraction
         """
-
         categories = await self.discover_categories(page)
+        self.stats["categories"] = len(categories)
 
-        if self.debug:
-            print("DEBUG ChamberMaster categories found:", len(categories))
+        self._debug("DEBUG ChamberMaster categories found:", len(categories))
 
         member_urls = await self.discover_member_urls(page, categories)
+        self.stats["member_urls"] = len(member_urls)
 
-        if self.debug:
-            print("DEBUG ChamberMaster unique member URLs:", len(member_urls))
+        self._debug("DEBUG ChamberMaster unique member URLs:", len(member_urls))
 
         records = []
 
         for i, member_url in enumerate(member_urls[:max_records], start=1):
-
-            if self.debug:
-                print(
-                    f"DEBUG ChamberMaster extracting {i}/{min(len(member_urls), max_records)}: {member_url}"
-                )
+            self._debug(
+                f"DEBUG ChamberMaster extracting {i}/{min(len(member_urls), max_records)}: {member_url}"
+            )
 
             try:
                 record = await self.extract_member(page, member_url)
 
                 if record:
                     records.append(record)
+                    self.stats["profiles_processed"] += 1
 
             except Exception as e:
-                if self.debug:
-                    print(
-                        "DEBUG ChamberMaster extract_member error:",
-                        member_url,
-                        repr(e),
-                    )
+                self.stats["profiles_failed"] += 1
+                self._debug(
+                    "DEBUG ChamberMaster extract_member error:",
+                    member_url,
+                    repr(e),
+                )
+
+        self._debug("DEBUG ChamberMaster crawl returned:", len(records))
 
         if self.debug:
-            print("DEBUG ChamberMaster crawl returned:", len(records))
+            print("\n===== ChamberMaster Statistics =====")
+            for key, value in self.stats.items():
+                print(f"{key:20}: {value}")
 
         return records
 
     def extract_listings(self, html: str) -> List[Dict[str, Any]]:
+        """
+        Legacy single-page extraction fallback.
+        """
         soup = BeautifulSoup(html or "", "html.parser")
 
         if self.debug:
@@ -364,11 +401,12 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             for a in soup.select("a[href]"):
                 href = (a.get("href") or "").strip()
                 text = self._clean_text(a.get_text(" ", strip=True))
+
                 if href and (
-                        "member" in href.lower()
-                        or "list" in href.lower()
-                        or "directory" in href.lower()
-                        or "category" in href.lower()
+                    "member" in href.lower()
+                    or "list" in href.lower()
+                    or "directory" in href.lower()
+                    or "category" in href.lower()
                 ):
                     all_links.append((text, href))
 
@@ -376,19 +414,18 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         records: List[Dict[str, Any]] = []
         seen_urls = set()
-
         candidates = self._find_candidate_links(soup)
 
         if self.debug:
             print("DEBUG ChamberMaster candidate sample:", candidates[:20])
 
         for name, href in candidates:
-            profile_url = urljoin(self.source_url, href)
+            profile_url = self._normalize_member_url(urljoin(self.source_url, href))
 
             if profile_url.lower() in seen_urls:
                 continue
 
-            seen_urls.add(profile_url)
+            seen_urls.add(profile_url.lower())
 
             records.append(
                 {
@@ -458,6 +495,3 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             return False
 
         return True
-
-    def _clean_text(self, value: str) -> str:
-        return re.sub(r"\s+", " ", value or "").strip()
