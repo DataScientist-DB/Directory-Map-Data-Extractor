@@ -6,34 +6,145 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+from src.adapters.base import BaseDirectoryAdapter
+
+
 class ChamberMasterAdapter(BaseDirectoryAdapter):
 
     architecture = "chambermaster"
 
     BAD_TEXT = {
-        ...
+        "home",
+        "login",
+        "directory",
+        "contact",
+        "contact us",
+        "join",
+        "join now",
+        "events",
+        "calendar",
+        "news",
+        "about",
+        "advertise",
+        "privacy policy",
+        "terms",
     }
 
-    def extract_listings(self, html: str):
-        ...
-        return records
+    def _extract_category_links(self, html: str) -> list[str]:
+        """
+        Extract ChamberMaster category URLs from a directory page.
+        """
+
+        soup = BeautifulSoup(html, "html.parser")
+
+        categories = set()
+
+        for a in soup.select("a[href]"):
+
+            href = (a.get("href") or "").strip()
+
+            if not href:
+                continue
+
+            href_lower = href.lower()
+
+            # Typical ChamberMaster category URLs
+            if "/list/category/" in href_lower:
+                categories.add(
+                    urljoin(self.source_url, href)
+                )
+
+            # Some sites use category search URLs
+            elif "/list/search" in href_lower:
+                categories.add(
+                    urljoin(self.source_url, href)
+                )
+
+        categories = sorted(categories)
+
+        if self.debug:
+            print("DEBUG ChamberMaster categories:", len(categories))
+
+            if categories:
+                print(
+                    "DEBUG ChamberMaster first categories:",
+                    categories[:5],
+                )
+
+        return categories
+
+    def _extract_member_links(self, html: str) -> list[str]:
+        """
+        Extract ChamberMaster member/profile URLs from a category page.
+        """
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        member_urls = set()
+
+        for a in soup.select("a[href]"):
+            href = (a.get("href") or "").strip()
+
+            if not href:
+                continue
+
+            h = href.lower()
+
+            if (
+                    "/list/member/" in h
+                    or "/member/" in h
+            ):
+                if "newmemberapp" in h:
+                    continue
+
+                member_urls.add(urljoin(self.source_url, href))
+
+        return sorted(member_urls)
 
 
     async def discover_categories(self, page, html=""):
-        """
-        Sprint 2.2
-        Will discover category pages from the ChamberMaster directory.
-        """
-        return []
 
+        if not html:
+            html = await page.content()
+
+        return self._extract_category_links(html)
 
     async def discover_member_urls(self, page, category_urls):
         """
-        Sprint 2.2
-        Will visit category pages and collect member URLs.
+        Visit ChamberMaster category/search pages and collect member profile URLs.
         """
-        return []
+        member_urls = set()
 
+        for category_url in category_urls:
+            try:
+                if self.debug:
+                    print("DEBUG ChamberMaster visiting category:", category_url)
+
+                await page.goto(
+                    category_url,
+                    wait_until="domcontentloaded",
+                    timeout=30000,
+                )
+
+                await page.wait_for_timeout(500)
+
+                html = await page.content()
+                links = self._extract_member_links(html)
+
+                if self.debug:
+                    print("DEBUG ChamberMaster member links on page:", len(links))
+
+                member_urls.update(links)
+
+            except Exception as e:
+                if self.debug:
+                    print("DEBUG ChamberMaster category error:", category_url, repr(e))
+
+        result = sorted(member_urls)
+
+        if self.debug:
+            print("DEBUG ChamberMaster total member URLs:", len(result))
+
+        return result
 
     async def extract_member(self, page, member_url):
         """
@@ -51,7 +162,19 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         ChamberMaster crawler is implemented.
         """
         html = await page.content()
-        records = self.extract_listings(html)
+
+        categories = await self.discover_categories(page, html)
+
+        if self.debug:
+            print("=" * 60)
+            print("DEBUG CATEGORY DISCOVERY")
+            print("=" * 60)
+            print("Categories found:", len(categories))
+
+            for c in categories[:20]:
+                print(c)
+
+        return []
 
         if self.debug:
             print("DEBUG crawl extracted:", len(records))
