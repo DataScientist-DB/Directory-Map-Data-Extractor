@@ -23,13 +23,14 @@ from src.modes.confidence import (
 )
 from src.modes.profile_matching import match_profile_url
 from src.adapters.router import get_adapter
+from src.enrichment.website_enricher import WebsiteEnricher
 
 FieldSpec = Union[str, Dict[str, Any]]
 
 # -------------------------
 # Small helpers / constants
 # -------------------------
-
+website_enricher = WebsiteEnricher()
 _RPC_RE = re.compile(r"\brpc\d+\b", re.I)
 _RSS_RE = re.compile(r"\brss\d+\b", re.I)
 _SS_RE = re.compile(r"\bss\d+\b", re.I)  # some pages show ss1
@@ -656,6 +657,13 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                             print("DEBUG adapter records:", len(adapter_records))
 
                         for record in adapter_records[:max_listings]:
+
+                            if record.get("website"):
+                                record = await website_enricher.enrich_record_from_website(
+                                    page,
+                                    record,
+                                )
+
                             await Actor.push_data(record)
                             pushed += 1
 
