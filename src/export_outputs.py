@@ -154,6 +154,9 @@ DEFAULT_COLUMNS = [
     "status",
     "records_found",
     "blocked_reason",
+
+    "website_enrichment_status",
+    "website_enrichment_error",
 ]
 
 ADVANCED_COLUMNS = [

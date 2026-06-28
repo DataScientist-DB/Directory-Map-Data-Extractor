@@ -236,6 +236,9 @@ async def export_dataset_to_kv(
         "blocked_reason",
         "records_found",
         "crawl_mode",
+
+        "website_enrichment_status",
+        "website_enrichment_error",
     ]
 
     ALL_COLUMNS = [
