@@ -147,6 +147,12 @@ async def export_dataset_to_kv(
     for r in items:
         if not isinstance(r, dict):
             continue
+        # ------------------------------------------------------------------
+        # Standard export metadata
+        # ------------------------------------------------------------------
+        r.setdefault("status", "success")
+        r.setdefault("blocked_reason", "")
+        r.setdefault("records_found", len(items))
 
         if r.get("category_codes"):
             r["category_names_str"] = _codes_to_names(
