@@ -123,14 +123,38 @@ DEFAULT_COLUMNS = [
     "products",
     "products_rpc_codes",
     "products_rpc_names",
+
     "email",
     "phone",
+    "fax",
     "website",
+
+    "linkedin",
+    "facebook",
+    "instagram",
+    "youtube",
+    "twitter",
+
     "location",
+    "address",
+    "city",
+    "state",
+    "postal_code",
+
+    "description",
+    "hours",
+    "driving_directions",
+
     "profile_url",
     "source_url",
-]
+    "architecture",
+    "crawl_mode",
+    "confidence_score",
 
+    "status",
+    "records_found",
+    "blocked_reason",
+]
 
 ADVANCED_COLUMNS = [
     "category_codes",
