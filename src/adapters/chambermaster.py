@@ -309,6 +309,31 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         email_el = soup.select_one(".gz-card-email a[href^='mailto:']")
         if email_el:
             email = email_el.get("href", "").replace("mailto:", "").strip()
+        facebook = ""
+        linkedin = ""
+        instagram = ""
+        youtube = ""
+        twitter = ""
+
+        for a in soup.select(".gz-card-social a[href]"):
+            href = (a.get("href") or "").strip()
+
+            href_lower = href.lower()
+
+            if "facebook.com" in href_lower:
+                facebook = href
+
+            elif "linkedin.com" in href_lower:
+                linkedin = href
+
+            elif "instagram.com" in href_lower:
+                instagram = href
+
+            elif "youtube.com" in href_lower:
+                youtube = href
+
+            elif "twitter.com" in href_lower or "x.com" in href_lower:
+                twitter = href
 
         address = ""
         city = ""
@@ -337,6 +362,11 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             fax=fax,
             email=email,
             website=website,
+            facebook=facebook,
+            linkedin=linkedin,
+            instagram=instagram,
+            youtube=youtube,
+            twitter=twitter,
             address=address,
             city=city,
             state=state,
@@ -354,7 +384,7 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return record.to_dict()
 
-    async def crawl(self, page, max_records: int = 3) -> list[dict[str, Any]]:
+    async def crawl(self, page, max_records: int = 5) -> list[dict[str, Any]]:
         """
         ChamberMaster crawl pipeline:
 
