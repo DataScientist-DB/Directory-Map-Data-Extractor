@@ -205,6 +205,7 @@ async def export_dataset_to_kv(
         "website",
         "email",
         "phone",
+        "fax",
 
         "linkedin",
         "facebook",
@@ -212,10 +213,18 @@ async def export_dataset_to_kv(
         "youtube",
         "twitter",
 
+        "location",
+        "address",
+        "city",
+        "state",
+        "postal_code",
+
+        "description",
+        "hours",
+        "driving_directions",
+
         "profile_url",
         "confidence_score",
-        "blocked",
-
         "source_url",
         "status",
         "blocked_reason",
