@@ -356,6 +356,18 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             if postal_el:
                 postal_code = self._clean_text(postal_el.get_text(" ", strip=True))
 
+        hours = ""
+        hours_el = soup.select_one(".gz-details-hours p:not(.gz-details-subtitle)")
+        if hours_el:
+            hours = self._clean_text(hours_el.get_text(" ", strip=True))
+
+        driving_directions = ""
+        driving_el = soup.select_one(".gz-details-driving p:not(.gz-details-subtitle)")
+        if driving_el:
+            driving_directions = self._clean_text(
+                driving_el.get_text(" ", strip=True)
+            )
+
         record = BusinessRecord(
             entity_name=name,
             phone=phone,
@@ -367,6 +379,8 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             instagram=instagram,
             youtube=youtube,
             twitter=twitter,
+            hours=hours,
+            driving_directions=driving_directions,
             address=address,
             city=city,
             state=state,
