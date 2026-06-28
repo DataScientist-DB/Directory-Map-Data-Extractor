@@ -377,18 +377,7 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             ".gz-card-description",
             "[itemprop='description']",
         ]
-        description = re.sub(
-            r"^About\s+Us\s+Tab\s*",
-            "",
-            description,
-            flags=re.IGNORECASE,
-        )
 
-        description = re.sub(
-            r"\s+",
-            " ",
-            description,
-        ).strip()
         for selector in description_selectors:
             el = soup.select_one(selector)
 
@@ -399,12 +388,25 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
                 if len(description) > 20:
                     break
+
+        description = re.sub(
+            r"^About\s+Us(?:\s+Tab)?\s*",
+            "",
+            description,
+            flags=re.IGNORECASE,
+        )
+
+        description = re.sub(
+            r"\s+",
+            " ",
+            description,
+        ).strip()
+
         if self.debug:
             print(
                 "DEBUG description:",
                 description[:120]
             )
-
         record = BusinessRecord(
             entity_name=name,
             phone=phone,
