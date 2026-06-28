@@ -450,6 +450,7 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
     max_listings = int(input_data.get("maxListings", 200))
     max_pages = int(input_data.get("maxPages", 50))
     debug = bool(input_data.get("debug", False))
+    enable_website_enrichment: bool = False,
 
     enable_profile_enrichment = bool(
         input_data.get("enableProfileEnrichment", True)
@@ -658,7 +659,7 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
                         for record in adapter_records[:max_listings]:
 
-                            if record.get("website"):
+                            if enable_website_enrichment and record.get("website"):
                                 record = await website_enricher.enrich_record_from_website(
                                     page,
                                     record,

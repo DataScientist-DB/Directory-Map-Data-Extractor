@@ -375,7 +375,7 @@ async def main() -> None:
         )
 
         crawl_info = await run_crawler(input_data) or {}
-
+        enable_website_enrichment = bool(input_data.get("enableWebsiteEnrichment", False)),
         ds = await Actor.open_dataset()
         peek = await ds.get_data(limit=3)
         Actor.log.info(
