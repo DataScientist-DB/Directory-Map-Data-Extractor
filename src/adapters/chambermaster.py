@@ -367,6 +367,32 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             driving_directions = self._clean_text(
                 driving_el.get_text(" ", strip=True)
             )
+        description = ""
+
+        description_selectors = [
+            ".gz-details-description",
+            ".gz-description",
+            ".gz-member-description",
+            ".gz-content",
+            ".gz-card-description",
+            "[itemprop='description']",
+        ]
+
+        for selector in description_selectors:
+            el = soup.select_one(selector)
+
+            if el:
+                description = self._clean_text(
+                    el.get_text(" ", strip=True)
+                )
+
+                if len(description) > 20:
+                    break
+        if self.debug:
+            print(
+                "DEBUG description:",
+                description[:120]
+            )
 
         record = BusinessRecord(
             entity_name=name,
@@ -374,17 +400,23 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             fax=fax,
             email=email,
             website=website,
+
             facebook=facebook,
             linkedin=linkedin,
             instagram=instagram,
             youtube=youtube,
             twitter=twitter,
+
+            description=description,
+
             hours=hours,
             driving_directions=driving_directions,
+
             address=address,
             city=city,
             state=state,
             postal_code=postal_code,
+
             profile_url=member_url,
             source_url=self.source_url,
             architecture=self.architecture,
