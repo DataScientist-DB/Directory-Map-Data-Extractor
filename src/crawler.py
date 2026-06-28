@@ -443,14 +443,18 @@ async def _discover_taxonomy_via_endpoints(page, source_url: str, html: str, deb
 # Main crawler
 # -------------------------
 
-async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
+async def run_crawler(
+    input_data: Dict[str, Any],
+    enable_website_enrichment: bool = False,
+    website_timeout_ms: int = 15000,
+) -> Dict[str, Any]:
+
     mode = (input_data.get("mode") or "dom").strip()
 
     start_urls = input_data.get("startUrls") or []
     max_listings = int(input_data.get("maxListings", 200))
     max_pages = int(input_data.get("maxPages", 50))
     debug = bool(input_data.get("debug", False))
-    enable_website_enrichment: bool = False,
 
     enable_profile_enrichment = bool(
         input_data.get("enableProfileEnrichment", True)
@@ -663,6 +667,7 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                                 record = await website_enricher.enrich_record_from_website(
                                     page,
                                     record,
+                                    timeout_ms=website_timeout_ms,
                                 )
 
                             await Actor.push_data(record)
