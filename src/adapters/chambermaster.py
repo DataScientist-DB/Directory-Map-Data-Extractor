@@ -377,7 +377,18 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             ".gz-card-description",
             "[itemprop='description']",
         ]
+        description = re.sub(
+            r"^About\s+Us\s+Tab\s*",
+            "",
+            description,
+            flags=re.IGNORECASE,
+        )
 
+        description = re.sub(
+            r"\s+",
+            " ",
+            description,
+        ).strip()
         for selector in description_selectors:
             el = soup.select_one(selector)
 
