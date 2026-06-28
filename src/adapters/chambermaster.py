@@ -277,7 +277,6 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
             with open(debug_dir / "member_debug.html", "w", encoding="utf-8") as f:
                 f.write(html)
-
         soup = BeautifulSoup(html or "", "html.parser")
 
         name = ""
@@ -289,26 +288,24 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         phone_el = soup.select_one(".gz-card-phone span[itemprop='telephone']")
         if phone_el:
             phone = self._clean_text(phone_el.get_text(" ", strip=True))
+
         fax = ""
         fax_el = soup.select_one(".gz-card-fax span[itemprop='faxNumber']")
         if fax_el:
             fax = self._clean_text(fax_el.get_text(" ", strip=True))
-
-
-        if fax_el:
-            fax = self._clean_text(
-                fax_el.get_text(" ", strip=True)
-            )
 
         website = ""
         website_el = soup.select_one(".gz-card-website a[href]")
         if website_el:
             website = (website_el.get("href") or "").strip()
 
+        # ChamberMaster may hide member emails behind a JavaScript contact form.
+        # If no mailto link is present, leave email empty instead of using chamber staff emails.
         email = ""
         email_el = soup.select_one(".gz-card-email a[href^='mailto:']")
         if email_el:
             email = email_el.get("href", "").replace("mailto:", "").strip()
+
         facebook = ""
         linkedin = ""
         instagram = ""
@@ -493,20 +490,25 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
     def extract_listings(self, html: str) -> List[Dict[str, Any]]:
         """
         Legacy single-page extraction fallback.
+
+        This method is kept for compatibility with the generic crawler path.
+        The main ChamberMaster production path uses:
+        discover_categories() -> discover_member_urls() -> extract_member()
         """
         soup = BeautifulSoup(html or "", "html.parser")
 
         if self.debug:
             all_links = []
+
             for a in soup.select("a[href]"):
                 href = (a.get("href") or "").strip()
                 text = self._clean_text(a.get_text(" ", strip=True))
 
                 if href and (
-                    "member" in href.lower()
-                    or "list" in href.lower()
-                    or "directory" in href.lower()
-                    or "category" in href.lower()
+                        "member" in href.lower()
+                        or "list" in href.lower()
+                        or "directory" in href.lower()
+                        or "category" in href.lower()
                 ):
                     all_links.append((text, href))
 
@@ -520,12 +522,16 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             print("DEBUG ChamberMaster candidate sample:", candidates[:20])
 
         for name, href in candidates:
-            profile_url = self._normalize_member_url(urljoin(self.source_url, href))
+            profile_url = self._normalize_member_url(
+                urljoin(self.source_url, href)
+            )
 
-            if profile_url.lower() in seen_urls:
+            profile_key = profile_url.lower()
+
+            if profile_key in seen_urls:
                 continue
 
-            seen_urls.add(profile_url.lower())
+            seen_urls.add(profile_key)
 
             records.append(
                 {
@@ -533,9 +539,17 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
                     "profile_url": profile_url,
                     "source_url": self.source_url,
                     "architecture": self.architecture,
-                    "crawl_mode": "adapter_chambermaster",
+                    "crawl_mode": "adapter_chambermaster_legacy_listing",
+                    "status": "success",
+                    "records_found": 0,
+                    "blocked_reason": "",
                 }
             )
+
+        total = len(records)
+
+        for record in records:
+            record["records_found"] = total
 
         if self.debug:
             print("DEBUG ChamberMaster candidates:", len(candidates))
