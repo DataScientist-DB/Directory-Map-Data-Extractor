@@ -6,7 +6,7 @@ from src.enrichment.email_extractor import EmailExtractor
 from src.enrichment.phone_extractor import PhoneExtractor
 from src.enrichment.social_extractor import SocialExtractor
 from src.enrichment.schema_extractor import SchemaExtractor
-
+from src.enrichment.contact_link_discovery import ContactLinkDiscovery
 
 class WebsiteEnricher:
     """
@@ -28,6 +28,7 @@ class WebsiteEnricher:
         self.phone = PhoneExtractor()
         self.social = SocialExtractor()
         self.schema = SchemaExtractor()
+        self.contact_links = ContactLinkDiscovery()
 
         self.stats = {
             "websites_visited": 0,
@@ -35,18 +36,40 @@ class WebsiteEnricher:
             "emails_found": 0,
             "phones_found": 0,
             "social_profiles_found": 0,
+            "contact_links_found": 0,
         }
 
-    def _candidate_urls(self, website: str) -> list[str]:
+    def _candidate_urls(
+            self,
+            website: str,
+            discovered: list[str] | None = None,
+    ) -> list[str]:
+
         website = website.rstrip("/")
 
-        return [
+        urls = [
             website,
             website + "/contact",
             website + "/contact-us",
             website + "/about",
             website + "/about-us",
         ]
+
+        if discovered:
+            urls.extend(discovered)
+
+        # Remove duplicates while preserving order
+        seen = set()
+        ordered = []
+
+        for url in urls:
+            if not url:
+                continue
+            if url not in seen:
+                seen.add(url)
+                ordered.append(url)
+
+        return ordered
 
     def print_statistics(self) -> None:
         print("\n===== Website Enrichment Statistics =====")
@@ -66,6 +89,35 @@ class WebsiteEnricher:
 
         original_email = record.get("email") or ""
         original_phone = record.get("phone") or ""
+        discovered_links = []
+
+        try:
+            await page.goto(
+                website,
+                wait_until="domcontentloaded",
+                timeout=timeout_ms,
+            )
+
+            await page.wait_for_timeout(800)
+
+            homepage_html = await page.content()
+
+            discovered_links = self.contact_links.discover(
+                homepage_html,
+                website,
+            )
+
+            if discovered_links:
+                self.stats.setdefault("contact_links_found", 0)
+                self.stats["contact_links_found"] += len(discovered_links)
+
+        except Exception:
+            pass
+
+        candidate_urls = self._candidate_urls(
+            website,
+            discovered_links,
+        )
 
         candidate_urls = self._candidate_urls(website)
         visited_any = False
