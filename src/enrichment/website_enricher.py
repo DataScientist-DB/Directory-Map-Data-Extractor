@@ -7,17 +7,20 @@ from src.enrichment.phone_extractor import PhoneExtractor
 from src.enrichment.social_extractor import SocialExtractor
 from src.enrichment.schema_extractor import SchemaExtractor
 
+
 class WebsiteEnricher:
     """
     Enriches a business record using the HTML of the company's own website.
 
-    Version 0.2:
+    Version 0.3:
       - homepage
       - contact page
       - about page
+      - schema.org enrichment
       - email
       - phone
       - social links
+      - enrichment statistics
     """
 
     def __init__(self):
@@ -25,6 +28,14 @@ class WebsiteEnricher:
         self.phone = PhoneExtractor()
         self.social = SocialExtractor()
         self.schema = SchemaExtractor()
+
+        self.stats = {
+            "websites_visited": 0,
+            "schema_hits": 0,
+            "emails_found": 0,
+            "phones_found": 0,
+            "social_profiles_found": 0,
+        }
 
     def _candidate_urls(self, website: str) -> list[str]:
         website = website.rstrip("/")
@@ -37,6 +48,11 @@ class WebsiteEnricher:
             website + "/about-us",
         ]
 
+    def print_statistics(self) -> None:
+        print("\n===== Website Enrichment Statistics =====")
+        for key, value in self.stats.items():
+            print(f"{key:25}: {value}")
+
     async def enrich_record_from_website(
         self,
         page,
@@ -47,6 +63,9 @@ class WebsiteEnricher:
 
         if not website:
             return record
+
+        original_email = record.get("email") or ""
+        original_phone = record.get("phone") or ""
 
         candidate_urls = self._candidate_urls(website)
         visited_any = False
@@ -63,8 +82,14 @@ class WebsiteEnricher:
                 await page.wait_for_timeout(800)
 
                 html = await page.content()
-                schema = self.schema.extract(html)
                 visited_any = True
+                self.stats["websites_visited"] += 1
+
+                schema = self.schema.extract(html)
+
+                if any(v for v in schema.values() if v):
+                    self.stats["schema_hits"] += 1
+
                 if not record.get("email") and schema.get("email"):
                     record["email"] = schema["email"]
 
@@ -98,12 +123,21 @@ class WebsiteEnricher:
 
             social = self.social.extract(html)
 
+            if any(social.values()):
+                self.stats["social_profiles_found"] += 1
+
             for key, value in social.items():
                 if value and not record.get(key):
                     record[key] = value
 
             if record.get("email"):
                 break
+
+        if not original_email and record.get("email"):
+            self.stats["emails_found"] += 1
+
+        if not original_phone and record.get("phone"):
+            self.stats["phones_found"] += 1
 
         if visited_any:
             record["website_enrichment_status"] = "success"
