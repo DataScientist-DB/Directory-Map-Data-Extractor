@@ -29,6 +29,7 @@ class WebsiteEnricher:
         self.social = SocialExtractor()
         self.schema = SchemaExtractor()
         self.contact_links = ContactLinkDiscovery()
+        self.cache = {}
 
         self.stats = {
             "websites_visited": 0,
@@ -86,7 +87,27 @@ class WebsiteEnricher:
 
         if not website:
             return record
+        if website in self.cache:
+            cached = self.cache[website]
 
+            for key, value in cached.items():
+                if value and not record.get(key):
+                    record[key] = value
+
+            record["website_enrichment_status"] = "cached"
+            record["website_enrichment_error"] = ""
+
+            if visited_any:
+                self.cache[website] = {
+                    "email": record.get("email", ""),
+                    "phone": record.get("phone", ""),
+                    "facebook": record.get("facebook", ""),
+                    "linkedin": record.get("linkedin", ""),
+                    "instagram": record.get("instagram", ""),
+                    "youtube": record.get("youtube", ""),
+                    "twitter": record.get("twitter", ""),
+                }
+            return record
         original_email = record.get("email") or ""
         original_phone = record.get("phone") or ""
         discovered_links = []
