@@ -11,7 +11,10 @@ class WebsiteEnricher:
     """
     Enriches a business record using the HTML of the company's own website.
 
-    Version 0.1:
+    Version 0.2:
+      - homepage
+      - contact page
+      - about page
       - email
       - phone
       - social links
@@ -21,6 +24,17 @@ class WebsiteEnricher:
         self.email = EmailExtractor()
         self.phone = PhoneExtractor()
         self.social = SocialExtractor()
+
+    def _candidate_urls(self, website: str) -> list[str]:
+        website = website.rstrip("/")
+
+        return [
+            website,
+            website + "/contact",
+            website + "/contact-us",
+            website + "/about",
+            website + "/about-us",
+        ]
 
     async def enrich_record_from_website(
         self,
@@ -33,34 +47,47 @@ class WebsiteEnricher:
         if not website:
             return record
 
-        try:
-            await page.goto(
-                website,
-                wait_until="domcontentloaded",
-                timeout=timeout_ms,
-            )
+        candidate_urls = self._candidate_urls(website)
+        visited_any = False
+        last_error = ""
 
-            await page.wait_for_timeout(800)
+        for candidate in candidate_urls:
+            try:
+                await page.goto(
+                    candidate,
+                    wait_until="domcontentloaded",
+                    timeout=timeout_ms,
+                )
 
-            html = await page.content()
+                await page.wait_for_timeout(800)
 
-        except Exception as e:
+                html = await page.content()
+                visited_any = True
+
+            except Exception as e:
+                last_error = repr(e)
+                continue
+
+            if not record.get("email"):
+                record["email"] = self.email.extract(html)
+
+            if not record.get("phone"):
+                record["phone"] = self.phone.extract(html)
+
+            social = self.social.extract(html)
+
+            for key, value in social.items():
+                if value and not record.get(key):
+                    record[key] = value
+
+            if record.get("email"):
+                break
+
+        if visited_any:
+            record["website_enrichment_status"] = "success"
+            record["website_enrichment_error"] = ""
+        else:
             record["website_enrichment_status"] = "failed"
-            record["website_enrichment_error"] = repr(e)
-            return record
-
-        if not record.get("email"):
-            record["email"] = self.email.extract(html)
-
-        if not record.get("phone"):
-            record["phone"] = self.phone.extract(html)
-
-        social = self.social.extract(html)
-
-        for key, value in social.items():
-            if value and not record.get(key):
-                record[key] = value
-
-        record["website_enrichment_status"] = "success"
+            record["website_enrichment_error"] = last_error
 
         return record
