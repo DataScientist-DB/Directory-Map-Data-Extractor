@@ -577,13 +577,73 @@ async def run_crawler(
                 if "recaptcha" in url2:
                     all_cat["_blocked"] = "recaptcha"
 
-                # Keep this permissive; many sites send JSON as text/html or text/plain
-                if any(x in url2 for x in (".png", ".jpg", ".jpeg", ".webp", ".svg", ".css", ".woff", ".woff2")):
-                    return
-                if resp.status in (301, 302, 303, 307, 308):
+                if any(
+                        x in url2
+                        for x in (
+                                ".png",
+                                ".jpg",
+                                ".jpeg",
+                                ".webp",
+                                ".svg",
+                                ".css",
+                                ".woff",
+                                ".woff2",
+                                ".ico",
+                                ".map",
+                        )
+                ):
                     return
 
-                body = await resp.body()
+                if resp.status in (301, 302, 303, 307, 308, 204, 304):
+                    return
+
+                interesting_url = any(
+                    x in url2
+                    for x in (
+                        "rpc",
+                        "rss",
+                        "category",
+                        "service",
+                        "taxonomy",
+                        "member",
+                        "directory",
+                        "list",
+                        "api",
+                        "json",
+                    )
+                )
+
+                interesting_ct = any(
+                    x in ct
+                    for x in (
+                        "json",
+                        "javascript",
+                        "text",
+                        "html",
+                        "xml",
+                    )
+                )
+
+                if not interesting_url and not interesting_ct:
+                    return
+
+                try:
+                    body = await resp.body()
+                except Exception as e:
+                    msg = repr(e)
+
+                    if (
+                            "No data found for resource" in msg
+                            or "Target page, context or browser has been closed" in msg
+                            or "TargetClosedError" in msg
+                    ):
+                        return
+
+                    if debug:
+                        print("on_response body error:", msg)
+
+                    return
+
                 if not body or len(body) > TAX_MAX_BYTES:
                     return
 
@@ -592,7 +652,15 @@ async def run_crawler(
                 if debug:
                     tlow = text.lower()
                     if ("rpc" in tlow) or ("rss" in tlow) or ("ss" in tlow):
-                        print("✅ HIT taxonomy-ish payload:", resp.status, resp.url, "bytes=", len(body), "ct=", ct)
+                        print(
+                            "✅ HIT taxonomy-ish payload:",
+                            resp.status,
+                            resp.url,
+                            "bytes=",
+                            len(body),
+                            "ct=",
+                            ct,
+                        )
 
                 await _ingest_text_for_taxonomy(text)
 
