@@ -5,7 +5,7 @@ from typing import Any
 from src.enrichment.email_extractor import EmailExtractor
 from src.enrichment.phone_extractor import PhoneExtractor
 from src.enrichment.social_extractor import SocialExtractor
-
+from src.enrichment.schema_extractor import SchemaExtractor
 
 class WebsiteEnricher:
     """
@@ -24,6 +24,7 @@ class WebsiteEnricher:
         self.email = EmailExtractor()
         self.phone = PhoneExtractor()
         self.social = SocialExtractor()
+        self.schema = SchemaExtractor()
 
     def _candidate_urls(self, website: str) -> list[str]:
         website = website.rstrip("/")
@@ -62,7 +63,28 @@ class WebsiteEnricher:
                 await page.wait_for_timeout(800)
 
                 html = await page.content()
+                schema = self.schema.extract(html)
                 visited_any = True
+                if not record.get("email") and schema.get("email"):
+                    record["email"] = schema["email"]
+
+                if not record.get("phone") and schema.get("phone"):
+                    record["phone"] = schema["phone"]
+
+                if not record.get("hours") and schema.get("hours"):
+                    record["hours"] = schema["hours"]
+
+                if not record.get("address") and schema.get("street_address"):
+                    record["address"] = schema["street_address"]
+
+                if not record.get("city") and schema.get("city"):
+                    record["city"] = schema["city"]
+
+                if not record.get("state") and schema.get("state"):
+                    record["state"] = schema["state"]
+
+                if not record.get("postal_code") and schema.get("postal_code"):
+                    record["postal_code"] = schema["postal_code"]
 
             except Exception as e:
                 last_error = repr(e)
