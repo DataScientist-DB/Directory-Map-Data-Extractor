@@ -23,3 +23,5 @@ storage/
 
 # Debug HTML
 member_debug.html
+debug/
+
