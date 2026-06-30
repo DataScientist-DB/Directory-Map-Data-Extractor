@@ -746,6 +746,7 @@ async def run_crawler(
                         return {
                             "status": "adapter_extraction_complete",
                             "architecture": architecture,
+                            "source_url": page.url,
                             "records_found": len(adapter_records),
                             "crawl_mode": "auto",
                             "recommended_strategy": f"{architecture}_adapter",
@@ -764,6 +765,7 @@ async def run_crawler(
                     return {
                         "status": "architecture_detected",
                         "architecture": architecture,
+                        "source_url": page.url,
                         "records_found": 0,
                         "crawl_mode": mode,
                         "recommended_strategy": f"{architecture}_adapter",
