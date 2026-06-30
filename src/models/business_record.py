@@ -16,6 +16,15 @@ class BusinessRecord:
     source_url: str = ""
     architecture: str = ""
     crawl_mode: str = ""
+    fax: str = ""
+    facebook: str = ""
+    linkedin: str = ""
+    instagram: str = ""
+    youtube: str = ""
+    twitter: str = ""
+    description: str = ""
+    hours: str = ""
+    driving_directions: str = ""
 
     raw_data: dict[str, Any] = field(default_factory=dict)
     confidence_score: float = 0.0

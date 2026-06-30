@@ -374,8 +374,20 @@ async def main() -> None:
             content_type="application/json",
         )
 
-        crawl_info = await run_crawler(input_data) or {}
-        enable_website_enrichment = bool(input_data.get("enableWebsiteEnrichment", False)),
+        enable_website_enrichment = bool(
+            input_data.get("enableWebsiteEnrichment", False)
+        )
+
+        website_timeout_ms = int(
+            input_data.get("websiteTimeoutMs", 15000)
+        )
+
+        crawl_info = await run_crawler(
+            input_data,
+            enable_website_enrichment=enable_website_enrichment,
+            website_timeout_ms=website_timeout_ms,
+        ) or {}
+
         ds = await Actor.open_dataset()
         peek = await ds.get_data(limit=3)
         Actor.log.info(
