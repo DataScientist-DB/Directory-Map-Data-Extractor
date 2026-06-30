@@ -1,400 +1,253 @@
-# Directory Listing Extractor
+# UBDIP
+## Universal Business Directory Intelligence Platform
 
-## Extract Structured Directory Listings from Interactive Maps and Business Directories
+**Version:** 1.0.0 Release Candidate 1 (RC1)
 
-Transform interactive maps, business directories, association registries, NGO databases, supplier networks, member directories, and producer listings into clean, structured, Excel-ready datasets.
+**Tagline**
 
-The Directory Listing Extractor is optimized for modern JavaScript-powered websites where listing information is embedded in HTML, JSON, or JavaScript objects rather than rendered directly in the page content.
-
-The Actor automatically extracts business details, websites, emails, phone numbers, categories, services, products, and other metadata and exports them into structured datasets ready for analysis.
-
----
-
-# Screenshots
-
-## Structured Directory Listings
-
-![Structured Directory Listings](images/screenshot-1-structured-listings.png)
-
-Extract clean organization records with locations, websites, categories, and services.
+> **Discover • Enrich • Validate • Export**
 
 ---
 
-## Category & Service Classification
+# Vision
 
-![Category & Service Classification](images/screenshot-2-category-service-classification.png)
+Transform online business directories into validated, enriched, production-ready business intelligence.
 
-Decode internal category and service codes into human-readable business intelligence fields.
-
----
-
-## Excel Export
-
-![Excel Export](images/screenshot-3-excel-export.png)
-
-Export ready-to-use CSV and Excel files for Google Sheets, CRM systems, and BI tools.
+UBDIP enables organizations to convert fragmented online business directory data into structured, standardized, and high-quality business intelligence datasets that can be immediately used for analytics, CRM systems, GIS platforms, market research, and decision support.
 
 ---
 
-## Actor Configuration
+# Mission
 
-![Actor Configuration](images/screenshot-4-actor-configuration.png)
+UBDIP provides a modular platform for:
 
-Configure target directory URLs, output format, and extraction limits.
+- Discovering business directory technologies
+- Extracting structured business information
+- Enriching business records from company websites
+- Validating extraction quality
+- Exporting standardized business intelligence
 
+Rather than creating one-off web scrapers, UBDIP delivers a reusable platform that supports multiple directory technologies through a common architecture and shared enrichment engine.
 
-# What This Actor Extracts
+---
 
-For each organization, business, farm, supplier, member, or directory listing discovered, the Actor extracts structured information including:
+# Product Vision
 
-## Core Fields
+Business directories represent one of the world's largest collections of publicly available business information.
 
-- Entity name
+Unfortunately, this information is:
+
+- fragmented
+- inconsistent
+- incomplete
+- difficult to reuse
+
+UBDIP transforms those fragmented sources into standardized Business Intelligence.
+
+---
+
+# Core Principles
+
+## Universal
+
+Support multiple business directory technologies through modular adapters.
+
+---
+
+## Standardized
+
+Every supported directory produces the same BusinessRecord model.
+
+---
+
+## Intelligent
+
+Recover additional information directly from company websites using reusable enrichment modules.
+
+---
+
+## Validated
+
+Every release is automatically verified through smoke tests, regression tests, runtime summaries, and benchmark reporting.
+
+---
+
+## Extensible
+
+New directory platforms can be added without changing the platform architecture.
+
+---
+
+# Product Pillars
+
+## Discover
+
+Automatically identify supported directory architectures.
+
+Examples:
+
+- ChamberMaster
+- GrowthZone
+- CivicPlus
+- WildApricot
+- Simpleview
+
+---
+
+## Extract
+
+Collect structured business information including:
+
+- Company
+- Contact details
+- Categories
+- Services
 - Location
-- Address
 - Website
-- Profile URL
-- Public email address
-- Public phone number
-
-## Classification & Enrichment
-
-- Category codes
-- Service codes
-- Category names
-- Service names
-- Products
-- Classification mappings
-
-## Additional Metadata
-
-When available:
-
-- Size
-- Results
-- Descriptions
-- Quotes
-- Logos
-
-Each listing is normalized into a clean dataset item.
 
 ---
-## Recommended Output
 
-For non-technical users, use the generated files in Key-Value Store:
+## Enrich
 
-- `output.xlsx`
-- `output.csv`
+Recover additional business intelligence from company websites:
 
-These files include cleaned, Excel-ready fields with decoded category and service names.
+- Email
+- Phone
+- Social profiles
+- Schema.org
+- Contact pages
+- Business metadata
 
-The Apify Dataset is also available for developers and API users, but it may include raw internal fields such as category and service codes.
+---
 
-# Example Output
+## Validate
 
-```json
-{
-  "entity_name": "Southbrook Vineyards",
-  "location": "Niagara-on-the-Lake, Ontario",
-  "website": "https://www.southbrook.com",
-  "email": "info@southbrook.com",
-  "phone": "905-380-9095",
-  "category_names_str": "Fruit; Value-added products",
-  "service_names_str": "Farm tour (for general public)",
-  "products": "Wine; Beef; Eggs",
-  "profile_url": "https://regenerationcanada.org/en/southbrook-vineyard/",
-  "source_url": "https://regenerationcanada.org/en/map/"
-}
+Automatically measure quality through:
+
+- Smoke Tests
+- Regression Tests
+- Runtime Summary
+- Benchmarks
+
+---
+
+## Export
+
+Produce production-ready datasets for:
+
+- CSV
+- XLSX
+- JSON
+- API
+- Business Intelligence platforms
+
+---
+
+# Product Architecture
+
+```
+                  UBDIP
+                     │
+     ┌───────────────┴────────────────┐
+     │                                │
+     ▼                                ▼
+ Universal Core              Adapter Ecosystem
+     │                                │
+     ▼                                ▼
+ Website Intelligence        ChamberMaster
+     │                       GrowthZone
+     ▼                       CivicPlus
+ Validation Framework        WildApricot
+     │                       Simpleview
+     ▼
+ Export Engine
 ```
 
 ---
 
-# Typical Use Cases
+# Target Markets
 
-### Business Directories
+UBDIP is designed for organizations that require structured business intelligence.
 
-- Company directories
-- Local business listings
-- Store locators
-- Supplier directories
+Primary markets include:
 
-### Associations
-
-- Member registries
-- Professional organizations
-- Industry directories
-
-### NGOs & Nonprofits
-
-- NGO databases
-- Community networks
-- Nonprofit ecosystems
-
-### Agriculture & Sustainability
-
-- Farm directories
-- Producer networks
-- Sustainability maps
-- Food system ecosystems
-
-### Research & Intelligence
-
-- Market research
-- Competitor analysis
-- Industry mapping
-- Data enrichment
+- Business Intelligence
+- B2B Lead Generation
+- CRM Enrichment
+- Market Research
+- Economic Development
+- Chambers of Commerce
+- Business Associations
+- GIS & Spatial Analysis
+- Investment Promotion Agencies
+- Government Organizations
 
 ---
 
-# Supported Extraction Mode
+# Competitive Advantages
 
-## embedded_js (Recommended)
+UBDIP is not simply another web scraper.
 
-Use this mode when listing information is embedded inside:
+It provides:
 
-- JavaScript variables
-- JSON objects
-- Inline scripts
-- Structured page data
-
-Advantages:
-
-- Fast
-- Reliable
-- Stable
-- Works on modern websites
-- No browser interaction required
+- Architecture detection
+- Modular adapters
+- Shared enrichment engine
+- Stable BusinessRecord model
+- Automated validation
+- Runtime analytics
+- Professional documentation
+- Regression testing
 
 ---
 
-# Category & Service Classification
+# Product Roadmap
 
-Many directory websites store classifications using internal codes.
+## Version 1.x
 
-Examples:
-
-```text
-rpc1
-rpc5
-rpc12
-
-rss6
-rss10
-```
-
-The Actor automatically converts them into human-readable values.
-
-Examples:
-
-```text
-rpc1  → Beef
-rpc5  → Vegetables
-rpc12 → Value-added products
-
-rss6  → Farm tour (for other farmers)
-rss10 → Wwoofing
-```
-
-Output fields include:
-
-```text
-category_codes
-service_codes
-
-category_names
-service_names
-
-category_names_str
-service_names_str
-```
-
-This makes the output immediately usable in Excel, Power BI, Tableau, and CRM systems.
+- ChamberMaster
+- GrowthZone
+- CivicPlus
+- WildApricot
+- Simpleview
 
 ---
 
-# Product Classification
+## Version 2.x
 
-The Actor also performs semantic alignment between products and categories.
-
-Examples:
-
-| Product    | Category             |
-|------------|----------------------|
-| Eggs       | Poultry              |
-| Honey      | Honey & bee products |
-| Vegetables | Vegetables           |
-| Dairy      | Dairy                |
-| Wine       | Value-added products |
-
-This improves reporting and downstream analytics.
+- REST API
+- Plugin SDK
+- Dashboard
+- Scheduled execution
+- Advanced benchmarking
+- AI-assisted enrichment
 
 ---
 
-# Export Formats
+## Version 3.x
 
-The Actor automatically generates:
-
-## CSV Export
-
-```text
-output.csv
-```
-
-## Excel Export
-
-```text
-output.xlsx
-```
-
-Files are:
-
-- UTF-8 encoded
-- Excel compatible
-- Google Sheets compatible
-- BI-tool ready
+- Cloud Platform
+- Multi-user collaboration
+- Enterprise authentication
+- Workflow automation
+- Business Intelligence dashboards
 
 ---
 
-# Sample Results
+# Success Metrics
 
-The Actor successfully extracts records such as:
+The success of UBDIP will be measured by:
 
-| Entity              | Category                  | Services                       |
-|---------------------|---------------------------|--------------------------------|
-| Vallée Des Prairies | Pork; Vegetables          | Farm tours; Volunteer program  |
-| Benjamin Bridge     | Beef; Dairy               | Direct sales                   |
-| Rustik Bison        | Beef                      | Farm tours; Events             |
-| South Glanton Farms | Beef; Pork; Lamb          | Farm tours; Internship program |
-| Juniper Farm        | Beef; Poultry; Vegetables | Pick-your-own                  |
-
----
-
-# Quick Start
-
-Default test configuration:
-
-```json
-{
-  "mode": "embedded_js",
-  "startUrls": [
-    {
-      "url": "https://regenerationcanada.org/en/map/"
-    }
-  ],
-  "maxListings": 500,
-  "outputCsv": true,
-  "outputXlsx": true
-}
-```
-
-Click **Run** and review the generated dataset.
+- Number of supported directory platforms
+- Extraction accuracy
+- Enrichment coverage
+- Runtime performance
+- Validation quality
+- Ease of extension
+- Customer adoption
 
 ---
 
-# Input Parameters
+# Long-Term Vision
 
-| Parameter            | Description                 |
-|----------------------|-----------------------------|
-| mode                 | Extraction strategy         |
-| startUrls            | One or more directory URLs  |
-| maxListings          | Maximum number of listings  |
-| maxPages             | Maximum pages to process    |
-| embedded.anchorKey   | Listing detection field     |
-| embedded.keys        | Fields to extract           |
-| embedded.fieldMap    | Field mapping configuration |
-| taxonomy.categoryMap | Custom category mappings    |
-| taxonomy.serviceMap  | Custom service mappings     |
-| outputCsv            | Generate CSV export         |
-| outputXlsx           | Generate Excel export       |
-| debug                | Enable verbose logging      |
-
----
-
-# Output Columns
-
-## Default Export
-
-```text
-entity_name
-location
-address
-phone
-email
-website
-profile_url
-category_names_str
-service_names_str
-products
-source_url
-```
-
-## Additional Fields
-
-```text
-category_codes
-service_codes
-category_names
-service_names
-logo
-logo_medium
-lat
-lng
-quote
-size
-results
-```
-
----
-
-# Ideal For
-
-✅ Business Intelligence
-
-✅ Lead Generation
-
-✅ Market Research
-
-✅ Supplier Discovery
-
-✅ Association Directories
-
-✅ NGO Mapping
-
-✅ Agricultural Networks
-
-✅ CRM Enrichment
-
-✅ Competitive Analysis
-
-✅ Ecosystem Intelligence
-
----
-
-# Exporting Results
-
-1. Run the Actor
-2. Open the Dataset tab
-3. Click Export
-4. Choose CSV or XLSX
-5. Download the file
-
-No additional processing is required.
-
----
-
-# Why Use This Actor?
-
-Unlike generic web scrapers, this Actor is specifically designed for structured directory and map websites where data is hidden inside JavaScript objects and embedded content.
-
-Key benefits:
-
-- Structured extraction
-- Category decoding
-- Service decoding
-- Excel-ready output
-- Contact information extraction
-- Product classification
-- Fast execution
-- Research-grade datasets
-
-Perfect for analysts, researchers, consultants, lead-generation teams, NGOs, and market intelligence professionals.
+Become the leading open and extensible Business Directory Intelligence Platform for organizations that require reliable, validated, and reusable business intelligence.
