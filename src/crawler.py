@@ -740,6 +740,8 @@ async def run_crawler(
 
                             await Actor.push_data(record)
                             pushed += 1
+                        if enable_website_enrichment and debug:
+                            website_enricher.print_statistics()
 
                         return {
                             "status": "adapter_extraction_complete",
