@@ -10,7 +10,7 @@ from apify import Actor
 
 from src.crawler import run_crawler
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
-
+from src.run_summary import print_run_summary
 
 def _clean_label(v: Any) -> str:
     if v is None:
@@ -436,13 +436,32 @@ async def main() -> None:
         )
 
         Actor.log.info("Starting dataset export to KV...")
+
+        out_base = input_data.get("outputBaseName", "output")
+        write_csv = bool(input_data.get("outputCsv", True))
+        write_xlsx = bool(input_data.get("outputXlsx", False))
+
         await export_dataset_to_kv(
-            out_base=input_data.get("outputBaseName", "output"),
-            write_csv=bool(input_data.get("outputCsv", True)),
-            write_xlsx=bool(input_data.get("outputXlsx", False)),
+            out_base=out_base,
+            write_csv=write_csv,
+            write_xlsx=write_xlsx,
             columns_mode=str(input_data.get("outputColumnsMode", "default")),
         )
 
+        ds = await Actor.open_dataset()
+        final_data = await ds.get_data(limit=999999)
+        final_items = final_data.items or []
+
+        export_paths = {
+            "csv": f"{out_base}.csv" if write_csv else "",
+            "xlsx": f"{out_base}.xlsx" if write_xlsx else "",
+        }
+
+        print_run_summary(
+            items=final_items,
+            crawl_info=crawl_info,
+            export_paths=export_paths,
+        )
 
 if __name__ == "__main__":
     import asyncio
