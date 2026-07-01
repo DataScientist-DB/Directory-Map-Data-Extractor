@@ -25,6 +25,12 @@ class BusinessRecord:
     description: str = ""
     hours: str = ""
     driving_directions: str = ""
+    business_intelligence_score: int = 0
+    contact_completeness: str = ""
+
+    # RC1.1 Business Intelligence Layer
+    intelligence_score: int = 0
+    intelligence_grade: str = ""
 
     raw_data: dict[str, Any] = field(default_factory=dict)
     confidence_score: float = 0.0

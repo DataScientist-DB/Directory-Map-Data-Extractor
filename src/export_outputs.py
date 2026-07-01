@@ -7,6 +7,7 @@ import html
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from src.taxonomy_static import map_product_labels_to_rpc, RPC_CATEGORY_MAP
+from src.export_columns import DEFAULT_COLUMNS, ADVANCED_COLUMNS
 
 from openpyxl import Workbook
 

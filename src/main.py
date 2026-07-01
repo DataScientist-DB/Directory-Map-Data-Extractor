@@ -11,6 +11,7 @@ from apify import Actor
 from src.crawler import run_crawler
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
 from src.run_summary import print_run_summary
+from src.export_columns import DEFAULT_COLUMNS, ADVANCED_COLUMNS
 
 def _clean_label(v: Any) -> str:
     if v is None:
