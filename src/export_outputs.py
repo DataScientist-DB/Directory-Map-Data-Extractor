@@ -157,6 +157,10 @@ DEFAULT_COLUMNS = [
 
     "website_enrichment_status",
     "website_enrichment_error",
+
+    # Business Intelligence
+    "intelligence_score",
+    "intelligence_grade",
 ]
 
 ADVANCED_COLUMNS = [

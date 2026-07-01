@@ -7,19 +7,22 @@ from src.enrichment.phone_extractor import PhoneExtractor
 from src.enrichment.social_extractor import SocialExtractor
 from src.enrichment.schema_extractor import SchemaExtractor
 from src.enrichment.contact_link_discovery import ContactLinkDiscovery
+from src.enrichment.intelligence_score import IntelligenceScore
+
 
 class WebsiteEnricher:
     """
     Enriches a business record using the HTML of the company's own website.
 
-    Version 0.3:
+    Version 0.4:
       - homepage
-      - contact page
-      - about page
+      - contact/about page discovery
       - schema.org enrichment
       - email
       - phone
       - social links
+      - cache
+      - business intelligence score
       - enrichment statistics
     """
 
@@ -29,6 +32,7 @@ class WebsiteEnricher:
         self.social = SocialExtractor()
         self.schema = SchemaExtractor()
         self.contact_links = ContactLinkDiscovery()
+        self.intelligence = IntelligenceScore()
         self.cache = {}
 
         self.stats = {
@@ -41,11 +45,10 @@ class WebsiteEnricher:
         }
 
     def _candidate_urls(
-            self,
-            website: str,
-            discovered: list[str] | None = None,
+        self,
+        website: str,
+        discovered: list[str] | None = None,
     ) -> list[str]:
-
         website = website.rstrip("/")
 
         urls = [
@@ -59,21 +62,31 @@ class WebsiteEnricher:
         if discovered:
             urls.extend(discovered)
 
-        # Remove duplicates while preserving order
         seen = set()
         ordered = []
 
         for url in urls:
             if not url:
                 continue
+
             if url not in seen:
                 seen.add(url)
                 ordered.append(url)
 
         return ordered
 
+    def _apply_score(self, record: dict[str, Any]) -> dict[str, Any]:
+        score, grade = self.intelligence.score(record)
+
+        record["intelligence_score"] = score
+        record["intelligence_grade"] = grade
+
+        return record
+
+
     def print_statistics(self) -> None:
         print("\n===== Website Enrichment Statistics =====")
+
         for key, value in self.stats.items():
             print(f"{key:25}: {value}")
 
@@ -86,7 +99,8 @@ class WebsiteEnricher:
         website = (record.get("website") or "").strip()
 
         if not website:
-            return record
+            return self._apply_score(record)
+
         if website in self.cache:
             cached = self.cache[website]
 
@@ -97,19 +111,11 @@ class WebsiteEnricher:
             record["website_enrichment_status"] = "cached"
             record["website_enrichment_error"] = ""
 
-            if visited_any:
-                self.cache[website] = {
-                    "email": record.get("email", ""),
-                    "phone": record.get("phone", ""),
-                    "facebook": record.get("facebook", ""),
-                    "linkedin": record.get("linkedin", ""),
-                    "instagram": record.get("instagram", ""),
-                    "youtube": record.get("youtube", ""),
-                    "twitter": record.get("twitter", ""),
-                }
-            return record
+            return self._apply_score(record)
+
         original_email = record.get("email") or ""
         original_phone = record.get("phone") or ""
+
         discovered_links = []
 
         try:
@@ -129,7 +135,6 @@ class WebsiteEnricher:
             )
 
             if discovered_links:
-                self.stats.setdefault("contact_links_found", 0)
                 self.stats["contact_links_found"] += len(discovered_links)
 
         except Exception:
@@ -140,7 +145,6 @@ class WebsiteEnricher:
             discovered_links,
         )
 
-        candidate_urls = self._candidate_urls(website)
         visited_any = False
         last_error = ""
 
@@ -215,8 +219,24 @@ class WebsiteEnricher:
         if visited_any:
             record["website_enrichment_status"] = "success"
             record["website_enrichment_error"] = ""
+
+            self.cache[website] = {
+                "email": record.get("email", ""),
+                "phone": record.get("phone", ""),
+                "facebook": record.get("facebook", ""),
+                "linkedin": record.get("linkedin", ""),
+                "instagram": record.get("instagram", ""),
+                "youtube": record.get("youtube", ""),
+                "twitter": record.get("twitter", ""),
+                "hours": record.get("hours", ""),
+                "address": record.get("address", ""),
+                "city": record.get("city", ""),
+                "state": record.get("state", ""),
+                "postal_code": record.get("postal_code", ""),
+            }
+
         else:
             record["website_enrichment_status"] = "failed"
             record["website_enrichment_error"] = last_error
 
-        return record
+        return self._apply_score(record)

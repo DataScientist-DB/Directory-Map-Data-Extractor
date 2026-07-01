@@ -239,6 +239,9 @@ async def export_dataset_to_kv(
 
         "website_enrichment_status",
         "website_enrichment_error",
+
+        "intelligence_score",
+        "intelligence_grade",
     ]
 
     ALL_COLUMNS = [
