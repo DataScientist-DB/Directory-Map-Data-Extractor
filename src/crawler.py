@@ -714,6 +714,7 @@ async def run_crawler(
                         architecture=architecture,
                         source_url=page.url,
                         debug=debug,
+                        config=input_data,
                     )
                     if debug:
                         print("DEBUG adapter:", adapter)
