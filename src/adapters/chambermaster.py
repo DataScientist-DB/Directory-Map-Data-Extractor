@@ -41,6 +41,27 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             "profiles_failed": 0,
         }
 
+    def _extract_category_name(self, html: str, category_url: str = "") -> str:
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        selectors = [
+            "h1",
+            ".gz-pagetitle",
+            ".mn-title",
+            ".page-title",
+            "title",
+        ]
+
+        for selector in selectors:
+            el = soup.select_one(selector)
+            if el:
+                text = self._clean_text(el.get_text(" ", strip=True))
+                text = re.sub(r"\s*\|\s*.*$", "", text).strip()
+                if text:
+                    return text
+
+        return category_url.rstrip("/").split("/")[-1].replace("-", " ").title()
+
     def _debug(self, *args):
         if self.debug:
             print(*args)
@@ -177,14 +198,11 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         self,
         page,
         category_url: str,
-    ) -> list[str]:
-        """
-        Visit one ChamberMaster category/search page and collect member profile URLs.
-        Includes pagination protection.
-        """
-        urls = set()
+    ) -> dict[str, set[str]]:
+        urls: dict[str, set[str]] = {}
         current_url = category_url
         visited_pages = set()
+        category_name = ""
 
         while current_url:
             current_url = self._normalize_member_url(current_url)
@@ -206,8 +224,13 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
             html = await page.content()
 
+            if not category_name:
+                category_name = self._extract_category_name(html, category_url)
+
             links = self._extract_member_links(html)
-            urls.update(links)
+
+            for link in links:
+                urls.setdefault(link, set()).add(category_name)
 
             self._debug(
                 "DEBUG member links:",
@@ -218,13 +241,10 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
             current_url = self._extract_next_page(html)
 
-        return sorted(urls)
+        return urls
 
-    async def discover_member_urls(self, page, category_urls: list[str]) -> list[str]:
-        """
-        Visit all ChamberMaster category/search pages and collect unique member URLs.
-        """
-        member_urls = set()
+    async def discover_member_urls(self, page, category_urls: list[str]) -> list[dict[str, Any]]:
+        member_map: dict[str, set[str]] = {}
 
         for i, category_url in enumerate(category_urls, start=1):
             try:
@@ -233,16 +253,17 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
                     category_url,
                 )
 
-                urls = await self._discover_member_urls_from_category(
+                found = await self._discover_member_urls_from_category(
                     page,
                     category_url,
                 )
 
-                member_urls.update(urls)
+                for member_url, categories in found.items():
+                    member_map.setdefault(member_url, set()).update(categories)
 
                 self._debug(
                     "DEBUG ChamberMaster unique member URLs so far:",
-                    len(member_urls),
+                    len(member_map),
                 )
 
             except Exception as e:
@@ -253,14 +274,29 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
                     repr(e),
                 )
 
-        result = sorted(member_urls)
-        self.stats["member_urls"] = len(result)
+        result = [
+            {
+                "url": member_url,
+                "category_names": "; ".join(sorted(categories)),
+            }
+            for member_url, categories in sorted(member_map.items())
+        ]
 
-        self._debug("DEBUG ChamberMaster total member URLs:", len(result))
+        self.stats["member_urls"] = len(result)
 
         return result
 
-    async def extract_member(self, page, member_url: str) -> dict[str, Any]:
+    async def extract_member(self, page, member_info) -> dict[str, Any]:
+        if isinstance(member_info, dict):
+            member_url = member_info.get("url", "")
+            category_names = member_info.get("category_names", "")
+        else:
+            member_url = str(member_info)
+            category_names = ""
+
+        if not member_url:
+            return {}
+
         await page.goto(
             member_url,
             wait_until="domcontentloaded",
@@ -431,6 +467,8 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             source_url=self.source_url,
             architecture=self.architecture,
             crawl_mode="adapter_chambermaster_profile_extraction",
+
+            category_names=category_names,
         )
 
         if hasattr(record, "confidence_score"):
@@ -458,13 +496,21 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         records = []
 
-        for i, member_url in enumerate(member_urls[:max_records], start=1):
+        for i, member_info in enumerate(member_urls[:max_records], start=1):
+            member_url = (
+                member_info.get("url", "")
+                if isinstance(member_info, dict)
+                else str(member_info)
+            )
+
             self._debug(
                 f"DEBUG ChamberMaster extracting {i}/{min(len(member_urls), max_records)}: {member_url}"
             )
 
             try:
-                record = await self.extract_member(page, member_url)
+
+
+                record = await self.extract_member(page, member_info)
 
                 if record:
                     records.append(record)

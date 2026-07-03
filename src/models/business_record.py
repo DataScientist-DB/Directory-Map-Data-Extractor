@@ -5,6 +5,13 @@ from typing import Any
 @dataclass
 class BusinessRecord:
     entity_name: str = ""
+
+    category_names: str = ""
+    service_names: str = ""
+    products: str = ""
+    products_rpc_codes: str = ""
+    products_rpc_names: str = ""
+
     phone: str = ""
     email: str = ""
     website: str = ""
@@ -25,6 +32,7 @@ class BusinessRecord:
     description: str = ""
     hours: str = ""
     driving_directions: str = ""
+
     business_intelligence_score: int = 0
     contact_completeness: str = ""
 
