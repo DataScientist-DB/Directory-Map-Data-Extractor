@@ -1,253 +1,193 @@
-# UBDIP
-## Universal Business Directory Intelligence Platform
+# Universal Business Directory Intelligence Platform (UBDIP)
 
-**Version:** 1.0.0 Release Candidate 1 (RC1)
+> Intelligent Business Directory Extraction, Website Enrichment, and Business Intelligence Scoring
 
-**Tagline**
-
-> **Discover • Enrich • Validate • Export**
-
----
-
-# Vision
-
-Transform online business directories into validated, enriched, production-ready business intelligence.
-
-UBDIP enables organizations to convert fragmented online business directory data into structured, standardized, and high-quality business intelligence datasets that can be immediately used for analytics, CRM systems, GIS platforms, market research, and decision support.
+![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![Apify](https://img.shields.io/badge/Apify-Actor-green.svg)
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ---
 
-# Mission
+## Overview
 
-UBDIP provides a modular platform for:
+Universal Business Directory Intelligence Platform (UBDIP) is an enterprise-grade Apify Actor for extracting, enriching, validating, and scoring business directory data.
 
-- Discovering business directory technologies
-- Extracting structured business information
-- Enriching business records from company websites
-- Validating extraction quality
-- Exporting standardized business intelligence
+Unlike traditional directory scrapers, UBDIP visits each company's own website, discovers additional contact information, extracts structured business metadata, and computes a Business Intelligence Score that helps prioritize the most complete and trustworthy business profiles.
 
-Rather than creating one-off web scrapers, UBDIP delivers a reusable platform that supports multiple directory technologies through a common architecture and shared enrichment engine.
+UBDIP is designed for:
 
----
-
-# Product Vision
-
-Business directories represent one of the world's largest collections of publicly available business information.
-
-Unfortunately, this information is:
-
-- fragmented
-- inconsistent
-- incomplete
-- difficult to reuse
-
-UBDIP transforms those fragmented sources into standardized Business Intelligence.
+- B2B Lead Generation
+- CRM Enrichment
+- Market Intelligence
+- Business Directories
+- GIS & Spatial Intelligence
+- Sales Prospecting
+- Competitor Research
+- Economic Development
 
 ---
 
-# Core Principles
+## Key Features
 
-## Universal
-
-Support multiple business directory technologies through modular adapters.
-
----
-
-## Standardized
-
-Every supported directory produces the same BusinessRecord model.
-
----
-
-## Intelligent
-
-Recover additional information directly from company websites using reusable enrichment modules.
-
----
-
-## Validated
-
-Every release is automatically verified through smoke tests, regression tests, runtime summaries, and benchmark reporting.
-
----
-
-## Extensible
-
-New directory platforms can be added without changing the platform architecture.
-
----
-
-# Product Pillars
-
-## Discover
-
-Automatically identify supported directory architectures.
-
-Examples:
+### Universal Directory Crawling
 
 - ChamberMaster
-- GrowthZone
-- CivicPlus
-- WildApricot
-- Simpleview
+- Additional adapters (planned)
 
----
+### Website Enrichment
 
-## Extract
+Automatically visits company websites and extracts:
 
-Collect structured business information including:
+- Email addresses
+- Phone numbers
+- Contact pages
+- About pages
+- Social media profiles
+- Company descriptions
 
-- Company
-- Contact details
-- Categories
-- Services
-- Location
+### Schema.org Extraction
+
+Extracts structured metadata including:
+
+- Address
+- Postal code
+- Opening hours
+- Organization schema
+
+### Intelligent Contact Discovery
+
+Automatically discovers:
+
+- Contact pages
+- About pages
+- Additional website resources
+
+### Business Intelligence Score (RC1.1)
+
+Every business receives an intelligence score from **0–100** based on the richness and completeness of available information.
+
+Scoring considers:
+
 - Website
-
----
-
-## Enrich
-
-Recover additional business intelligence from company websites:
-
 - Email
 - Phone
-- Social profiles
-- Schema.org
-- Contact pages
-- Business metadata
+- LinkedIn
+- Facebook
+- Instagram
+- Twitter/X
+- YouTube
+- Schema.org metadata
+
+Intelligence grades:
+
+| Score | Grade |
+|--------|-------|
+| 90–100 | ★★★★★ Excellent |
+| 70–89 | ★★★★ Good |
+| 50–69 | ★★★ Fair |
+| 30–49 | ★★ Poor |
+| 0–29 | ★ Very Poor |
 
 ---
 
-## Validate
+## Outputs
 
-Automatically measure quality through:
-
-- Smoke Tests
-- Regression Tests
-- Runtime Summary
-- Benchmarks
-
----
-
-## Export
-
-Produce production-ready datasets for:
+Supported formats:
 
 - CSV
 - XLSX
-- JSON
-- API
-- Business Intelligence platforms
+
+Each exported business contains:
+
+- Company information
+- Contact details
+- Website enrichment
+- Social media
+- Business Intelligence Score
+- Intelligence Grade
 
 ---
 
-# Product Architecture
+## Runtime Summary
+
+After every execution UBDIP reports:
+
+- Records exported
+- Website enrichment statistics
+- Social profile counts
+- Business Intelligence summary
+- Average Intelligence Score
+
+---
+
+## Architecture
 
 ```
-                  UBDIP
-                     │
-     ┌───────────────┴────────────────┐
-     │                                │
-     ▼                                ▼
- Universal Core              Adapter Ecosystem
-     │                                │
-     ▼                                ▼
- Website Intelligence        ChamberMaster
-     │                       GrowthZone
-     ▼                       CivicPlus
- Validation Framework        WildApricot
-     │                       Simpleview
-     ▼
- Export Engine
+Crawler
+      │
+      ▼
+BusinessRecord
+      │
+      ▼
+Website Enrichment
+      │
+      ▼
+Schema Extraction
+      │
+      ▼
+Contact Discovery
+      │
+      ▼
+Business Intelligence Scoring
+      │
+      ▼
+CSV / XLSX Export
 ```
 
 ---
 
-# Target Markets
+## Project Status
 
-UBDIP is designed for organizations that require structured business intelligence.
+Current release:
 
-Primary markets include:
+**Version:** RC1.1
 
-- Business Intelligence
-- B2B Lead Generation
-- CRM Enrichment
-- Market Research
-- Economic Development
-- Chambers of Commerce
-- Business Associations
-- GIS & Spatial Analysis
-- Investment Promotion Agencies
-- Government Organizations
+Completed:
 
----
-
-# Competitive Advantages
-
-UBDIP is not simply another web scraper.
-
-It provides:
-
-- Architecture detection
-- Modular adapters
-- Shared enrichment engine
-- Stable BusinessRecord model
-- Automated validation
-- Runtime analytics
-- Professional documentation
-- Regression testing
+- Universal crawler
+- ChamberMaster adapter
+- Website enrichment
+- Schema extraction
+- Contact discovery
+- Business Intelligence Layer
+- Runtime statistics
+- CSV/XLSX export
+- Documentation
+- Regression tests
 
 ---
 
-# Product Roadmap
+## Roadmap
 
-## Version 1.x
+### RC1.2
 
-- ChamberMaster
-- GrowthZone
-- CivicPlus
-- WildApricot
-- Simpleview
+- AI Business Summary
+- Technology Detection
+- Website Quality Score
+- Contact Completeness Index
+- Export Profiles
+- JSON API
 
----
+### Commercialization Sprint
 
-## Version 2.x
-
-- REST API
-- Plugin SDK
-- Dashboard
-- Scheduled execution
-- Advanced benchmarking
-- AI-assisted enrichment
+- Apify Store optimization
+- Demo video
+- Pricing strategy
+- Competitive positioning
+- Professional screenshots
 
 ---
 
-## Version 3.x
+## License
 
-- Cloud Platform
-- Multi-user collaboration
-- Enterprise authentication
-- Workflow automation
-- Business Intelligence dashboards
-
----
-
-# Success Metrics
-
-The success of UBDIP will be measured by:
-
-- Number of supported directory platforms
-- Extraction accuracy
-- Enrichment coverage
-- Runtime performance
-- Validation quality
-- Ease of extension
-- Customer adoption
-
----
-
-# Long-Term Vision
-
-Become the leading open and extensible Business Directory Intelligence Platform for organizations that require reliable, validated, and reusable business intelligence.
+MIT License
