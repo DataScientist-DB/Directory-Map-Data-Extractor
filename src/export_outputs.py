@@ -113,68 +113,6 @@ def _decode_codes(codes: list[str], mapping: dict[str, str]) -> list[str]:
     return decoded
 
 
-# =========================
-# Output column definitions
-# =========================
-
-DEFAULT_COLUMNS = [
-    "entity_name",
-    "category_names",
-    "service_names",
-    "products",
-    "products_rpc_codes",
-    "products_rpc_names",
-
-    "email",
-    "phone",
-    "fax",
-    "website",
-
-    "linkedin",
-    "facebook",
-    "instagram",
-    "youtube",
-    "twitter",
-
-    "location",
-    "address",
-    "city",
-    "state",
-    "postal_code",
-
-    "description",
-    "hours",
-    "driving_directions",
-
-    "profile_url",
-    "source_url",
-    "architecture",
-    "crawl_mode",
-    "confidence_score",
-
-    "status",
-    "records_found",
-    "blocked_reason",
-
-    "website_enrichment_status",
-    "website_enrichment_error",
-
-    # Business Intelligence
-    "intelligence_score",
-    "intelligence_grade",
-]
-
-ADVANCED_COLUMNS = [
-    "category_codes",
-    "service_codes",
-    "address",
-    "how_to_buy",
-    "size",
-    "results",
-    "quote",
-    "logo",
-    "logo_medium",
-]
 
 
 # =========================

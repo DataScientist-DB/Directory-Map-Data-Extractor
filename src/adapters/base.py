@@ -1,69 +1,50 @@
 from __future__ import annotations
 
-from abc import ABC
-from typing import Any, Dict, List
+from typing import Any
+
+from src.adapters.models import AdapterCapabilities, AdapterInfo
 
 
-class BaseDirectoryAdapter(ABC):
-    """
-    Base interface for all architecture-specific directory adapters.
+class BaseDirectoryAdapter:
+    architecture = "base"
 
-    Each adapter should know how to:
-    1. discover category/listing pages,
-    2. discover member/profile URLs,
-    3. extract business profiles,
-    4. return normalized UBDI records.
-    """
+    INFO = AdapterInfo(
+        key="base",
+        name="Base Directory Adapter",
+        version="1.0",
+        description="Base class for UBDIP directory adapters.",
+    )
 
-    architecture: str = "unknown"
+    CAPABILITIES = AdapterCapabilities()
 
-    def __init__(self, source_url: str = "", debug: bool = False):
+    def __init__(
+        self,
+        source_url: str = "",
+        debug: bool = False,
+        config: dict[str, Any] | None = None,
+        **kwargs: Any,
+    ) -> None:
         self.source_url = source_url
         self.debug = debug
+        self.config = config or {}
+        self.extra = kwargs
 
-    def extract_listings(self, html: str) -> List[Dict[str, Any]]:
-        """
-        Backward-compatible simple extraction method.
-        Existing adapters can continue using this.
-        """
+    @property
+    def info(self) -> AdapterInfo:
+        return self.INFO
+
+    @property
+    def capabilities(self) -> AdapterCapabilities:
+        return self.CAPABILITIES
+
+    def _debug(self, *args: Any) -> None:
+        if self.debug:
+            print(*args)
+
+    async def crawl(self, page: Any, max_records: int = 5) -> list[dict[str, Any]]:
+        raise NotImplementedError(
+            f"{self.__class__.__name__} must implement crawl()."
+        )
+
+    def extract_listings(self, html: str) -> list[dict[str, Any]]:
         return []
-
-    async def discover_categories(self, page, html: str = "") -> List[str]:
-        """
-        Discover category/search pages from the main directory page.
-        """
-        return []
-
-    async def discover_member_urls(self, page, category_urls: List[str]) -> List[str]:
-        """
-        Visit category/search pages and collect member/profile URLs.
-        """
-        return []
-
-    async def extract_member(self, page, member_url: str) -> Dict[str, Any]:
-        """
-        Visit one member/profile page and extract a normalized business record.
-        """
-        return {}
-
-    async def crawl(self, page, max_records: int = 50) -> List[Dict[str, Any]]:
-        """
-        Full adapter crawler. Platform-specific adapters should override this
-        when they support multi-stage crawling.
-        """
-        html = await page.content()
-        return self.extract_listings(html)[:max_records]
-
-    def scan(self, html: str) -> Dict[str, Any]:
-        """
-        Lightweight scan report before full extraction.
-        """
-        records = self.extract_listings(html)
-
-        return {
-            "architecture": self.architecture,
-            "source_url": self.source_url,
-            "estimated_records": len(records),
-            "recommended_strategy": f"{self.architecture}_adapter",
-            "status": "adapter_scan_complete",
-        }

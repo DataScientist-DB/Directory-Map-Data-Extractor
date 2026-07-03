@@ -13,6 +13,8 @@ from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
 from src.run_summary import print_run_summary
 from src.export_columns import DEFAULT_COLUMNS, ADVANCED_COLUMNS
 
+
+
 def _clean_label(v: Any) -> str:
     if v is None:
         return ""
@@ -207,43 +209,8 @@ async def export_dataset_to_kv(
 
         Actor.log.info(f"EXPORT: dataset items={len(items)}")
 
-    DEFAULT_COLUMNS = [
-        "entity_name",
-        "website",
-        "email",
-        "phone",
-        "fax",
-
-        "linkedin",
-        "facebook",
-        "instagram",
-        "youtube",
-        "twitter",
-
-        "location",
-        "address",
-        "city",
-        "state",
-        "postal_code",
-
-        "description",
-        "hours",
-        "driving_directions",
-
-        "profile_url",
-        "confidence_score",
-        "source_url",
-        "status",
-        "blocked_reason",
-        "records_found",
-        "crawl_mode",
-
-        "website_enrichment_status",
-        "website_enrichment_error",
-
-        "intelligence_score",
-        "intelligence_grade",
-    ]
+    ALL_COLUMNS = DEFAULT_COLUMNS + ADVANCED_COLUMNS
+    cols = ALL_COLUMNS if (columns_mode or "").strip().lower() == "all" else DEFAULT_COLUMNS
 
     ALL_COLUMNS = [
         *DEFAULT_COLUMNS,
