@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from src.adapters.models import AdapterCapabilities, AdapterInfo
-
+from src.models.access_report import AccessReport
 
 class BaseDirectoryAdapter:
     architecture = "base"
@@ -28,6 +28,7 @@ class BaseDirectoryAdapter:
         self.debug = debug
         self.config = config or {}
         self.extra = kwargs
+        self.access_report = AccessReport()
 
     @property
     def info(self) -> AdapterInfo:
