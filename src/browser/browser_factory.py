@@ -46,7 +46,7 @@ class BrowserFactory:
             debug=self.debug,
         )
 
-        playwright_proxy = proxy_manager.playwright_proxy()
+        playwright_proxy = proxy_manager.build_proxy_settings()
 
         if playwright_proxy:
             launch_options["proxy"] = playwright_proxy

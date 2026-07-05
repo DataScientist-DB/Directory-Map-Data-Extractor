@@ -3,21 +3,13 @@ from __future__ import annotations
 from typing import Any
 
 from src.models.proxy_config import ProxyConfig
+from src.network.proxy_strategy import ProxyStrategy
+from src.network.strategies.apify_proxy import ApifyProxyStrategy
+from src.network.strategies.custom_proxy import CustomProxyStrategy
+from src.network.strategies.local_proxy import LocalProxyStrategy
 
 
 class ProxyManager:
-    """
-    Builds Playwright proxy settings from ProxyConfig.
-
-    Future versions will support:
-
-    - Apify Residential Proxy
-    - Proxy rotation
-    - Country selection
-    - Automatic fallback
-    - Health checks
-    """
-
     def __init__(
         self,
         proxy: ProxyConfig | None = None,
@@ -26,32 +18,22 @@ class ProxyManager:
         self.proxy = proxy or ProxyConfig()
         self.debug = debug
 
-    def playwright_proxy(self) -> dict[str, Any] | None:
-
+    def _select_strategy(self) -> ProxyStrategy:
         if self.proxy.proxy_url:
-
-            result = {
-                "server": self.proxy.proxy_url,
-            }
-
-            if self.proxy.username:
-                result["username"] = self.proxy.username
-
-            if self.proxy.password:
-                result["password"] = self.proxy.password
-
-            return result
+            return CustomProxyStrategy(self.proxy)
 
         if self.proxy.use_apify_proxy:
+            return ApifyProxyStrategy(
+                proxy=self.proxy,
+                debug=self.debug,
+            )
 
-            if self.debug:
-                print(
-                    "DEBUG ProxyManager: "
-                    "Apify Residential Proxy requested."
-                )
+        return LocalProxyStrategy()
 
-            # RC1.4.4
-            # Here we will request the proxy URL
-            # from the Apify SDK.
+    def build_proxy_settings(self) -> dict[str, Any] | None:
+        strategy = self._select_strategy()
+        return strategy.build_proxy_settings()
 
-        return None
+    # Backward-compatible alias during transition
+    def playwright_proxy(self) -> dict[str, Any] | None:
+        return self.build_proxy_settings()
