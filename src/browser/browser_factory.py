@@ -5,17 +5,17 @@ from typing import Any
 from playwright.async_api import Browser, Playwright
 
 from src.models.proxy_config import ProxyConfig
+from src.network.proxy_manager import ProxyManager
 
 
 class BrowserFactory:
     """
     Central browser launcher for UBDIP.
 
-    Handles:
-    - local browser launch
-    - custom proxy URL
-    - Apify proxy awareness
-    - headless/headful mode
+    Responsibilities:
+    - Launch Playwright browsers
+    - Configure headless/headful mode
+    - Delegate proxy configuration to ProxyManager
     """
 
     def __init__(
@@ -28,21 +28,11 @@ class BrowserFactory:
         self.headless = headless
         self.debug = debug
 
-    def build_playwright_proxy(self) -> dict[str, str] | None:
-        if self.proxy.proxy_url:
-            result = {"server": self.proxy.proxy_url}
-
-            if self.proxy.username:
-                result["username"] = self.proxy.username
-
-            if self.proxy.password:
-                result["password"] = self.proxy.password
-
-            return result
-
-        return None
-
     def build_launch_options(self) -> dict[str, Any]:
+        """
+        Build Playwright launch options.
+        """
+
         launch_options: dict[str, Any] = {
             "headless": self.headless,
             "args": [
@@ -51,22 +41,37 @@ class BrowserFactory:
             ],
         }
 
-        playwright_proxy = self.build_playwright_proxy()
+        proxy_manager = ProxyManager(
+            proxy=self.proxy,
+            debug=self.debug,
+        )
+
+        playwright_proxy = proxy_manager.playwright_proxy()
 
         if playwright_proxy:
             launch_options["proxy"] = playwright_proxy
 
             if self.debug:
-                print("DEBUG BrowserFactory using custom proxy URL")
+                print("DEBUG BrowserFactory using proxy")
 
-        elif self.proxy.use_apify_proxy and self.debug:
-            print(
-                "DEBUG BrowserFactory: Apify proxy requested, "
-                "but Apify proxy URL must be provided by Actor proxy integration."
-            )
+        elif self.proxy.use_apify_proxy:
+            if self.debug:
+                print(
+                    "DEBUG BrowserFactory waiting for Apify proxy integration"
+                )
 
         return launch_options
 
-    async def launch(self, playwright: Playwright) -> Browser:
+    async def launch(
+        self,
+        playwright: Playwright,
+    ) -> Browser:
+        """
+        Launch a Playwright Chromium browser.
+        """
+
         launch_options = self.build_launch_options()
-        return await playwright.chromium.launch(**launch_options)
+
+        return await playwright.chromium.launch(
+            **launch_options,
+        )
