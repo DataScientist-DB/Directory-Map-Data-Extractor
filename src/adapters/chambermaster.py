@@ -8,11 +8,34 @@ from urllib.parse import urljoin, urlsplit, urlunsplit
 from bs4 import BeautifulSoup
 
 from src.adapters.base import BaseDirectoryAdapter
+from src.adapters.models import AdapterCapabilities, AdapterInfo
 from src.models.business_record import BusinessRecord
 
 
 class ChamberMasterAdapter(BaseDirectoryAdapter):
     architecture = "chambermaster"
+
+    INFO = AdapterInfo(
+        key="chambermaster",
+        name="ChamberMaster",
+        version="1.0",
+        author="Adinfosys",
+        website="https://www.chambermaster.com/",
+        description="Adapter for ChamberMaster-powered chamber of commerce business directories.",
+    )
+
+    CAPABILITIES = AdapterCapabilities(
+        search=True,
+        category_filter=True,
+        location_filter=False,
+        pagination=True,
+        website_links=True,
+        social_links=True,
+        ratings=False,
+        reviews=False,
+        contact_details=True,
+        business_hours=True,
+    )
 
     BAD_TEXT = {
         "home",
