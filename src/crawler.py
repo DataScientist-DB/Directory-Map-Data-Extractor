@@ -24,6 +24,9 @@ from src.modes.confidence import (
 from src.modes.profile_matching import match_profile_url
 from src.adapters.router import get_adapter
 from src.enrichment.website_enricher import WebsiteEnricher
+from src.models.proxy_config import ProxyConfig
+from src.browser.browser_factory import BrowserFactory
+
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -444,12 +447,26 @@ async def _discover_taxonomy_via_endpoints(page, source_url: str, html: str, deb
 # -------------------------
 
 async def run_crawler(
+
+
     input_data: Dict[str, Any],
     enable_website_enrichment: bool = False,
     website_timeout_ms: int = 15000,
 ) -> Dict[str, Any]:
+    proxy_input = input_data.get("proxyConfiguration", {}) or {}
+
+    proxy_config = ProxyConfig(
+        use_apify_proxy=bool(proxy_input.get("useApifyProxy", False)),
+        proxy_groups=proxy_input.get("apifyProxyGroups", []) or [],
+        proxy_country=proxy_input.get("countryCode", ""),
+        proxy_url=proxy_input.get("proxyUrl", ""),
+        username=proxy_input.get("username", ""),
+        password=proxy_input.get("password", ""),
+        request_delay=int(input_data.get("requestDelay", 1500)),
+    )
 
     mode = (input_data.get("mode") or "dom").strip()
+    requested_architecture = (input_data.get("architecture") or "").strip().lower()
 
     start_urls = input_data.get("startUrls") or []
     max_listings = int(input_data.get("maxListings", 200))
@@ -535,10 +552,15 @@ async def run_crawler(
     TAX_MAX_BYTES = int(input_data.get("taxonomyMaxBytes", 2_000_000))
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
-            headless=True,
-            args=["--disable-dev-shm-usage", "--no-sandbox"],
+
+        factory = BrowserFactory(
+            proxy=proxy_config,
+            debug=debug,
+            headless=not bool(input_data.get("headful", False)),
         )
+
+        browser = await factory.launch(p)
+
         page = await browser.new_page()
         page.set_default_timeout(90000)
         page.set_default_navigation_timeout(90000)
@@ -704,18 +726,24 @@ async def run_crawler(
 
                 html = await page.content()
 
-                architecture = detect_directory_architecture(html, page.url)
+                detected_architecture = detect_directory_architecture(html, page.url)
+                architecture = requested_architecture or detected_architecture
 
                 if debug:
-                    print(f"DEBUG architecture detected: {architecture}")
+                    print(
+                        f"DEBUG architecture: requested={requested_architecture!r}, "
+                        f"detected={detected_architecture!r}, "
+                        f"using={architecture!r}"
+                    )
 
-                if architecture != "unknown":
+                if architecture and architecture != "unknown":
                     adapter = get_adapter(
                         architecture=architecture,
                         source_url=page.url,
                         debug=debug,
                         config=input_data,
                     )
+
                     if debug:
                         print("DEBUG adapter:", adapter)
                         print("DEBUG mode:", mode)
@@ -726,6 +754,33 @@ async def run_crawler(
                             page,
                             max_records=max_listings,
                         )
+                        if not adapter_records and getattr(adapter, "access_report", None):
+                            report = adapter.access_report
+
+                            if report.blocked():
+                                await Actor.push_data(
+                                    {
+                                        "status": "blocked",
+                                        "blocked_reason": report.blocked_reason,
+                                        "architecture": report.architecture,
+                                        "source_url": report.search_url,
+                                        "records_found": 0,
+                                        "crawl_mode": "adapter_access_diagnostic",
+
+                                        "entity_name": "ACCESS DIAGNOSTIC - Better Business Bureau",
+                                        "category_names": report.search_keyword,
+                                        "location": report.search_location,
+
+                                        "access_status": report.status,
+                                        "access_reason": report.blocked_reason,
+                                        "access_http_status": report.http_status,
+                                        "access_pages_visited": report.pages_visited,
+                                        "access_profiles_found": report.profiles_found,
+                                        "access_recommendation": report.recommendation,
+                                        "access_strategy": report.access_strategy,
+                                    }
+                                )
+                                pushed += 1
 
                         if debug:
                             print("DEBUG adapter records:", len(adapter_records))
@@ -910,10 +965,28 @@ async def run_crawler(
                     await page.wait_for_timeout(2000)
                     html = await page.content()
 
-                    architecture = detect_directory_architecture(html, page.url)
+                    detected_architecture = detect_directory_architecture(html, page.url)
+                    architecture = requested_architecture or detected_architecture
 
                     if debug:
-                        print(f"DEBUG architecture detected: {architecture}")
+                        print(
+                            f"DEBUG architecture: requested={requested_architecture!r}, "
+                            f"detected={detected_architecture!r}, "
+                            f"using={architecture!r}"
+                        )
+
+                    if architecture and architecture != "unknown":
+                        adapter = get_adapter(
+                            architecture=architecture,
+                            source_url=page.url,
+                            debug=debug,
+                            config=input_data,
+                        )
+
+                        if debug:
+                            print("DEBUG adapter:", adapter)
+                            print("DEBUG mode:", mode)
+                            print("DEBUG architecture:", architecture)
 
                         if architecture != "unknown":
                             await Actor.push_data(
