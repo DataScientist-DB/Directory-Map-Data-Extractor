@@ -6,5 +6,5 @@ from typing import Any
 
 class ProxyStrategy(ABC):
     @abstractmethod
-    def build_proxy_settings(self) -> dict[str, Any] | None:
+    async def build_proxy_settings(self) -> dict[str, Any] | None:
         raise NotImplementedError

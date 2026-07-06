@@ -30,10 +30,9 @@ class ProxyManager:
 
         return LocalProxyStrategy()
 
-    def build_proxy_settings(self) -> dict[str, Any] | None:
+    async def build_proxy_settings(self) -> dict[str, Any] | None:
         strategy = self._select_strategy()
-        return strategy.build_proxy_settings()
+        return await strategy.build_proxy_settings()
 
-    # Backward-compatible alias during transition
-    def playwright_proxy(self) -> dict[str, Any] | None:
-        return self.build_proxy_settings()
+    async def playwright_proxy(self) -> dict[str, Any] | None:
+        return await self.build_proxy_settings()

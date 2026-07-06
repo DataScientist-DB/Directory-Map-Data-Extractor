@@ -10,7 +10,7 @@ class CustomProxyStrategy(ProxyStrategy):
     def __init__(self, proxy: ProxyConfig):
         self.proxy = proxy
 
-    def build_proxy_settings(self) -> dict[str, Any] | None:
+    async def build_proxy_settings(self) -> dict[str, Any] | None:
         if not self.proxy.proxy_url:
             return None
 

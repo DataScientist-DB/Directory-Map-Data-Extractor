@@ -6,5 +6,5 @@ from src.network.proxy_strategy import ProxyStrategy
 
 
 class LocalProxyStrategy(ProxyStrategy):
-    def build_proxy_settings(self) -> dict[str, Any] | None:
+    async def build_proxy_settings(self) -> dict[str, Any] | None:
         return None

@@ -28,7 +28,7 @@ class BrowserFactory:
         self.headless = headless
         self.debug = debug
 
-    def build_launch_options(self) -> dict[str, Any]:
+    async def build_launch_options(self) -> dict[str, Any]:
         """
         Build Playwright launch options.
         """
@@ -46,7 +46,7 @@ class BrowserFactory:
             debug=self.debug,
         )
 
-        playwright_proxy = proxy_manager.build_proxy_settings()
+        playwright_proxy = await proxy_manager.build_proxy_settings()
 
         if playwright_proxy:
             launch_options["proxy"] = playwright_proxy
@@ -70,7 +70,7 @@ class BrowserFactory:
         Launch a Playwright Chromium browser.
         """
 
-        launch_options = self.build_launch_options()
+        launch_options = await self.build_launch_options()
 
         return await playwright.chromium.launch(
             **launch_options,
