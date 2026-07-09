@@ -10,7 +10,20 @@ from src.adapters.base import BaseDirectoryAdapter
 from src.adapters.models import AdapterCapabilities, AdapterInfo
 from src.models.business_record import BusinessRecord
 from src.access.access_analyzer import AccessAnalyzer
+# src/adapters/bbb.py
 
+from src.adapters.capabilities import AdapterCapabilities
+
+BBB_CAPABILITIES = AdapterCapabilities(
+    name="BBB",
+    support_level="supported_with_requirements",
+    requires_javascript=True,
+    requires_proxy=True,
+    requires_residential_proxy=True,
+    requires_external_proxy_access=True,
+    anti_bot_risk="high",
+    notes="BBB may trigger Cloudflare Turnstile. Requires suitable residential proxy access."
+)
 
 class BBBAdapter(BaseDirectoryAdapter):
     architecture = "bbb"
@@ -28,6 +41,15 @@ class BBBAdapter(BaseDirectoryAdapter):
     )
 
     CAPABILITIES = AdapterCapabilities(
+        name="BBB",
+        support_level="supported_with_requirements",
+        anti_bot_risk="high",
+        requires_javascript=True,
+        requires_proxy=True,
+        requires_residential_proxy=True,
+        requires_external_proxy_access=True,
+        notes="BBB may trigger Cloudflare Turnstile and requires suitable proxy access.",
+
         search=True,
         category_filter=True,
         location_filter=True,
@@ -134,7 +156,19 @@ class BBBAdapter(BaseDirectoryAdapter):
         max_pages: int = 5,
     ) -> list[str]:
         search_url = self.build_search_url()
+        search = self.config.get("search", {}) or {}
 
+        self.access_report.directory = "Better Business Bureau"
+        self.access_report.architecture = self.architecture
+        self.access_report.search_keyword = self._clean_text(search.get("keyword", ""))
+        self.access_report.search_location = self._clean_text(search.get("location", ""))
+        self.access_report.search_url = search_url
+        self.access_report.access_strategy = "direct"
+        self.access_report.access_strategy = (
+            "apify_residential_proxy"
+            if self.using_proxy()
+            else "direct"
+        )
         profile_urls: list[str] = []
         seen: set[str] = set()
         visited: set[str] = set()

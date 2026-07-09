@@ -16,6 +16,7 @@ from src.export_columns import DEFAULT_COLUMNS, ADVANCED_COLUMNS
 
 
 
+
 def _clean_label(v: Any) -> str:
     if v is None:
         return ""
@@ -130,23 +131,6 @@ def _split_source_text(value: Any) -> tuple[str, str]:
     return _clean_semicolon(category_part), _clean_semicolon(service_part)
 
 
-async def export_dataset_to_kv(
-    out_base: str,
-    write_csv: bool,
-    write_xlsx: bool,
-    columns_mode: str = "default",
-) -> None:
-    ds = await Actor.open_dataset()
-    data = await ds.get_data(limit=999999)
-    items = data.items or []
-
-    items = [r for r in items if not (isinstance(r, dict) and r.get("_probe"))]
-
-    rows_with_products = 0
-    rows_with_results = 0
-    rows_with_quote = 0
-    filled_categories = 0
-    filled_services = 0
 
     for r in items:
         if not isinstance(r, dict):
@@ -210,32 +194,110 @@ async def export_dataset_to_kv(
 
         Actor.log.info(f"EXPORT: dataset items={len(items)}")
 
-    ALL_COLUMNS = DEFAULT_COLUMNS + ADVANCED_COLUMNS
-    cols = ALL_COLUMNS if (columns_mode or "").strip().lower() == "all" else DEFAULT_COLUMNS
-
-    ALL_COLUMNS = [
-        *DEFAULT_COLUMNS,
-        "category_codes",
-        "service_codes",
+    DEFAULT_COLUMNS = [
+        "entity_name",
         "category_names",
-        "service_names",
-        "logo",
-        "logo_medium",
-        "lat",
-        "lng",
-        "quote",
-        "services",
-        "how_to_buy",
-        "size",
-        "results",
+        "website",
+        "email",
+        "phone",
+        "linkedin",
+        "facebook",
+        "address",
+        "city",
+        "state",
+        "postal_code",
+
+        "qualification",
+        "recommendation",
+        "contact_ready",
+
+        "service_match_level",
+        "matched_services",
+        "location_match_level",
+
+        "qualification_reasons",
+        "missing_information",
     ]
 
-    cols = ALL_COLUMNS if (columns_mode or "").strip().lower() == "all" else DEFAULT_COLUMNS
+    ADVANCED_COLUMNS = [
+        "service_names",
+        "products",
+        "products_rpc_codes",
+        "products_rpc_names",
+        "contact_completeness",
+        "access_status",
+        "access_reason",
+        "access_http_status",
+        "access_pages_visited",
+        "access_profiles_found",
+        "access_recommendation",
+        "access_strategy",
+    ]
+
+    ALL_COLUMNS = DEFAULT_COLUMNS + ADVANCED_COLUMNS
+
+
+
+    cols = (
+        ALL_COLUMNS
+        if (columns_mode or "").strip().lower() == "all"
+        else DEFAULT_COLUMNS
+    )
 
     if write_csv:
         buf = io.StringIO()
         w = csv.writer(buf)
         w.writerow(cols)
+        for row in items:
+            w.writerow([_cell(row.get(c)) for c in cols])
+
+
+    if write_xlsx:
+        from openpyxl import Workbook
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "data"
+        ws.append(cols)
+
+        for row in items:
+            ws.append([_cell(row.get(c)) for c in cols])
+
+        xbuf = io.BytesIO()
+        wb.save(xbuf)
+
+async def export_dataset_to_kv(
+    out_base: str,
+    write_csv: bool,
+    write_xlsx: bool,
+    columns_mode: str = "default",
+) -> None:
+    ds = await Actor.open_dataset()
+    data = await ds.get_data(limit=999999)
+    items = data.items or []
+
+    items = [r for r in items if not (isinstance(r, dict) and r.get("_probe"))]
+
+    Actor.log.info(f"EXPORT: dataset items={len(items)}")
+
+    cols = (
+        ALL_COLUMNS
+        if (columns_mode or "").strip().lower() == "all"
+        else DEFAULT_COLUMNS
+    )
+    items.sort(
+        key=lambda r: (
+            int(r.get("relevance_score") or 0),
+            int(r.get("business_intelligence_score") or 0),
+        ),
+        reverse=True,
+    )
+
+    if write_csv:
+        buf = io.StringIO()
+        w = csv.writer(buf)
+        w.writerow(cols)
+
         for row in items:
             w.writerow([_cell(row.get(c)) for c in cols])
 
@@ -266,7 +328,6 @@ async def export_dataset_to_kv(
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
         Actor.log.info(f"Uploaded KV: {out_base}.xlsx")
-
 
 async def main() -> None:
     async with Actor:
@@ -413,11 +474,13 @@ async def main() -> None:
         write_csv = bool(input_data.get("outputCsv", True))
         write_xlsx = bool(input_data.get("outputXlsx", False))
 
+        columns_mode = input_data.get("columnsMode", "default")
+
         await export_dataset_to_kv(
             out_base=out_base,
             write_csv=write_csv,
             write_xlsx=write_xlsx,
-            columns_mode=str(input_data.get("outputColumnsMode", "default")),
+            columns_mode=columns_mode,
         )
 
         ds = await Actor.open_dataset()
@@ -434,6 +497,12 @@ async def main() -> None:
             crawl_info=crawl_info,
             export_paths=export_paths,
         )
+
+        export_paths = {
+            "csv": f"{out_base}.csv" if write_csv else "",
+            "xlsx": f"{out_base}.xlsx" if write_xlsx else "",
+        }
+
 
 if __name__ == "__main__":
     import asyncio

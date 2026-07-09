@@ -26,7 +26,8 @@ from src.adapters.router import get_adapter
 from src.enrichment.website_enricher import WebsiteEnricher
 from src.models.proxy_config import ProxyConfig
 from src.browser.browser_factory import BrowserFactory
-
+from src.intelligence.company_qualifier import CompanyQualifier
+from src.discovery.request_parser import RequestParser
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -34,6 +35,10 @@ FieldSpec = Union[str, Dict[str, Any]]
 # Small helpers / constants
 # -------------------------
 website_enricher = WebsiteEnricher()
+
+
+qualifier = CompanyQualifier()
+
 _RPC_RE = re.compile(r"\brpc\d+\b", re.I)
 _RSS_RE = re.compile(r"\brss\d+\b", re.I)
 _SS_RE = re.compile(r"\bss\d+\b", re.I)  # some pages show ss1
@@ -448,11 +453,13 @@ async def _discover_taxonomy_via_endpoints(page, source_url: str, html: str, deb
 
 async def run_crawler(
 
-
     input_data: Dict[str, Any],
     enable_website_enrichment: bool = False,
     website_timeout_ms: int = 15000,
 ) -> Dict[str, Any]:
+    # Parse the user's search request
+    search_request = RequestParser.parse(input_data)
+
     proxy_input = input_data.get("proxyConfiguration", {}) or {}
 
     proxy_config = ProxyConfig(
@@ -465,8 +472,18 @@ async def run_crawler(
         request_delay=int(input_data.get("requestDelay", 1500)),
     )
 
+
     mode = (input_data.get("mode") or "dom").strip()
+    # Legacy support
     requested_architecture = (input_data.get("architecture") or "").strip().lower()
+
+    requested_directories = search_request.directories
+
+    if not requested_architecture and requested_directories:
+        requested_architecture = requested_directories[0].strip().lower()
+
+    # New preferred mechanism
+    requested_directories = search_request.directories
 
     start_urls = input_data.get("startUrls") or []
     max_listings = int(input_data.get("maxListings", 200))
@@ -509,6 +526,7 @@ async def run_crawler(
     anchor_key = (embedded.get("anchorKey") or "logoMedium").strip()
     keys_to_extract = embedded.get("keys") or None
     field_map: Dict[str, str] = embedded.get("fieldMap") or {}
+
 
     if not start_urls:
         raise ValueError("Input must include startUrls.")
@@ -793,6 +811,18 @@ async def run_crawler(
                                     record,
                                     timeout_ms=website_timeout_ms,
                                 )
+
+                            record = qualifier.qualify(
+                                record=record,
+                                request={
+                                    "keyword": search_request.keyword,
+                                    "services": search_request.services,
+                                    "products": search_request.products,
+                                    "industries": search_request.industries,
+                                    "location": search_request.location,
+                                    "country": search_request.country,
+                                },
+                            )
 
                             await Actor.push_data(record)
                             pushed += 1
