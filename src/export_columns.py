@@ -42,5 +42,9 @@ ADVANCED_COLUMNS = [
     "access_profiles_found",
     "access_recommendation",
     "access_strategy",
+    "source_directories",
+    "source_urls",
+    "profile_urls",
+    "duplicate_count",
 ]
 ALL_COLUMNS = DEFAULT_COLUMNS + ADVANCED_COLUMNS

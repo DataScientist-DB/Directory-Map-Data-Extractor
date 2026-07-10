@@ -7,12 +7,18 @@ class DirectorySelector:
     should satisfy the user's request.
     """
 
-    def select(self, request):
+    def select(self, request: SearchRequest):
 
-        if request.directories:
-            return request.directories
+        directories = []
 
-        return [
-            "bbb",
-            "chambermaster",
-        ]
+        if request.country == "USA":
+            directories += [
+                "bbb",
+                "chambermaster",
+                "yelp",
+            ]
+
+        if request.country == "Canada":
+            ...
+
+        return directories

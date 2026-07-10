@@ -12,7 +12,7 @@ from src.crawler import run_crawler
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
 from src.run_summary import print_run_summary
 from src.export_columns import DEFAULT_COLUMNS, ADVANCED_COLUMNS
-
+from src.intelligence.company_resolver import CompanyResolver
 
 
 
@@ -278,6 +278,7 @@ async def export_dataset_to_kv(
 
     items = [r for r in items if not (isinstance(r, dict) and r.get("_probe"))]
 
+
     Actor.log.info(f"EXPORT: dataset items={len(items)}")
 
     cols = (
@@ -285,10 +286,29 @@ async def export_dataset_to_kv(
         if (columns_mode or "").strip().lower() == "all"
         else DEFAULT_COLUMNS
     )
+
+    items = [
+        row
+        for row in items
+        if not (
+            isinstance(row, dict)
+            and row.get("_probe")
+        )
+    ]
+
+    resolver = CompanyResolver()
+    items, duplicates_merged = resolver.resolve(items)
+
+    Actor.log.info(
+        f"COMPANY RESOLUTION: "
+        f"records_after_merge={len(items)} "
+        f"duplicates_merged={duplicates_merged}"
+    )
+
     items.sort(
-        key=lambda r: (
-            int(r.get("relevance_score") or 0),
-            int(r.get("business_intelligence_score") or 0),
+        key=lambda row: (
+            int(row.get("relevance_score") or 0),
+            int(row.get("business_intelligence_score") or 0),
         ),
         reverse=True,
     )
