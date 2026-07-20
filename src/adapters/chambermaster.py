@@ -43,6 +43,51 @@ class RawMemberProfile:
     category_names: str = ""
     profile_url: str = ""
 
+class ChamberMasterParser:
+    """Parse ChamberMaster HTML without performing network access."""
+
+    @staticmethod
+    def clean_text(value: str) -> str:
+        return re.sub(r"\s+", " ", value or "").strip()
+
+    def parse_member_profile(
+        self,
+        html: str,
+        *,
+        category_names: str = "",
+        profile_url: str = "",
+    ) -> RawMemberProfile:
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        profile = RawMemberProfile(
+            category_names=category_names,
+            profile_url=profile_url,
+        )
+
+        title = soup.select_one(".gz-pagetitle")
+        if title:
+            profile.name = self.clean_text(
+                title.get_text(" ", strip=True)
+            )
+
+        phone = soup.select_one(
+            ".gz-card-phone span[itemprop='telephone']"
+        )
+        if phone:
+            profile.phone = self.clean_text(
+                phone.get_text(" ", strip=True)
+            )
+
+        fax = soup.select_one(
+            ".gz-card-fax span[itemprop='faxNumber']"
+        )
+        if fax:
+            profile.fax = self.clean_text(
+                fax.get_text(" ", strip=True)
+            )
+
+        return profile
+
 class ChamberMasterAdapter(BaseDirectoryAdapter):
     ##############################################################################
     # Metadata
@@ -105,13 +150,14 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.parser = ChamberMasterParser()
+
         self.stats = {
             "categories": 0,
             "member_urls": 0,
             "profiles_processed": 0,
             "profiles_failed": 0,
         }
-
 
     def _extract_category_name(self, html: str, category_url: str = "") -> str:
         soup = BeautifulSoup(html or "", "html.parser")
@@ -445,6 +491,12 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         html = await page.content()
 
+        profile = self.parser.parse_member_profile(
+            html,
+            category_names=category_names,
+            profile_url=member_url,
+        )
+
         if self.debug:
             debug_dir = Path("debug")
             debug_dir.mkdir(exist_ok=True)
@@ -453,20 +505,9 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
                 f.write(html)
         soup = BeautifulSoup(html or "", "html.parser")
 
-        name = ""
-        h1 = soup.select_one(".gz-pagetitle")
-        if h1:
-            name = self._clean_text(h1.get_text(" ", strip=True))
-
-        phone = ""
-        phone_el = soup.select_one(".gz-card-phone span[itemprop='telephone']")
-        if phone_el:
-            phone = self._clean_text(phone_el.get_text(" ", strip=True))
-
-        fax = ""
-        fax_el = soup.select_one(".gz-card-fax span[itemprop='faxNumber']")
-        if fax_el:
-            fax = self._clean_text(fax_el.get_text(" ", strip=True))
+        name = profile.name
+        phone = profile.phone
+        fax = profile.fax
 
         website = ""
         website_el = soup.select_one(".gz-card-website a[href]")
