@@ -22,6 +22,36 @@ def test_parse_basic_contact_fields() -> None:
         <div class="gz-card-email">
           <a href="mailto:info@example.com?subject=Inquiry">Email</a>
         </div>
+
+          <div itemprop="address">
+            <span itemprop="streetAddress">
+                123 Main Street
+            </span>
+
+            <span itemprop="addressLocality">
+                Phoenix
+            </span>
+
+            <span itemprop="addressRegion">
+                AZ
+            </span>
+
+            <span itemprop="postalCode">
+                85001
+            </span>
+        </div>
+
+        <a href="https://www.facebook.com/exampleengineering">Facebook</a>
+        <a href="https://www.linkedin.com/company/exampleengineering">LinkedIn</a>
+        <a href="https://www.instagram.com/exampleengineering">Instagram</a>
+        <a href="https://www.youtube.com/@exampleengineering">YouTube</a>
+        <a href="https://x.com/exampleeng">X</a>
+
+        assert profile.address == "123 Main Street"
+        assert profile.city == "Phoenix"
+        assert profile.state == "AZ"
+        assert profile.postal_code == "85001"
+
       </body>
     </html>
     """

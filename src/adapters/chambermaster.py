@@ -98,6 +98,22 @@ class ChamberMasterParser:
                 .split("?", 1)[0]
                 .strip()
             )
+        social_selectors = {
+            "facebook": "a[href*='facebook.com']",
+            "linkedin": "a[href*='linkedin.com']",
+            "instagram": "a[href*='instagram.com']",
+            "youtube": "a[href*='youtube.com'], a[href*='youtu.be']",
+            "twitter": "a[href*='twitter.com'], a[href*='x.com']",
+        }
+
+        for field_name, selector in social_selectors.items():
+            element = soup.select_one(selector)
+            if not element:
+                continue
+
+            value = (element.get("href") or "").strip()
+            if value:
+                setattr(profile, field_name, value)
 
         return profile
 
@@ -528,11 +544,11 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         # If no mailto link exists, the parser intentionally leaves email empty.
         email = profile.email
 
-        facebook = ""
-        linkedin = ""
-        instagram = ""
-        youtube = ""
-        twitter = ""
+        facebook = profile.facebook
+        linkedin = profile.linkedin
+        instagram = profile.instagram
+        youtube = profile.youtube
+        twitter = profile.twitter
 
         for a in soup.select(".gz-card-social a[href]"):
             href = (a.get("href") or "").strip()
@@ -554,10 +570,10 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             elif "twitter.com" in href_lower or "x.com" in href_lower:
                 twitter = href
 
-        address = ""
-        city = ""
-        state = ""
-        postal_code = ""
+        address = profile.address
+        city = profile.city
+        state = profile.state
+        postal_code = profile.postal_code
 
         address_el = soup.select_one(".gz-card-address")
         if address_el:
