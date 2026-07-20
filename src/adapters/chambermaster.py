@@ -13,14 +13,10 @@ from src.adapters.models import AdapterInfo
 from src.models.business_record import BusinessRecord
 # src/adapters/chambermaster.py
 
-
-
-##############################################################################
-# Metadata
-##############################################################################
-
-
 class ChamberMasterAdapter(BaseDirectoryAdapter):
+    ##############################################################################
+    # Metadata
+    ##############################################################################
     architecture = "chambermaster"
 
     INFO = AdapterInfo(
@@ -73,11 +69,11 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         "terms",
     }
 
-
+    ###########################################################################
+    # Initialization
+    ###########################################################################
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-
 
         self.stats = {
             "categories": 0,
@@ -86,9 +82,7 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             "profiles_failed": 0,
         }
 
-    ##############################################################################
-    # Category Discovery
-    ##############################################################################
+
     def _extract_category_name(self, html: str, category_url: str = "") -> str:
         soup = BeautifulSoup(html or "", "html.parser")
 
@@ -110,13 +104,12 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return category_url.rstrip("/").split("/")[-1].replace("-", " ").title()
 
+    ###########################################################################
+    # Shared helpers
+    ###########################################################################
     def _debug(self, *args):
         if self.debug:
             print(*args)
-
-    ##############################################################################
-    # Helper Methods
-    ##############################################################################
 
     def _clean_text(self, value: str) -> str:
         return re.sub(r"\s+", " ", value or "").strip()
@@ -141,6 +134,26 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
                 "",
             )
         )
+    def _calculate_confidence(self, record: BusinessRecord) -> float:
+        """
+        Calculate a simple completeness score for CRM/export quality.
+        """
+        score = 0.0
+
+        if record.entity_name:
+            score += 0.30
+        if record.phone:
+            score += 0.20
+        if record.website:
+            score += 0.20
+        if record.address:
+            score += 0.20
+        if record.city and record.state:
+            score += 0.10
+
+    ###########################################################################
+    # Category discovery
+    ###########################################################################
 
     def _extract_category_links(self, html: str) -> list[str]:
         """
@@ -173,30 +186,6 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         return result
 
 
-
-    def _extract_member_links(self, html: str) -> list[str]:
-        """
-        Extract ChamberMaster member/profile URLs from a category/search page.
-        """
-        soup = BeautifulSoup(html or "", "html.parser")
-        member_urls = set()
-
-        for a in soup.select("a[href]"):
-            href = (a.get("href") or "").strip()
-
-            if not href:
-                continue
-
-            h = href.lower()
-
-            if "/list/member/" in h or "/member/" in h:
-                if "newmemberapp" in h:
-                    continue
-
-                absolute_url = urljoin(self.source_url, href)
-                member_urls.add(self._normalize_member_url(absolute_url))
-
-        return sorted(member_urls)
 
     def _extract_next_page(self, html: str) -> str | None:
         """
@@ -272,22 +261,6 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return None
 
-    def _calculate_confidence(self, record: BusinessRecord) -> float:
-        """
-        Calculate a simple completeness score for CRM/export quality.
-        """
-        score = 0.0
-
-        if record.entity_name:
-            score += 0.30
-        if record.phone:
-            score += 0.20
-        if record.website:
-            score += 0.20
-        if record.address:
-            score += 0.20
-        if record.city and record.state:
-            score += 0.10
 
         return round(score, 2)
 
@@ -296,6 +269,34 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             html = await page.content()
 
         return self._extract_category_links(html)
+
+    ###########################################################################
+    # Member discovery
+    ###########################################################################
+
+    def _extract_member_links(self, html: str) -> list[str]:
+        """
+        Extract ChamberMaster member/profile URLs from a category/search page.
+        """
+        soup = BeautifulSoup(html or "", "html.parser")
+        member_urls = set()
+
+        for a in soup.select("a[href]"):
+            href = (a.get("href") or "").strip()
+
+            if not href:
+                continue
+
+            h = href.lower()
+
+            if "/list/member/" in h or "/member/" in h:
+                if "newmemberapp" in h:
+                    continue
+
+                absolute_url = urljoin(self.source_url, href)
+                member_urls.add(self._normalize_member_url(absolute_url))
+
+        return sorted(member_urls)
 
     async def _discover_member_urls_from_category(
         self,
@@ -388,6 +389,10 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         self.stats["member_urls"] = len(result)
 
         return result
+
+    ###########################################################################
+    # Profile extraction
+    ###########################################################################
 
     async def extract_member(self, page, member_info) -> dict[str, Any]:
         if isinstance(member_info, dict):
