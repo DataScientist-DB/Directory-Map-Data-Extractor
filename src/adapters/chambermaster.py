@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+
 from pathlib import Path
 from typing import Any, Dict, List
 from urllib.parse import urljoin, urlsplit, urlunsplit
@@ -12,6 +13,35 @@ from src.adapters.capabilities import AdapterCapabilities
 from src.adapters.models import AdapterInfo
 from src.models.business_record import BusinessRecord
 # src/adapters/chambermaster.py
+from dataclasses import dataclass
+
+@dataclass
+class RawMemberProfile:
+    name: str = ""
+
+    phone: str = ""
+    fax: str = ""
+
+    email: str = ""
+    website: str = ""
+
+    facebook: str = ""
+    linkedin: str = ""
+    instagram: str = ""
+    youtube: str = ""
+    twitter: str = ""
+
+    address: str = ""
+    city: str = ""
+    state: str = ""
+    postal_code: str = ""
+
+    description: str = ""
+    hours: str = ""
+    driving_directions: str = ""
+
+    category_names: str = ""
+    profile_url: str = ""
 
 class ChamberMasterAdapter(BaseDirectoryAdapter):
     ##############################################################################
