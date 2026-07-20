@@ -23,35 +23,32 @@ def test_parse_basic_contact_fields() -> None:
           <a href="mailto:info@example.com?subject=Inquiry">Email</a>
         </div>
 
-          <div itemprop="address">
-            <span itemprop="streetAddress">
-                123 Main Street
-            </span>
-
-            <span itemprop="addressLocality">
-                Phoenix
-            </span>
-
-            <span itemprop="addressRegion">
-                AZ
-            </span>
-
-            <span itemprop="postalCode">
-                85001
-            </span>
+        <div itemprop="address">
+          <span itemprop="streetAddress">123 Main Street</span>
+          <span itemprop="addressLocality">Phoenix</span>
+          <span itemprop="addressRegion">AZ</span>
+          <span itemprop="postalCode">85001</span>
         </div>
 
-        <a href="https://www.facebook.com/exampleengineering">Facebook</a>
-        <a href="https://www.linkedin.com/company/exampleengineering">LinkedIn</a>
-        <a href="https://www.instagram.com/exampleengineering">Instagram</a>
-        <a href="https://www.youtube.com/@exampleengineering">YouTube</a>
-        <a href="https://x.com/exampleeng">X</a>
+        <div class="gz-card-description">
+          Full-service civil engineering and transportation consulting firm.
+        </div>
 
-        assert profile.address == "123 Main Street"
-        assert profile.city == "Phoenix"
-        assert profile.state == "AZ"
-        assert profile.postal_code == "85001"
-
+        <a href="https://www.facebook.com/exampleengineering">
+          Facebook
+        </a>
+        <a href="https://www.linkedin.com/company/exampleengineering">
+          LinkedIn
+        </a>
+        <a href="https://www.instagram.com/exampleengineering">
+          Instagram
+        </a>
+        <a href="https://www.youtube.com/@exampleengineering">
+          YouTube
+        </a>
+        <a href="https://x.com/exampleeng">
+          X
+        </a>
       </body>
     </html>
     """
@@ -68,14 +65,50 @@ def test_parse_basic_contact_fields() -> None:
     assert profile.fax == "(555) 765-4321"
     assert profile.website == "https://example.com"
     assert profile.email == "info@example.com"
+
+    assert profile.address == "123 Main Street"
+    assert profile.city == "Phoenix"
+    assert profile.state == "AZ"
+    assert profile.postal_code == "85001"
+
+    assert profile.description == (
+        "Full-service civil engineering and transportation consulting firm."
+    )
+
+    assert profile.facebook == (
+        "https://www.facebook.com/exampleengineering"
+    )
+    assert profile.linkedin == (
+        "https://www.linkedin.com/company/exampleengineering"
+    )
+    assert profile.instagram == (
+        "https://www.instagram.com/exampleengineering"
+    )
+    assert profile.youtube == (
+        "https://www.youtube.com/@exampleengineering"
+    )
+    assert profile.twitter == "https://x.com/exampleeng"
+
     assert profile.category_names == "Engineering"
     assert profile.profile_url.endswith("/example")
 
-    def test_parse_empty_member_profile() -> None:
-        parser = ChamberMasterParser()
-        profile = parser.parse_member_profile("")
 
-        assert profile.name == ""
-        assert profile.phone == ""
-        assert profile.email == ""
-        assert profile.website == ""
+def test_parse_empty_member_profile() -> None:
+    parser = ChamberMasterParser()
+    profile = parser.parse_member_profile("")
+
+    assert profile.name == ""
+    assert profile.phone == ""
+    assert profile.fax == ""
+    assert profile.email == ""
+    assert profile.website == ""
+    assert profile.address == ""
+    assert profile.city == ""
+    assert profile.state == ""
+    assert profile.postal_code == ""
+    assert profile.description == ""
+    assert profile.facebook == ""
+    assert profile.linkedin == ""
+    assert profile.instagram == ""
+    assert profile.youtube == ""
+    assert profile.twitter == ""

@@ -31,12 +31,13 @@ class RawMemberProfile:
     youtube: str = ""
     twitter: str = ""
 
+    description: str = ""
     address: str = ""
     city: str = ""
     state: str = ""
     postal_code: str = ""
 
-    description: str = ""
+
     hours: str = ""
     driving_directions: str = ""
 
@@ -90,7 +91,9 @@ class ChamberMasterParser:
         if website:
             profile.website = (website.get("href") or "").strip()
 
-        email = soup.select_one(".gz-card-email a[href^='mailto:']")
+        email = soup.select_one(
+            ".gz-card-email a[href^='mailto:']"
+        )
         if email:
             profile.email = (
                 email.get("href", "")
@@ -98,12 +101,60 @@ class ChamberMasterParser:
                 .split("?", 1)[0]
                 .strip()
             )
+
+        address = soup.select_one("[itemprop='address']")
+        if address:
+            street = address.select_one(
+                "[itemprop='streetAddress']"
+            )
+            city = address.select_one(
+                "[itemprop='addressLocality']"
+            )
+            state = address.select_one(
+                "[itemprop='addressRegion']"
+            )
+            postal_code = address.select_one(
+                "[itemprop='postalCode']"
+            )
+
+            if street:
+                profile.address = self.clean_text(
+                    street.get_text(" ", strip=True)
+                )
+
+            if city:
+                profile.city = self.clean_text(
+                    city.get_text(" ", strip=True)
+                )
+
+            if state:
+                profile.state = self.clean_text(
+                    state.get_text(" ", strip=True)
+                )
+
+            if postal_code:
+                profile.postal_code = self.clean_text(
+                    postal_code.get_text(" ", strip=True)
+                )
+
+        description = soup.select_one(".gz-card-description")
+        if description:
+            profile.description = self.clean_text(
+                description.get_text(" ", strip=True)
+            )
+
         social_selectors = {
             "facebook": "a[href*='facebook.com']",
             "linkedin": "a[href*='linkedin.com']",
             "instagram": "a[href*='instagram.com']",
-            "youtube": "a[href*='youtube.com'], a[href*='youtu.be']",
-            "twitter": "a[href*='twitter.com'], a[href*='x.com']",
+            "youtube": (
+                "a[href*='youtube.com'], "
+                "a[href*='youtu.be']"
+            ),
+            "twitter": (
+                "a[href*='twitter.com'], "
+                "a[href*='x.com']"
+            ),
         }
 
         for field_name, selector in social_selectors.items():
@@ -602,7 +653,7 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             driving_directions = self._clean_text(
                 driving_el.get_text(" ", strip=True)
             )
-        description = ""
+        description = profile.description
 
         description_selectors = [
             ".gz-details-description",
