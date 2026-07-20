@@ -1,193 +1,185 @@
 # Universal Business Directory Intelligence Platform (UBDIP)
 
-> Intelligent Business Directory Extraction, Website Enrichment, and Business Intelligence Scoring
+> **Discover. Enrich. Classify. Score. Export.**
 
-![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
-![Apify](https://img.shields.io/badge/Apify-Actor-green.svg)
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
+UBDIP is a modular business directory intelligence framework designed to
+discover business listings, enrich them from company websites, evaluate
+their quality, and export business-ready datasets. Unlike a traditional
+scraper, UBDIP separates **discovery**, **access**, **enrichment**,
+**intelligence**, and **export** into independent layers.
 
----
+------------------------------------------------------------------------
 
-## Overview
+# Current Release
 
-Universal Business Directory Intelligence Platform (UBDIP) is an enterprise-grade Apify Actor for extracting, enriching, validating, and scoring business directory data.
+**Version:** `v1.0.0-rc1.5`
 
-Unlike traditional directory scrapers, UBDIP visits each company's own website, discovers additional contact information, extracts structured business metadata, and computes a Business Intelligence Score that helps prioritize the most complete and trustworthy business profiles.
+## RC1.5 Highlights
 
-UBDIP is designed for:
+-   Universal adapter framework
+-   ChamberMaster adapter
+-   BBB adapter with access diagnostics
+-   Website enrichment pipeline
+-   EmailRecord, PhoneRecord, SocialRecord and WebsiteRecord models
+-   EmailExtractor v2
+-   PhoneExtractor v2
+-   SocialExtractor v2
+-   Website quality analysis
+-   Business Intelligence Score v1
+-   CSV/XLSX export
+-   pytest integration with unit tests
 
-- B2B Lead Generation
-- CRM Enrichment
-- Market Intelligence
-- Business Directories
-- GIS & Spatial Intelligence
-- Sales Prospecting
-- Competitor Research
-- Economic Development
+------------------------------------------------------------------------
 
----
+# Architecture
 
-## Key Features
+    Discovery
+        │
+        ▼
+    Access
+        │
+        ▼
+    Enrichment
+        │
+        ▼
+    Intelligence
+        │
+        ▼
+    Export
 
-### Universal Directory Crawling
+## Discovery Layer
 
-- ChamberMaster
-- Additional adapters (planned)
+-   Universal adapter architecture
+-   Directory routing
+-   Pagination
+-   Search requests
 
-### Website Enrichment
+## Access Layer
 
-Automatically visits company websites and extracts:
+-   BrowserFactory
+-   ProxyManager
+-   Access diagnostics
+-   Access reports
 
-- Email addresses
-- Phone numbers
-- Contact pages
-- About pages
-- Social media profiles
-- Company descriptions
+## Enrichment Layer
 
-### Schema.org Extraction
+Extracts information directly from company websites:
 
-Extracts structured metadata including:
+-   Email
+-   Phone
+-   Social profiles
+-   Schema.org
+-   Contact/About pages
+-   Website quality
 
-- Address
-- Postal code
-- Opening hours
-- Organization schema
+## Intelligence Layer
 
-### Intelligent Contact Discovery
+Computes business intelligence from enriched records.
 
-Automatically discovers:
+Current: - IntelligenceScore v1
 
-- Contact pages
-- About pages
-- Additional website resources
+Planned: - WebsiteScore - BusinessScore - TrustScore - DirectoryScore
 
-### Business Intelligence Score (RC1.1)
+## Export Layer
 
-Every business receives an intelligence score from **0–100** based on the richness and completeness of available information.
+Current: - CSV - XLSX
 
-Scoring considers:
+Planned: - JSON - SQLite - REST API - CRM connectors - HubSpot -
+Salesforce
 
-- Website
-- Email
-- Phone
-- LinkedIn
-- Facebook
-- Instagram
-- Twitter/X
-- YouTube
-- Schema.org metadata
+------------------------------------------------------------------------
 
-Intelligence grades:
+# Supported Directory Types
 
-| Score | Grade |
-|--------|-------|
-| 90–100 | ★★★★★ Excellent |
-| 70–89 | ★★★★ Good |
-| 50–69 | ★★★ Fair |
-| 30–49 | ★★ Poor |
-| 0–29 | ★ Very Poor |
+-   Business directories
+-   Chamber directories
+-   Membership directories
+-   Association directories
+-   Government registries
+-   Protected directories
 
----
+------------------------------------------------------------------------
 
-## Outputs
+# Access Diagnostics
 
-Supported formats:
+UBDIP detects blocked platforms and reports:
 
-- CSV
-- XLSX
+-   HTTP status
+-   Protection mechanism
+-   Pages visited
+-   Profiles discovered
+-   Recommended access strategy
 
-Each exported business contains:
+This allows protected platforms (such as BBB) to fail gracefully with
+actionable diagnostics instead of silent failures.
 
-- Company information
-- Contact details
-- Website enrichment
-- Social media
-- Business Intelligence Score
-- Intelligence Grade
+------------------------------------------------------------------------
 
----
+# Testing
 
-## Runtime Summary
+Run the crawler:
 
-After every execution UBDIP reports:
-
-- Records exported
-- Website enrichment statistics
-- Social profile counts
-- Business Intelligence summary
-- Average Intelligence Score
-
----
-
-## Architecture
-
-```
-Crawler
-      │
-      ▼
-BusinessRecord
-      │
-      ▼
-Website Enrichment
-      │
-      ▼
-Schema Extraction
-      │
-      ▼
-Contact Discovery
-      │
-      ▼
-Business Intelligence Scoring
-      │
-      ▼
-CSV / XLSX Export
+``` bash
+python -m src.main
 ```
 
----
+Run tests:
 
-## Project Status
+``` bash
+pytest
+```
 
-Current release:
+------------------------------------------------------------------------
 
-**Version:** RC1.1
+# Project Status
 
-Completed:
+  Component                          Status
+  --------------------------------- --------
+  Universal Adapter Framework          ✅
+  Discovery Engine                     ✅
+  Access Diagnostics                   ✅
+  Website Intelligence Foundation      ✅
+  Business Intelligence v1             ✅
+  Unit Tests                           ✅
+  Business Intelligence Engine         🚧
 
-- Universal crawler
-- ChamberMaster adapter
-- Website enrichment
-- Schema extraction
-- Contact discovery
-- Business Intelligence Layer
-- Runtime statistics
-- CSV/XLSX export
-- Documentation
-- Regression tests
+------------------------------------------------------------------------
 
----
+# Roadmap
 
-## Roadmap
+-   ✅ RC1.0 Universal Discovery Engine
+-   ✅ RC1.1 Business Intelligence Scoring
+-   ✅ RC1.5 Website Intelligence Foundation
+-   ⏳ RC1.6 Business Intelligence Engine
+-   ⏳ RC1.7 AI Intelligence & Classification
+-   ⏳ RC1.8 Universal Directory Platform
+-   ⏳ RC2.0 Enterprise Intelligence Platform
 
-### RC1.2
+------------------------------------------------------------------------
 
-- AI Business Summary
-- Technology Detection
-- Website Quality Score
-- Contact Completeness Index
-- Export Profiles
-- JSON API
+# Repository Structure
 
-### Commercialization Sprint
+    src/
+     ├── adapters/
+     ├── access/
+     ├── browser/
+     ├── enrichment/
+     ├── intelligence/
+     ├── models/
+     ├── network/
+     ├── presets/
+     ├── tests/
+     └── main.py
 
-- Apify Store optimization
-- Demo video
-- Pricing strategy
-- Competitive positioning
-- Professional screenshots
+------------------------------------------------------------------------
 
----
+# Contributing
 
-## License
+Contributions are welcome. New directory adapters, enrichment modules,
+tests, and documentation improvements are encouraged.
+
+------------------------------------------------------------------------
+
+# License
 
 MIT License

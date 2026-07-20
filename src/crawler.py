@@ -28,6 +28,7 @@ from src.models.proxy_config import ProxyConfig
 from src.browser.browser_factory import BrowserFactory
 from src.intelligence.company_qualifier import CompanyQualifier
 from src.discovery.request_parser import RequestParser
+from src.discovery.search_orchestrator import SearchOrchestrator
 
 FieldSpec = Union[str, Dict[str, Any]]
 
@@ -460,6 +461,24 @@ async def run_crawler(
     # Parse the user's search request
     search_request = RequestParser.parse(input_data)
 
+    start_urls = input_data.get("startUrls") or []
+
+    directory_source_url = (
+        start_urls[0].get("url", "")
+        if start_urls
+        else ""
+    )
+
+
+    orchestrator = SearchOrchestrator()
+    selected = orchestrator.get_directories(search_request)
+
+    print("\n===== SEARCH ORCHESTRATION =====")
+    print("Requested country :", search_request.country)
+    print("Requested services:", search_request.services)
+    print("Directories       :", ", ".join(selected))
+    print("===============================\n")
+
     proxy_input = input_data.get("proxyConfiguration", {}) or {}
 
     proxy_config = ProxyConfig(
@@ -475,13 +494,16 @@ async def run_crawler(
 
     mode = (input_data.get("mode") or "dom").strip()
     # Legacy support
-    requested_architecture = (input_data.get("architecture") or "").strip().lower()
+    requested_architecture = (
+        input_data.get("architecture") or ""
+    ).strip().lower()
 
-    requested_directories = search_request.directories
-
-    if not requested_architecture and requested_directories:
-        requested_architecture = requested_directories[0].strip().lower()
-
+    if not requested_architecture and search_request.directories:
+        requested_architecture = (
+            search_request.directories[0]
+            .strip()
+            .lower()
+        )
     # New preferred mechanism
     requested_directories = search_request.directories
 
@@ -781,7 +803,7 @@ async def run_crawler(
                                         "status": "blocked",
                                         "blocked_reason": report.blocked_reason,
                                         "architecture": report.architecture,
-                                        "source_url": report.search_url,
+                                        "source_url": directory_source_url,
                                         "records_found": 0,
                                         "crawl_mode": "adapter_access_diagnostic",
 
@@ -832,7 +854,7 @@ async def run_crawler(
                         return {
                             "status": "adapter_extraction_complete",
                             "architecture": architecture,
-                            "source_url": page.url,
+                            "source_url": directory_source_url,
                             "records_found": len(adapter_records),
                             "crawl_mode": "auto",
                             "recommended_strategy": f"{architecture}_adapter",
@@ -851,7 +873,7 @@ async def run_crawler(
                     return {
                         "status": "architecture_detected",
                         "architecture": architecture,
-                        "source_url": page.url,
+                        "source_url": directory_source_url,
                         "records_found": 0,
                         "crawl_mode": mode,
                         "recommended_strategy": f"{architecture}_adapter",
@@ -1032,6 +1054,7 @@ async def run_crawler(
                             return {
                                 "status": "architecture_detected",
                                 "architecture": architecture,
+                                "source_url": directory_source_url,
                                 "records_found": 0,
                                 "crawl_mode": mode,
                             }
@@ -1054,10 +1077,10 @@ async def run_crawler(
                             "wildapricot",
                             "wix",
                         }:
-
                             return {
                                 "status": "architecture_detected",
                                 "architecture": architecture,
+                                "source_url": directory_source_url,
                                 "records_found": 0,
                                 "crawl_mode": mode,
                             }
@@ -1310,4 +1333,9 @@ async def run_crawler(
         except Exception as e:
             Actor.log.warning(f"Could not charge business_result event: {e}")
 
-    return {"category_map": all_cat, "service_map": all_srv}
+    return {
+        "category_map": all_cat,
+        "service_map": all_srv,
+        "architecture": requested_architecture or "",
+        "source_url": directory_source_url,
+    }

@@ -11,11 +11,15 @@ from apify import Actor
 from src.crawler import run_crawler
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
 from src.run_summary import print_run_summary
-from src.export_columns import DEFAULT_COLUMNS, ADVANCED_COLUMNS
+
 from src.intelligence.company_resolver import CompanyResolver
+from copy import deepcopy
 
-
-
+from src.discovery.request_parser import RequestParser
+from src.discovery.search_orchestrator import SearchOrchestrator
+from src.adapters.external_bbb import ExternalBBBAdapter
+from src.export_columns import DEFAULT_COLUMNS, ALL_COLUMNS
+from src.models.provider_status import ProviderStatus
 
 def _clean_label(v: Any) -> str:
     if v is None:
@@ -352,6 +356,12 @@ async def export_dataset_to_kv(
 async def main() -> None:
     async with Actor:
         input_data = await Actor.get_input() or {}
+        local_only = bool(
+            input_data.get(
+                "localOnly",
+                True,
+            )
+        )
 
         if not input_data.get("startUrls"):
             su = (input_data.get("startUrl") or "").strip()
@@ -435,11 +445,268 @@ async def main() -> None:
             input_data.get("websiteTimeoutMs", 15000)
         )
 
-        crawl_info = await run_crawler(
-            input_data,
-            enable_website_enrichment=enable_website_enrichment,
-            website_timeout_ms=website_timeout_ms,
-        ) or {}
+        search_request = RequestParser.parse(input_data)
+
+        orchestrator = SearchOrchestrator()
+
+        directory_targets = orchestrator.build_targets(
+            input_data=input_data,
+            request=search_request,
+        )
+
+        crawl_results: list[dict[str, Any]] = []
+
+        if directory_targets:
+            Actor.log.info(
+                "MULTI-DIRECTORY TARGETS: "
+                + ", ".join(
+                    f"{target['directory']}={target['url']}"
+                    for target in directory_targets
+                )
+            )
+
+            for target in directory_targets:
+                directory = target["directory"]
+                url = target["url"]
+
+                Actor.log.info(
+                    f"Starting directory target: "
+                    f"directory={directory} url={url}"
+                )
+
+                target_input = deepcopy(input_data)
+
+                # Force this run to use exactly one adapter and one URL.
+                target_input["architecture"] = directory
+                target_input["startUrls"] = [{"url": url}]
+
+                target_search = dict(target_input.get("search") or {})
+                target_search["directories"] = [directory]
+                target_search["autoSelectDirectories"] = False
+                target_input["search"] = target_search
+
+                bbb_provider = input_data.get("bbbProvider", {}) or {}
+
+                bbb_provider_mode = str(
+                    bbb_provider.get(
+                        "mode",
+                        "native",
+                    )
+                ).strip().lower()
+
+                use_external_bbb = (
+                    directory == "bbb"
+                    and not local_only
+                    and bbb_provider_mode == "external_actor"
+                )
+
+                if use_external_bbb:
+                    external_bbb = ExternalBBBAdapter(
+                        actor_id=bbb_provider.get(
+                            "actorId",
+                            "ocrad/bbb-company-scraper",
+                        ),
+                        timeout_seconds=int(
+                            bbb_provider.get(
+                                "timeoutSeconds",
+                                600,
+                            )
+                        ),
+                    )
+
+                    external_result = await external_bbb.search(
+                        search_url=url,
+                        max_pages=int(
+                            bbb_provider.get(
+                                "maxPages",
+                                input_data.get("maxPages", 10),
+                            )
+                        ),
+                        max_companies=int(
+                            bbb_provider.get(
+                                "maxCompanies",
+                                input_data.get("maxListings", 100),
+                            )
+                        ),
+                        max_concurrency=int(
+                            bbb_provider.get(
+                                "maxConcurrency",
+                                5,
+                            )
+                        ),
+                        use_apify_proxy=bool(
+                            bbb_provider.get(
+                                "useApifyProxy",
+                                True,
+                            )
+                        ),
+                    )
+
+                    external_records = external_result.records
+                    external_report = external_result.report.to_dict()
+
+                    external_status = str(
+                        external_report.get(
+                            "status",
+                            ProviderStatus.FAILED.value,
+                        )
+                    )
+
+                    external_reason = str(
+                        external_report.get(
+                            "reason",
+                            "",
+                        )
+                    )
+                    if external_records:
+                        for record in external_records:
+                            await Actor.push_data(record)
+
+                        crawl_results.append(
+                            {
+                                "architecture": "bbb",
+                                "directory": "bbb",
+                                "source_url": url,
+                                "target_url": url,
+                                "status": "success",
+                                "records_found": len(external_records),
+                                "external_provider": external_report,
+                                "category_map": {},
+                                "service_map": {},
+
+                            }
+                        )
+
+                        continue
+
+                    Actor.log.warning(
+                        "External BBB provider unavailable: "
+                        f"status={external_status} "
+                        f"reason={external_reason}"
+                    )
+
+                    fallback_to_native = bool(
+                        bbb_provider.get(
+                            "fallbackToNative",
+                            True,
+                        )
+                    )
+
+                    if not fallback_to_native:
+                        crawl_results.append(
+                            {
+                                "architecture": "bbb",
+                                "directory": "bbb",
+                                "source_url": url,
+                                "target_url": url,
+                                "status": external_report.get(
+                                    "status",
+                                    "failed",
+                                ),
+                                "records_found": 0,
+                                "external_provider": external_report,
+                                "category_map": {},
+                                "service_map": {},
+
+                            }
+                        )
+
+                        continue
+
+                    Actor.log.info(
+                        "External BBB provider requires fallback: "
+                        f"status={external_status}. "
+                        "Falling back to native BBB adapter."
+                    )
+
+                target_result = await run_crawler(
+                    target_input,
+                    enable_website_enrichment=enable_website_enrichment,
+                    website_timeout_ms=website_timeout_ms,
+                ) or {}
+
+                target_result["directory"] = directory
+                target_result["target_url"] = url
+
+                if (
+                    use_external_bbb
+                    and "external_report" in locals()
+                ):
+                    target_result["external_provider"] = external_report
+
+                crawl_results.append(target_result)
+
+
+        else:
+            # Backward-compatible single-directory execution
+            crawl_results.append(
+                await run_crawler(
+                    input_data,
+                    enable_website_enrichment=enable_website_enrichment,
+                    website_timeout_ms=website_timeout_ms,
+                ) or {}
+            )
+        successful_architectures = [
+            str(item.get("architecture") or item.get("directory") or "")
+            for item in crawl_results
+            if item
+        ]
+
+        source_urls = [
+            str(item.get("source_url") or item.get("target_url") or "")
+            for item in crawl_results
+            if item
+        ]
+
+        primary_result = (
+            crawl_results[0]
+            if crawl_results
+            else {}
+        )
+
+        crawl_info = {
+            "architecture": (
+                ", ".join(
+                    dict.fromkeys(
+                        value
+                        for value in successful_architectures
+                        if value
+                    )
+                )
+                or ""
+            ),
+            "source_url": (
+                " | ".join(
+                    dict.fromkeys(
+                        value
+                        for value in source_urls
+                        if value
+                    )
+                )
+                or ""
+            ),
+            "directory_results": crawl_results,
+            "category_map": {},
+            "service_map": {},
+
+            # Provider-health fields used by Run Summary.
+            "status": primary_result.get(
+                "status",
+                "",
+            ),
+            "access_status": primary_result.get(
+                "access_status",
+                "",
+            ),
+            "access_reason": primary_result.get(
+                "access_reason",
+                "",
+            ),
+            "external_provider": primary_result.get(
+                "external_provider",
+                {},
+            ),
+        }
 
         ds = await Actor.open_dataset()
         peek = await ds.get_data(limit=3)
@@ -447,6 +714,19 @@ async def main() -> None:
             f"DATASET AFTER CRAWL count={len(peek.items or [])} "
             f"keys={list((peek.items or [{}])[0].keys()) if (peek.items or []) else []}"
         )
+        combined_category_map: dict[str, Any] = {}
+        combined_service_map: dict[str, Any] = {}
+
+        for result in crawl_results:
+            combined_category_map.update(
+                result.get("category_map", {}) or {}
+            )
+            combined_service_map.update(
+                result.get("service_map", {}) or {}
+            )
+
+        crawl_info["category_map"] = combined_category_map
+        crawl_info["service_map"] = combined_service_map
 
         auto_cat = crawl_info.get("category_map", {}) or {}
         auto_srv = crawl_info.get("service_map", {}) or {}

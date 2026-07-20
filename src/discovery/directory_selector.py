@@ -2,23 +2,31 @@ from __future__ import annotations
 
 
 class DirectorySelector:
-    """
-    Determines which directory adapters
-    should satisfy the user's request.
-    """
 
-    def select(self, request: SearchRequest):
+    def select(
+        self,
+        request,
+    ) -> list[str]:
+
+        if request.directories:
+            return request.directories
 
         directories = []
 
-        if request.country == "USA":
-            directories += [
+        country = (request.country or "").upper()
+
+        if country == "USA":
+
+            directories.extend([
                 "bbb",
                 "chambermaster",
                 "yelp",
-            ]
+            ])
 
-        if request.country == "Canada":
-            ...
+        elif country == "CANADA":
+
+            directories.extend([
+                "chambermaster",
+            ])
 
         return directories

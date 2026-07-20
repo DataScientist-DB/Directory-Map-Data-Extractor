@@ -1,40 +1,30 @@
-# ----------------------------------------
 # Python
-# ----------------------------------------
 __pycache__/
 *.py[cod]
+.pytest_cache/
 
-# ----------------------------------------
-# Virtual Environment
-# ----------------------------------------
+# Virtual environments
 .venv/
+venv/
 
-# ----------------------------------------
-# Apify Local Storage
-# ----------------------------------------
-storage/
-
-# ----------------------------------------
-# Runtime Logs
-# ----------------------------------------
+# Logs
 *.log
-run.log
 
-# ----------------------------------------
-# Local Output Files
-# ----------------------------------------
-*.csv
-*.xlsx
+# Debug HTML
+*_debug.html
+test*.html
 
-# ----------------------------------------
-# Debug Files
-# ----------------------------------------
-debug/
-member_debug.html
-test.html
-test_directory.html
+# Generated outputs
+output*.csv
+output*.xlsx
 
-# ----------------------------------------
 # macOS
-# ----------------------------------------
 .DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Apify local storage
+storage/
+apify_storage/

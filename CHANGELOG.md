@@ -1,78 +1,166 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to the **Universal Business Directory Intelligence
+Platform (UBDIP)** are documented in this file.
 
----
+The project follows a release-candidate development model where each
+milestone introduces stable architectural improvements toward the v2.0
+platform.
 
-## RC1.1
+------------------------------------------------------------------------
 
-### Added
+# v1.0.0-rc1.5 --- Website Intelligence Foundation
 
-- Business Intelligence Score
-- Business Intelligence Grade
-- Runtime Business Intelligence Summary
-- Intelligence Score export to CSV
-- Intelligence Score export to XLSX
+## Added
 
-### Improved
+### Architecture
 
-- WebsiteEnricher integration
-- Export pipeline
-- Runtime reporting
-- Documentation
+-   Introduced layered architecture:
+    -   Discovery
+    -   Access
+    -   Enrichment
+    -   Intelligence
+    -   Export
+-   Added `AdapterCapabilities`
+-   Added `BaseExtractor`
+-   Added `BaseEnricher`
 
-### Fixed
+### Models
 
-- Export column synchronization
-- Runtime statistics integration
+-   EmailRecord
+-   PhoneRecord
+-   SocialRecord
+-   SchemaRecord
+-   WebsiteRecord
 
----
+### Website Intelligence
 
-## RC1
+-   EmailExtractor v2
+-   PhoneExtractor v2
+-   SocialExtractor v2
+-   Email classification
+-   Phone classification
+-   Social classification
+-   Quality scoring
+-   Website quality analysis
 
-### Added
+### Engineering
 
-- Universal crawler
-- ChamberMaster adapter
-- Website enrichment
-- Contact discovery
-- Schema.org extraction
-- Email extraction
-- Phone extraction
-- Social extraction
-- BusinessRecord model
-- Website cache
-- Runtime summary
-- CSV export
-- XLSX export
-- Smoke tests
-- Regression tests
-- Product Charter
-- Architecture documentation
-- Developer Guide
-- Configuration Guide
-- Examples
-- LICENSE
-- CONTRIBUTING
-- CODE_OF_CONDUCT
-- .editorconfig
+-   pytest configuration
+-   Unit tests
+-   Record-based enrichment architecture
 
----
+## Changed
 
-## Future
+-   Refactored WebsiteEnricher for model-based enrichment
+-   Separated Intelligence layer from Enrichment layer
+-   Improved project package structure
 
-### RC1.2
+## Fixed
 
-- AI Business Summary
-- Website Quality Score
-- Technology Detection
-- Contact Completeness Index
-- JSON API
+-   Export compatibility after record migration
+-   Website enrichment integration
+-   Runtime stability
 
-### Commercialization Sprint
+------------------------------------------------------------------------
 
-- Apify Store optimization
-- Demo video
-- Professional screenshots
-- Pricing strategy
-- Competitive analysis
+# v1.0.0-rc1.1 --- Business Intelligence Scoring
+
+## Added
+
+-   Business Intelligence Score
+-   Intelligence Grade
+-   Runtime intelligence summary
+-   Intelligence export to CSV
+-   Intelligence export to XLSX
+
+## Improved
+
+-   WebsiteEnricher integration
+-   Runtime reporting
+-   Export pipeline
+
+## Fixed
+
+-   Export column synchronization
+-   Runtime statistics
+
+------------------------------------------------------------------------
+
+# v1.0.0-rc1 --- Universal Discovery Engine
+
+## Added
+
+### Discovery
+
+-   Universal crawler
+-   ChamberMaster adapter
+-   BBB adapter
+-   Adapter router
+
+### Access
+
+-   BrowserFactory
+-   ProxyManager
+-   Access diagnostics
+-   AccessReport
+
+### Enrichment
+
+-   Website enrichment
+-   Contact page discovery
+-   Schema.org extraction
+-   Email extraction
+-   Phone extraction
+-   Social extraction
+-   Website cache
+
+### Export
+
+-   CSV export
+-   XLSX export
+-   Runtime summary
+
+### Documentation
+
+-   Product Charter
+-   Architecture documentation
+-   Configuration guide
+-   Developer guide
+-   Examples
+-   CONTRIBUTING
+-   LICENSE
+-   CODE_OF_CONDUCT
+
+------------------------------------------------------------------------
+
+# Upcoming Releases
+
+## RC1.6
+
+-   Business Intelligence Engine
+-   WebsiteScore
+-   BusinessScore
+-   TrustScore
+-   DirectoryScore
+
+## RC1.7
+
+-   AI Intelligence
+-   AI Business Profiles
+-   AI Classification
+
+## RC1.8
+
+-   Universal Directory Platform
+-   Additional adapters
+-   REST API
+-   JSON export
+-   CRM connectors
+
+## RC2.0
+
+-   Enterprise Intelligence Platform
+-   Plugin ecosystem
+-   Dashboard
+-   Advanced analytics

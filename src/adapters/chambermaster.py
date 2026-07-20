@@ -14,6 +14,10 @@ from src.models.business_record import BusinessRecord
 
 from src.adapters.capabilities import AdapterCapabilities
 
+##############################################################################
+# Metadata
+##############################################################################
+
 CHAMBERMASTER_CAPABILITIES = AdapterCapabilities(
     name="ChamberMaster",
     support_level="fully_supported",
@@ -67,8 +71,11 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         "terms",
     }
 
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
 
         self.stats = {
             "categories": 0,
@@ -77,6 +84,9 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             "profiles_failed": 0,
         }
 
+    ##############################################################################
+    # Category Discovery
+    ##############################################################################
     def _extract_category_name(self, html: str, category_url: str = "") -> str:
         soup = BeautifulSoup(html or "", "html.parser")
 
@@ -101,6 +111,10 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
     def _debug(self, *args):
         if self.debug:
             print(*args)
+
+    ##############################################################################
+    # Helper Methods
+    ##############################################################################
 
     def _clean_text(self, value: str) -> str:
         return re.sub(r"\s+", " ", value or "").strip()
@@ -156,6 +170,8 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return result
 
+
+
     def _extract_member_links(self, html: str) -> list[str]:
         """
         Extract ChamberMaster member/profile URLs from a category/search page.
@@ -182,26 +198,75 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
     def _extract_next_page(self, html: str) -> str | None:
         """
-        Return the URL of the next category page, or None.
+        Extract the next pagination URL from a ChamberMaster category page.
+
+        Query parameters are preserved because ChamberMaster may use them
+        to identify the next results page.
         """
         soup = BeautifulSoup(html or "", "html.parser")
 
-        next_link = soup.find(
-            "a",
-            string=lambda s: s and s.strip().lower() == "next",
+        # Prefer explicit pagination metadata.
+        rel_next = soup.select_one("a[rel='next'][href]")
+
+        if rel_next:
+            href = (rel_next.get("href") or "").strip()
+
+            if href:
+                return urljoin(self.source_url, href)
+
+        # Common ChamberMaster and Bootstrap pagination structures.
+        pagination_selectors = (
+            "li.next a[href]",
+            ".pagination-next a[href]",
+            ".pager-next a[href]",
+            "a.next[href]",
         )
 
-        if next_link and next_link.get("href"):
-            return urljoin(self.source_url, next_link["href"])
+        for selector in pagination_selectors:
+            link = soup.select_one(selector)
 
-        for a in soup.select("a[href]"):
-            text = self._clean_text(a.get_text(" ", strip=True)).lower()
-            aria = (a.get("aria-label") or "").strip().lower()
-            title = (a.get("title") or "").strip().lower()
-            klass = " ".join(a.get("class") or []).lower()
+            if not link:
+                continue
 
-            if "next" in {text, aria, title} or "next" in klass:
-                return urljoin(self.source_url, a["href"])
+            href = (link.get("href") or "").strip()
+
+            if href:
+                return urljoin(self.source_url, href)
+
+        # Fallback for links identified by visible text or accessibility metadata.
+        for link in soup.select("a[href]"):
+            href = (link.get("href") or "").strip()
+
+            if not href:
+                continue
+
+            text = self._clean_text(
+                link.get_text(" ", strip=True)
+            ).lower()
+
+            aria_label = self._clean_text(
+                link.get("aria-label") or ""
+            ).lower()
+
+            title = self._clean_text(
+                link.get("title") or ""
+            ).lower()
+
+            classes = {
+                str(class_name).strip().lower()
+                for class_name in (link.get("class") or [])
+                if class_name
+            }
+
+            is_next = (
+                text in {"next", "next page", "›", "»"}
+                or aria_label in {"next", "next page"}
+                or title in {"next", "next page"}
+                or "next" in classes
+            )
+
+            if is_next:
+                return urljoin(self.source_url, href)
 
         return None
 
@@ -514,6 +579,10 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return record.to_dict()
 
+    ##############################################################################
+    # Crawl Pipeline
+    ##############################################################################
+
     async def crawl(self, page, max_records: int = 5) -> list[dict[str, Any]]:
         """
         ChamberMaster crawl pipeline:
@@ -568,6 +637,10 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
                 print(f"{key:20}: {value}")
 
         return records
+
+    ##############################################################################
+    # Legacy Compatibility
+    ##############################################################################
 
     def extract_listings(self, html: str) -> List[Dict[str, Any]]:
         """
