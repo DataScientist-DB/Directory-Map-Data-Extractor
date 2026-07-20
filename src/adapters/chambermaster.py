@@ -239,6 +239,50 @@ class ChamberMasterParser:
 
         return profile
 
+class ChamberMasterNormalizer:
+    """Converts RawMemberProfile into BusinessRecord."""
+
+    def to_business_record(
+        self,
+        profile: RawMemberProfile,
+        *,
+        source_url: str,
+        architecture: str,
+    ) -> BusinessRecord:
+
+        return BusinessRecord(
+            entity_name=profile.name,
+
+            phone=profile.phone,
+            fax=profile.fax,
+            email=profile.email,
+            website=profile.website,
+
+            facebook=profile.facebook,
+            linkedin=profile.linkedin,
+            instagram=profile.instagram,
+            youtube=profile.youtube,
+            twitter=profile.twitter,
+
+            description=profile.description,
+
+            hours=profile.hours,
+            driving_directions=profile.driving_directions,
+
+            address=profile.address,
+            city=profile.city,
+            state=profile.state,
+            postal_code=profile.postal_code,
+
+            profile_url=profile.profile_url,
+            source_url=source_url,
+
+            architecture=architecture,
+            crawl_mode="adapter_chambermaster_profile_extraction",
+
+            category_names=profile.category_names,
+        )
+
 class ChamberMasterAdapter(BaseDirectoryAdapter):
     ##############################################################################
     # Metadata
@@ -695,144 +739,32 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             debug_dir = Path("debug")
             debug_dir.mkdir(exist_ok=True)
 
-            with open(debug_dir / "member_debug.html", "w", encoding="utf-8") as f:
-                f.write(html)
+            with open(
+                debug_dir / "member_debug.html",
+                "w",
+                encoding="utf-8",
+            ) as file:
+                file.write(html)
 
-        name = profile.name
-        phone = profile.phone
-        fax = profile.fax
-        website = profile.website
-
-        # ChamberMaster may hide member emails behind a JavaScript contact form.
-        # If no mailto link exists, the parser intentionally leaves email empty.
-        email = profile.email
-
-        facebook = profile.facebook
-        linkedin = profile.linkedin
-        instagram = profile.instagram
-        youtube = profile.youtube
-        twitter = profile.twitter
-
-        address = profile.address
-        city = profile.city
-        state = profile.state
-        postal_code = profile.postal_code
-
-        hours = profile.hours
-        driving_directions = profile.driving_directions
-        description = profile.description
-
-        if self.debug:
             print(
                 "DEBUG description:",
-                description[:120],
+                profile.description[:120],
             )
 
-        for a in soup.select(".gz-card-social a[href]"):
-            href = (a.get("href") or "").strip()
-
-            href_lower = href.lower()
-
-            if "facebook.com" in href_lower:
-                facebook = href
-
-            elif "linkedin.com" in href_lower:
-                linkedin = href
-
-            elif "instagram.com" in href_lower:
-                instagram = href
-
-            elif "youtube.com" in href_lower:
-                youtube = href
-
-            elif "twitter.com" in href_lower or "x.com" in href_lower:
-                twitter = href
-
-        address = profile.address
-        city = profile.city
-        state = profile.state
-        postal_code = profile.postal_code
-
-        address_el = soup.select_one(".gz-card-address")
-        if address_el:
-            street_el = address_el.select_one(".gz-street-address")
-            city_el = address_el.select_one(".gz-address-city")
-            state_el = address_el.select_one("[itemprop='addressRegion']")
-            postal_el = address_el.select_one("[itemprop='postalCode']")
-
-            if street_el:
-                address = self._clean_text(street_el.get_text(" ", strip=True))
-            if city_el:
-                city = self._clean_text(city_el.get_text(" ", strip=True))
-            if state_el:
-                state = self._clean_text(state_el.get_text(" ", strip=True))
-            if postal_el:
-                postal_code = self._clean_text(postal_el.get_text(" ", strip=True))
-
-        hours = ""
-        hours_el = soup.select_one(".gz-details-hours p:not(.gz-details-subtitle)")
-        if hours_el:
-            hours = self._clean_text(hours_el.get_text(" ", strip=True))
-
-        driving_directions = ""
-        driving_el = soup.select_one(".gz-details-driving p:not(.gz-details-subtitle)")
-        if driving_el:
-            driving_directions = self._clean_text(
-                driving_el.get_text(" ", strip=True)
-            )
-        description = profile.description
-
-        description_selectors = [
-            ".gz-details-description",
-            ".gz-description",
-            ".gz-member-description",
-            ".gz-content",
-            ".gz-card-description",
-            "[itemprop='description']",
-        ]
-
-        for selector in description_selectors:
-            el = soup.select_one(selector)
-
-            if el:
-                description = self._clean_text(
-                    el.get_text(" ", strip=True)
-                )
-
-                if len(description) > 20:
-                    break
-
-        description = re.sub(
-            r"^About\s+Us(?:\s+Tab)?\s*",
-            "",
-            description,
-            flags=re.IGNORECASE,
-        )
-
-        description = re.sub(
-            r"\s+",
-            " ",
-            description,
-        ).strip()
-
-        if self.debug:
-            print(
-                "DEBUG description:",
-                description[:120]
-            )
         record = self.normalizer.to_business_record(
             profile,
             source_url=self.source_url,
             architecture=self.architecture,
         )
 
+        confidence = self._calculate_confidence(record)
+
         if hasattr(record, "confidence_score"):
-            record.confidence_score = self._calculate_confidence(record)
+            record.confidence_score = confidence
         elif hasattr(record, "confidence"):
-            record.confidence = self._calculate_confidence(record)
+            record.confidence = confidence
 
         return record.to_dict()
-
     ##############################################################################
     # Crawl Pipeline
     ##############################################################################
