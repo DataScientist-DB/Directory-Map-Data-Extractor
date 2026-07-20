@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.adapters.models import AdapterCapabilities, AdapterInfo
+from src.adapters.capabilities import AdapterCapabilities
+from src.adapters.models import AdapterInfo
 from src.models.access_report import AccessReport
 from src.models.discovery_request import DiscoveryRequest
 from src.models.proxy_config import ProxyConfig

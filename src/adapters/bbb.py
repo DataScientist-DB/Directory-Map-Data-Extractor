@@ -7,12 +7,13 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from src.adapters.base import BaseDirectoryAdapter
-from src.adapters.models import AdapterCapabilities, AdapterInfo
+from src.adapters.capabilities import AdapterCapabilities
+from src.adapters.models import AdapterInfo
 from src.models.business_record import BusinessRecord
 from src.access.access_analyzer import AccessAnalyzer
 # src/adapters/bbb.py
 
-from src.adapters.capabilities import AdapterCapabilities
+
 
 BBB_CAPABILITIES = AdapterCapabilities(
     name="BBB",

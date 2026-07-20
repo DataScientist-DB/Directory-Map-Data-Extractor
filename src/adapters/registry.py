@@ -5,7 +5,8 @@ from typing import Any
 from src.adapters.base import BaseDirectoryAdapter
 from src.adapters.bbb import BBBAdapter
 from src.adapters.chambermaster import ChamberMasterAdapter
-from src.adapters.models import AdapterCapabilities, AdapterInfo
+from src.adapters.capabilities import AdapterCapabilities
+from src.adapters.models import AdapterInfo
 from src.adapters.yelp import YelpAdapter
 
 

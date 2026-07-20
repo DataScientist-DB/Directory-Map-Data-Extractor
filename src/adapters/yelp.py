@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import Any
 
 from src.adapters.base import BaseDirectoryAdapter
-from src.adapters.models import AdapterCapabilities, AdapterInfo
+from src.adapters.capabilities import AdapterCapabilities
+from src.adapters.models import AdapterInfo
 
 
 class YelpAdapter(BaseDirectoryAdapter):

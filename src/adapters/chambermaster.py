@@ -8,26 +8,17 @@ from urllib.parse import urljoin, urlsplit, urlunsplit
 from bs4 import BeautifulSoup
 
 from src.adapters.base import BaseDirectoryAdapter
-from src.adapters.models import AdapterCapabilities, AdapterInfo
+from src.adapters.capabilities import AdapterCapabilities
+from src.adapters.models import AdapterInfo
 from src.models.business_record import BusinessRecord
 # src/adapters/chambermaster.py
 
-from src.adapters.capabilities import AdapterCapabilities
+
 
 ##############################################################################
 # Metadata
 ##############################################################################
 
-CHAMBERMASTER_CAPABILITIES = AdapterCapabilities(
-    name="ChamberMaster",
-    support_level="fully_supported",
-    requires_javascript=True,
-    requires_proxy=False,
-    requires_residential_proxy=False,
-    requires_external_proxy_access=False,
-    anti_bot_risk="low",
-    notes="Works as a standard supported directory adapter."
-)
 
 class ChamberMasterAdapter(BaseDirectoryAdapter):
     architecture = "chambermaster"
@@ -42,10 +33,21 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
     )
 
     CAPABILITIES = AdapterCapabilities(
+        name="ChamberMaster",
+        support_level="fully_supported",
+        anti_bot_risk="low",
+        notes="Works as a standard supported directory adapter.",
+
+        requires_javascript=True,
+        requires_proxy=False,
+        requires_residential_proxy=False,
+        requires_external_proxy_access=False,
+
         search=True,
         category_filter=True,
         location_filter=False,
         pagination=True,
+
         website_links=True,
         social_links=True,
         ratings=False,
