@@ -34,6 +34,16 @@ def test_parse_basic_contact_fields() -> None:
           Full-service civil engineering and transportation consulting firm.
         </div>
 
+        <div class="gz-details-hours">
+          <p class="gz-details-subtitle">Business Hours</p>
+          <p>Monday-Friday, 8:00 AM-5:00 PM</p>
+        </div>
+
+        <div class="gz-details-driving">
+          <p class="gz-details-subtitle">Driving Directions</p>
+          <p>Located near Central Avenue and Main Street.</p>
+        </div>
+
         <a href="https://www.facebook.com/exampleengineering">
           Facebook
         </a>
@@ -92,6 +102,12 @@ def test_parse_basic_contact_fields() -> None:
     assert profile.category_names == "Engineering"
     assert profile.profile_url.endswith("/example")
 
+    assert profile.hours == "Monday-Friday, 8:00 AM-5:00 PM"
+
+    assert profile.driving_directions == (
+        "Located near Central Avenue and Main Street."
+    )
+
 
 def test_parse_empty_member_profile() -> None:
     parser = ChamberMasterParser()
@@ -112,3 +128,5 @@ def test_parse_empty_member_profile() -> None:
     assert profile.instagram == ""
     assert profile.youtube == ""
     assert profile.twitter == ""
+    assert profile.hours == ""
+    assert profile.driving_directions == ""

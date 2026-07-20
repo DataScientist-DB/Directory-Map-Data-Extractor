@@ -102,56 +102,125 @@ class ChamberMasterParser:
                 .strip()
             )
 
-        address = soup.select_one("[itemprop='address']")
-        if address:
-            street = address.select_one(
-                "[itemprop='streetAddress']"
+        # Address
+        address_el = soup.select_one(
+            ".gz-card-address, [itemprop='address']"
+        )
+
+        if address_el:
+            street_el = address_el.select_one(
+                ".gz-street-address, [itemprop='streetAddress']"
             )
-            city = address.select_one(
-                "[itemprop='addressLocality']"
+            city_el = address_el.select_one(
+                ".gz-address-city, [itemprop='addressLocality']"
             )
-            state = address.select_one(
+            state_el = address_el.select_one(
                 "[itemprop='addressRegion']"
             )
-            postal_code = address.select_one(
+            postal_el = address_el.select_one(
                 "[itemprop='postalCode']"
             )
 
-            if street:
+            if street_el:
                 profile.address = self.clean_text(
-                    street.get_text(" ", strip=True)
+                    street_el.get_text(" ", strip=True)
                 )
 
-            if city:
+            if city_el:
                 profile.city = self.clean_text(
-                    city.get_text(" ", strip=True)
+                    city_el.get_text(" ", strip=True)
                 )
 
-            if state:
+            if state_el:
                 profile.state = self.clean_text(
-                    state.get_text(" ", strip=True)
+                    state_el.get_text(" ", strip=True)
                 )
 
-            if postal_code:
+            if postal_el:
                 profile.postal_code = self.clean_text(
-                    postal_code.get_text(" ", strip=True)
+                    postal_el.get_text(" ", strip=True)
                 )
 
-        description = soup.select_one(".gz-card-description")
-        if description:
-            profile.description = self.clean_text(
-                description.get_text(" ", strip=True)
+        # Business hours
+        hours_el = soup.select_one(
+            ".gz-details-hours p:not(.gz-details-subtitle)"
+        )
+
+        if hours_el:
+            profile.hours = self.clean_text(
+                hours_el.get_text(" ", strip=True)
             )
 
+        # Driving directions
+        driving_el = soup.select_one(
+            ".gz-details-driving p:not(.gz-details-subtitle)"
+        )
+
+        if driving_el:
+            profile.driving_directions = self.clean_text(
+                driving_el.get_text(" ", strip=True)
+            )
+
+        # Description
+        description_selectors = [
+            ".gz-details-description",
+            ".gz-description",
+            ".gz-member-description",
+            ".gz-content",
+            ".gz-card-description",
+            "[itemprop='description']",
+        ]
+
+        for selector in description_selectors:
+            element = soup.select_one(selector)
+
+            if not element:
+                continue
+
+            description = self.clean_text(
+                element.get_text(" ", strip=True)
+            )
+
+            if len(description) > 20:
+                profile.description = description
+                break
+
+        profile.description = re.sub(
+            r"^About\s+Us(?:\s+Tab)?\s*",
+            "",
+            profile.description,
+            flags=re.IGNORECASE,
+        )
+
+        profile.description = re.sub(
+            r"\s+",
+            " ",
+            profile.description,
+        ).strip()
+
+        # Social media
         social_selectors = {
-            "facebook": "a[href*='facebook.com']",
-            "linkedin": "a[href*='linkedin.com']",
-            "instagram": "a[href*='instagram.com']",
+            "facebook": (
+                ".gz-card-social a[href*='facebook.com'], "
+                "a[href*='facebook.com']"
+            ),
+            "linkedin": (
+                ".gz-card-social a[href*='linkedin.com'], "
+                "a[href*='linkedin.com']"
+            ),
+            "instagram": (
+                ".gz-card-social a[href*='instagram.com'], "
+                "a[href*='instagram.com']"
+            ),
             "youtube": (
+                ".gz-card-social a[href*='youtube.com'], "
+                ".gz-card-social a[href*='youtu.be'], "
                 "a[href*='youtube.com'], "
                 "a[href*='youtu.be']"
             ),
             "twitter": (
+                ".gz-card-social a[href*='twitter.com'], "
+                ".gz-card-social a[href*='x.com'], "
                 "a[href*='twitter.com'], "
                 "a[href*='x.com']"
             ),
@@ -159,10 +228,12 @@ class ChamberMasterParser:
 
         for field_name, selector in social_selectors.items():
             element = soup.select_one(selector)
+
             if not element:
                 continue
 
             value = (element.get("href") or "").strip()
+
             if value:
                 setattr(profile, field_name, value)
 
@@ -583,12 +654,10 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
             with open(debug_dir / "member_debug.html", "w", encoding="utf-8") as f:
                 f.write(html)
-        soup = BeautifulSoup(html or "", "html.parser")
 
         name = profile.name
         phone = profile.phone
         fax = profile.fax
-
         website = profile.website
 
         # ChamberMaster may hide member emails behind a JavaScript contact form.
@@ -600,6 +669,21 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         instagram = profile.instagram
         youtube = profile.youtube
         twitter = profile.twitter
+
+        address = profile.address
+        city = profile.city
+        state = profile.state
+        postal_code = profile.postal_code
+
+        hours = profile.hours
+        driving_directions = profile.driving_directions
+        description = profile.description
+
+        if self.debug:
+            print(
+                "DEBUG description:",
+                description[:120],
+            )
 
         for a in soup.select(".gz-card-social a[href]"):
             href = (a.get("href") or "").strip()
