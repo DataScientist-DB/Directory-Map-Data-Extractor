@@ -86,6 +86,19 @@ class ChamberMasterParser:
                 fax.get_text(" ", strip=True)
             )
 
+        website = soup.select_one(".gz-card-website a[href]")
+        if website:
+            profile.website = (website.get("href") or "").strip()
+
+        email = soup.select_one(".gz-card-email a[href^='mailto:']")
+        if email:
+            profile.email = (
+                email.get("href", "")
+                .replace("mailto:", "", 1)
+                .split("?", 1)[0]
+                .strip()
+            )
+
         return profile
 
 class ChamberMasterAdapter(BaseDirectoryAdapter):
@@ -509,17 +522,11 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         phone = profile.phone
         fax = profile.fax
 
-        website = ""
-        website_el = soup.select_one(".gz-card-website a[href]")
-        if website_el:
-            website = (website_el.get("href") or "").strip()
+        website = profile.website
 
         # ChamberMaster may hide member emails behind a JavaScript contact form.
-        # If no mailto link is present, leave email empty instead of using chamber staff emails.
-        email = ""
-        email_el = soup.select_one(".gz-card-email a[href^='mailto:']")
-        if email_el:
-            email = email_el.get("href", "").replace("mailto:", "").strip()
+        # If no mailto link exists, the parser intentionally leaves email empty.
+        email = profile.email
 
         facebook = ""
         linkedin = ""
