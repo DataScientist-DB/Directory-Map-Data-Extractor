@@ -295,6 +295,48 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         "terms",
     }
 
+    class ChamberMasterNormalizer:
+        """Converts RawMemberProfile into BusinessRecord."""
+
+        def to_business_record(
+            self,
+            profile: RawMemberProfile,
+            *,
+            source_url: str,
+            architecture: str,
+        ) -> BusinessRecord:
+            return BusinessRecord(
+                entity_name=profile.name,
+
+                phone=profile.phone,
+                fax=profile.fax,
+                email=profile.email,
+                website=profile.website,
+
+                facebook=profile.facebook,
+                linkedin=profile.linkedin,
+                instagram=profile.instagram,
+                youtube=profile.youtube,
+                twitter=profile.twitter,
+
+                description=profile.description,
+
+                hours=profile.hours,
+                driving_directions=profile.driving_directions,
+
+                address=profile.address,
+                city=profile.city,
+                state=profile.state,
+                postal_code=profile.postal_code,
+
+                profile_url=profile.profile_url,
+                source_url=source_url,
+
+                architecture=architecture,
+                crawl_mode="adapter_chambermaster_profile_extraction",
+
+                category_names=profile.category_names,
+            )
     ###########################################################################
     # Initialization
     ###########################################################################
@@ -302,6 +344,7 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         super().__init__(*args, **kwargs)
 
         self.parser = ChamberMasterParser()
+        self.normalizer = ChamberMasterNormalizer()
 
         self.stats = {
             "categories": 0,
@@ -777,35 +820,10 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
                 "DEBUG description:",
                 description[:120]
             )
-        record = BusinessRecord(
-            entity_name=name,
-            phone=phone,
-            fax=fax,
-            email=email,
-            website=website,
-
-            facebook=facebook,
-            linkedin=linkedin,
-            instagram=instagram,
-            youtube=youtube,
-            twitter=twitter,
-
-            description=description,
-
-            hours=hours,
-            driving_directions=driving_directions,
-
-            address=address,
-            city=city,
-            state=state,
-            postal_code=postal_code,
-
-            profile_url=member_url,
+        record = self.normalizer.to_business_record(
+            profile,
             source_url=self.source_url,
             architecture=self.architecture,
-            crawl_mode="adapter_chambermaster_profile_extraction",
-
-            category_names=category_names,
         )
 
         if hasattr(record, "confidence_score"):
