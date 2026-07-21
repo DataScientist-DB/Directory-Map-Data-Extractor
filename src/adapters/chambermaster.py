@@ -655,6 +655,10 @@ class ChamberMasterParser:
         ):
             social_roots.extend(content_root.select(selector))
 
+        # Fallback for pages that expose social links directly
+        if not social_roots:
+            social_roots.append(content_root)
+
         for social_root in social_roots:
             anchors = (
                 [social_root]
@@ -664,9 +668,17 @@ class ChamberMasterParser:
 
             for anchor in anchors:
                 href = absolute_href(anchor)
-                href_lower = href.lower()
 
                 if not href:
+                    continue
+
+                href_lower = href.lower()
+
+                anchor_classes = " ".join(anchor.get("class", [])).lower()
+                anchor_text = clean(anchor.get_text(" ", strip=True)).lower()
+
+                # Ignore social sharing widgets
+                if "share" in anchor_classes or "share" in anchor_text:
                     continue
 
                 for field_name, hosts in social_hosts.items():
