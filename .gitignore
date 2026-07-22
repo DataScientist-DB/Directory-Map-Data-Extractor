@@ -28,3 +28,7 @@ output*.xlsx
 # Apify local storage
 storage/
 apify_storage/
+
+# macOS metadata
+.DS_Store
+**/.DS_Store
