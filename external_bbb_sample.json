@@ -1,0 +1,95 @@
+[
+  {
+    "type": "bbb_business",
+    "url": "https://www.bbb.org/us/ga/atlanta/profile/plumber/zippy-plumber-llc-0443-27432605",
+    "bbbId": "27432605",
+    "id": "27432605",
+    "businessId": "27432605",
+    "rating": "A+",
+    "accreditationStatus": "Accredited",
+    "bbbMember": true,
+    "dateAccredited": "8/7/2024",
+    "categories": [
+      "Plumber"
+    ],
+    "emails": [
+      "zippyplumber@gmail.com"
+    ],
+    "phone": "(404) 989-2110",
+    "yearsInBusiness": 14,
+    "name": "Zippy Plumber, LLC",
+    "logo": "https://m.bbb.org/prod/ProfileImages/2023/d1c58865-a683-4647-b425-7a645cf6bc03.png",
+    "address": {
+      "city": "Atlanta",
+      "state": "GA",
+      "zipCode": "30345-3431",
+      "country": "USA"
+    },
+    "latitude": 33.85,
+    "longitude": -84.29,
+    "businessIncorporatedDate": "12/12/2011",
+    "website": "https://www.zippyplumber.com",
+    "scrapedAt": "2026-07-11T10:16:20Z"
+  },
+  {
+    "type": "bbb_business",
+    "url": "https://www.bbb.org/us/oh/hopedale/profile/plumber/mister-plumber-0282-25000581",
+    "bbbId": "25000581",
+    "id": "25000581",
+    "businessId": "25000581",
+    "rating": "A+",
+    "accreditationStatus": "Accredited",
+    "bbbMember": true,
+    "dateAccredited": "7/9/2009",
+    "categories": [
+      "Plumber"
+    ],
+    "phone": "(740) 937-2149",
+    "yearsInBusiness": 23,
+    "name": "Mister Plumber",
+    "logo": "https://m.bbb.org/prod/ProfileImages/2025/5f416661-ef71-4b16-8880-ece2b04331c6.jpg",
+    "address": {
+      "street": "217 Carson St",
+      "city": "Hopedale",
+      "state": "OH",
+      "zipCode": "43976",
+      "country": "USA"
+    },
+    "latitude": 40.325119,
+    "longitude": -80.902275,
+    "businessIncorporatedDate": "09/11/2002",
+    "website": "https://www.misterplumberohio.com",
+    "scrapedAt": "2026-07-11T10:16:34Z"
+  },
+  {
+    "type": "bbb_business",
+    "url": "https://www.bbb.org/us/tx/lubbock/profile/plumber/mr-plumber-0875-65619",
+    "bbbId": "65619",
+    "id": "65619",
+    "businessId": "65619",
+    "rating": "A+",
+    "accreditationStatus": "Accredited",
+    "bbbMember": true,
+    "dateAccredited": "12/16/2020",
+    "categories": [
+      "Plumber"
+    ],
+    "emails": [
+      "mrplumber226@gmail.com"
+    ],
+    "phone": "(806) 543-4921",
+    "yearsInBusiness": 6,
+    "name": "M.R. Plumber",
+    "address": {
+      "street": "4413 52nd St",
+      "city": "Lubbock",
+      "state": "TX",
+      "zipCode": "79414-4002",
+      "country": "USA"
+    },
+    "latitude": 33.546719,
+    "longitude": -101.906601,
+    "businessIncorporatedDate": "05/12/2020",
+    "scrapedAt": "2026-07-11T10:17:16Z"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "minimum_records": 30,
+  "minimum_emails": 16,
+  "minimum_phones": 29,
+  "minimum_websites": 25,
+  "minimum_facebook": 14,
+  "minimum_linkedin": 7,
+  "minimum_instagram": 12,
+  "minimum_youtube": 4,
+  "minimum_twitter": 6
+}

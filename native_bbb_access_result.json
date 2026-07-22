@@ -1,0 +1,13 @@
+{
+  "status": "runtime_error",
+  "source_url": "https://www.bbb.org/search?find_text=traffic+engineers&find_loc=Irvine%2C+CA&sort=Relevance",
+  "http_status": null,
+  "blocked_reason": "Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://www.bbb.org/search?find_text=traffic+engineers&find_loc=Irvine%2C+CA&sort=Relevance\nCall log:\n  - navigating to \"https://www.bbb.org/search?find_text=traffic+engineers&find_loc=Irvine%2C+CA&sort=Relevance\", waiting until \"domcontentloaded\"\n",
+  "pages_visited": 1,
+  "profiles_found": 0,
+  "profile_urls": [],
+  "records": [],
+  "provider": "native_bbb_browser",
+  "architecture": "bbb",
+  "access_strategy": "playwright"
+}

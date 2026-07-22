@@ -1,0 +1,1533 @@
+from __future__ import annotations
+
+import re
+import ipaddress
+import traceback
+
+from pathlib import Path
+from typing import Any, Dict, List
+from urllib.parse import urljoin, urlsplit, urlunsplit
+
+from bs4 import BeautifulSoup
+
+from src.adapters.base import BaseDirectoryAdapter
+from src.adapters.capabilities import AdapterCapabilities
+from src.adapters.models import AdapterInfo
+from src.models.business_record import BusinessRecord
+# src/adapters/chambermaster.py
+from dataclasses import dataclass
+from src.intelligence.intelligence_score import IntelligenceScore
+
+@dataclass
+class RawMemberProfile:
+    name: str = ""
+
+    phone: str = ""
+    fax: str = ""
+
+    email: str = ""
+    website: str = ""
+
+    facebook: str = ""
+    linkedin: str = ""
+    instagram: str = ""
+    youtube: str = ""
+    twitter: str = ""
+
+    description: str = ""
+    address: str = ""
+    city: str = ""
+    state: str = ""
+    postal_code: str = ""
+
+
+    hours: str = ""
+    driving_directions: str = ""
+
+    category_names: str = ""
+    profile_url: str = ""
+
+
+class ChamberMasterParser:
+    """Parse ChamberMaster HTML without performing network access."""
+
+    @staticmethod
+    def clean_text(value: str) -> str:
+        return re.sub(r"\s+", " ", value or "").strip()
+
+    @staticmethod
+    def _hostname(url: str) -> str:
+        """Return a normalized hostname without a leading www."""
+        try:
+            hostname = (urlsplit(url).hostname or "").lower().strip(".")
+        except ValueError:
+            return ""
+
+        if hostname.startswith("www."):
+            hostname = hostname[4:]
+
+        return hostname
+
+    @staticmethod
+    def _site_domain(hostname: str) -> str:
+        """
+        Approximate the registrable domain without hard-coding a directory.
+        """
+        hostname = (hostname or "").lower().strip(".")
+
+        if not hostname:
+            return ""
+
+        try:
+            ipaddress.ip_address(hostname)
+            return hostname
+        except ValueError:
+            pass
+
+        labels = hostname.split(".")
+
+        if len(labels) <= 2:
+            return hostname
+
+        common_second_level_suffixes = {
+            "co.uk",
+            "org.uk",
+            "ac.uk",
+            "gov.uk",
+            "com.au",
+            "net.au",
+            "org.au",
+            "co.nz",
+            "com.br",
+            "com.mx",
+            "co.jp",
+            "co.in",
+            "com.sg",
+            "com.tr",
+        }
+
+        last_two = ".".join(labels[-2:])
+
+        if (
+            last_two in common_second_level_suffixes
+            and len(labels) >= 3
+        ):
+            return ".".join(labels[-3:])
+
+        return last_two
+
+    @classmethod
+    def _same_site(
+        cls,
+        first_url: str,
+        second_url: str,
+    ) -> bool:
+        first_host = cls._hostname(first_url)
+        second_host = cls._hostname(second_url)
+
+        if not first_host or not second_host:
+            return False
+
+        return (
+            cls._site_domain(first_host)
+            == cls._site_domain(second_host)
+        )
+
+    @staticmethod
+    def _looks_like_social_or_utility_host(
+        hostname: str,
+    ) -> bool:
+        hostname = (hostname or "").lower()
+
+        blocked_domains = {
+            "facebook.com",
+            "linkedin.com",
+            "instagram.com",
+            "twitter.com",
+            "x.com",
+            "youtube.com",
+            "youtu.be",
+            "pinterest.com",
+            "tiktok.com",
+            "google.com",
+            "googleusercontent.com",
+            "goo.gl",
+            "bing.com",
+            "apple.com",
+            "mapquest.com",
+            "growthzone.com",
+            "chambermaster.com",
+        }
+
+        return any(
+            hostname == domain
+            or hostname.endswith("." + domain)
+            for domain in blocked_domains
+        )
+
+    @staticmethod
+    def _looks_like_utility_url(url: str) -> bool:
+        try:
+            parts = urlsplit(url)
+        except ValueError:
+            return True
+
+        path = parts.path.lower()
+        query = parts.query.lower()
+
+        blocked_path_parts = (
+            "/contact/",
+            "/contact",
+            "/email/",
+            "/send-email",
+            "/directions",
+            "/map",
+            "/maps/",
+            "/share/",
+            "/sharer/",
+            "/intent/",
+            "/pin/create",
+            "/login",
+            "/join",
+            "/register",
+            "/calendar",
+            "/events",
+            "/jobs",
+            "/hotdeals",
+        )
+
+        if any(part in path for part in blocked_path_parts):
+            return True
+
+        blocked_query_parts = (
+            "share=",
+            "sharer=",
+            "listingtypeid=",
+        )
+
+        return any(
+            part in query
+            for part in blocked_query_parts
+        )
+
+    @classmethod
+    def _score_website_candidate(
+        cls,
+        *,
+        href: str,
+        text: str,
+        profile_url: str,
+        anchor,
+    ) -> int:
+        hostname = cls._hostname(href)
+
+        if not hostname:
+            return -1000
+
+        if cls._same_site(href, profile_url):
+            return -1000
+
+        if cls._looks_like_social_or_utility_host(hostname):
+            return -1000
+
+        if cls._looks_like_utility_url(href):
+            return -1000
+
+        text_lower = cls.clean_text(text).lower()
+        score = 10
+
+        if text_lower in {
+            "website",
+            "visit website",
+            "business website",
+            "company website",
+            "homepage",
+            "web site",
+        }:
+            score += 120
+
+        if "website" in text_lower:
+            score += 80
+
+        if text_lower.startswith(
+            ("http://", "https://", "www.")
+        ):
+            score += 100
+
+        classes = " ".join(
+            anchor.get("class") or []
+        ).lower()
+
+        title = cls.clean_text(
+            anchor.get("title") or ""
+        ).lower()
+
+        aria_label = cls.clean_text(
+            anchor.get("aria-label") or ""
+        ).lower()
+
+        itemprop = cls.clean_text(
+            anchor.get("itemprop") or ""
+        ).lower()
+
+        combined_metadata = " ".join(
+            (
+                classes,
+                title,
+                aria_label,
+                itemprop,
+            )
+        )
+
+        if "website" in combined_metadata:
+            score += 80
+
+        if itemprop == "url":
+            score += 80
+
+        if any(
+            value in text_lower
+            for value in (
+                "email",
+                "contact",
+                "directions",
+                "map",
+                "share",
+                "login",
+                "join",
+            )
+        ):
+            score -= 100
+
+        return score
+
+    def parse_member_profile(
+        self,
+        html: str,
+        *,
+        category_names: str = "",
+        profile_url: str = "",
+    ) -> RawMemberProfile:
+        """
+        Parse ChamberMaster and GrowthZone member detail pages.
+
+        Supports older gz-card layouts and newer /list/Details/ layouts.
+        Avoids collecting chamber-wide navigation and sharing social links.
+        """
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        profile = RawMemberProfile(
+            category_names=category_names,
+            profile_url=profile_url,
+        )
+
+        def clean(value: str) -> str:
+            return self.clean_text(value)
+
+        def absolute_href(element) -> str:
+            if not element:
+                return ""
+
+            href = (element.get("href") or "").strip()
+
+            if not href:
+                return ""
+
+            return urljoin(profile_url, href)
+
+        ###########################################################################
+        # Company name
+        ###########################################################################
+
+        name_selectors = (
+            ".gz-pagetitle",
+            "main h1",
+            ".gz-details-header h1",
+            ".gz-card-title",
+            "h1",
+        )
+
+        for selector in name_selectors:
+            element = soup.select_one(selector)
+
+            if not element:
+                continue
+
+            value = clean(element.get_text(" ", strip=True))
+
+            if value:
+                profile.name = value
+                break
+
+        ###########################################################################
+        # Restrict extraction to the member content area where possible
+        ###########################################################################
+
+        content_root = (
+            soup.select_one("main")
+            or soup.select_one(".gz-details")
+            or soup.select_one(".gz-details-container")
+            or soup.select_one(".gz-page-content")
+            or soup
+        )
+
+        ###########################################################################
+        # Company website
+        ###########################################################################
+
+        website_candidates: list[tuple[int, str, str]] = []
+        seen_websites: set[str] = set()
+
+        search_roots = [content_root]
+
+        if content_root is not soup:
+            search_roots.append(soup)
+
+        for root_index, search_root in enumerate(search_roots):
+            for anchor in search_root.select("a[href]"):
+                raw_href = (anchor.get("href") or "").strip()
+
+                if not raw_href:
+                    continue
+
+                if raw_href.lower().startswith(
+                    (
+                        "mailto:",
+                        "tel:",
+                        "javascript:",
+                        "#",
+                    )
+                ):
+                    continue
+
+                href = urljoin(profile_url, raw_href)
+
+                try:
+                    parsed = urlsplit(href)
+                except ValueError:
+                    continue
+
+                if parsed.scheme not in {"http", "https"}:
+                    continue
+
+                href = parsed._replace(fragment="").geturl()
+
+                if href in seen_websites:
+                    continue
+
+                seen_websites.add(href)
+
+                text = ChamberMasterParser.clean_text(
+                    anchor.get_text(" ", strip=True)
+                )
+
+                score = ChamberMasterParser._score_website_candidate(
+                    href=href,
+                    text=text,
+                    profile_url=profile_url,
+                    anchor=anchor,
+                )
+
+                if score <= 0:
+                    continue
+
+                if root_index == 0:
+                    score += 20
+
+                website_candidates.append(
+                    (score, href, text)
+                )
+
+        if website_candidates:
+            website_candidates.sort(
+                key=lambda candidate: (
+                    candidate[0],
+                    -len(candidate[1]),
+                ),
+                reverse=True,
+            )
+
+            _, best_href, _ = website_candidates[0]
+            profile.website = best_href
+
+        ###########################################################################
+        # Email
+        ###########################################################################
+
+        email_link = content_root.select_one("a[href^='mailto:']")
+
+        if email_link:
+            profile.email = (
+                email_link.get("href", "")
+                .replace("mailto:", "", 1)
+                .split("?", 1)[0]
+                .strip()
+            )
+
+        ###########################################################################
+        # Phone and fax
+        ###########################################################################
+
+        phone_selectors = (
+            ".gz-card-phone span[itemprop='telephone']",
+            "[itemprop='telephone']",
+            "a[href^='tel:']",
+        )
+
+        for selector in phone_selectors:
+            element = content_root.select_one(selector)
+
+            if not element:
+                continue
+
+            if element.name == "a":
+                value = (
+                    element.get("href", "")
+                    .replace("tel:", "", 1)
+                    .strip()
+                )
+            else:
+                value = clean(element.get_text(" ", strip=True))
+
+            if value:
+                profile.phone = value
+                break
+
+        fax_selectors = (
+            ".gz-card-fax span[itemprop='faxNumber']",
+            "[itemprop='faxNumber']",
+        )
+
+        for selector in fax_selectors:
+            element = content_root.select_one(selector)
+
+            if element:
+                profile.fax = clean(
+                    element.get_text(" ", strip=True)
+                )
+                break
+
+        ###########################################################################
+        # Address
+        ###########################################################################
+
+        address_element = (
+            content_root.select_one(".gz-card-address")
+            or content_root.select_one("[itemprop='address']")
+            or content_root.select_one(".gz-details-address")
+        )
+
+        if address_element:
+            street_element = address_element.select_one(
+                ".gz-street-address, [itemprop='streetAddress']"
+            )
+            city_element = address_element.select_one(
+                ".gz-address-city, [itemprop='addressLocality']"
+            )
+            state_element = address_element.select_one(
+                "[itemprop='addressRegion']"
+            )
+            postal_element = address_element.select_one(
+                "[itemprop='postalCode']"
+            )
+
+            if street_element:
+                profile.address = clean(
+                    street_element.get_text(" ", strip=True)
+                )
+
+            if city_element:
+                profile.city = clean(
+                    city_element.get_text(" ", strip=True)
+                )
+
+            if state_element:
+                profile.state = clean(
+                    state_element.get_text(" ", strip=True)
+                )
+
+            if postal_element:
+                profile.postal_code = clean(
+                    postal_element.get_text(" ", strip=True)
+                )
+
+        ###########################################################################
+        # Categories
+        ###########################################################################
+
+        if not profile.category_names:
+            category_values: list[str] = []
+
+            category_selectors = (
+                ".gz-details-categories a",
+                ".gz-details-category a",
+                "[itemprop='category']",
+            )
+
+            for selector in category_selectors:
+                for element in content_root.select(selector):
+                    value = clean(
+                        element.get_text(" ", strip=True)
+                    )
+
+                    if value and value not in category_values:
+                        category_values.append(value)
+
+            if category_values:
+                profile.category_names = "; ".join(
+                    category_values
+                )
+
+        ###########################################################################
+        # Description
+        ###########################################################################
+
+        description_selectors = (
+            ".gz-details-description",
+            ".gz-description",
+            ".gz-member-description",
+            ".gz-card-description",
+            "[itemprop='description']",
+        )
+
+        for selector in description_selectors:
+            element = content_root.select_one(selector)
+
+            if not element:
+                continue
+
+            value = clean(element.get_text(" ", strip=True))
+
+            if len(value) > 20:
+                profile.description = value
+                break
+
+        profile.description = re.sub(
+            r"^About\s+Us(?:\s+Tab)?\s*",
+            "",
+            profile.description,
+            flags=re.IGNORECASE,
+        )
+
+        profile.description = clean(profile.description)
+
+        ###########################################################################
+        # Business hours and driving directions
+        ###########################################################################
+
+        hours_element = content_root.select_one(
+            ".gz-details-hours p:not(.gz-details-subtitle)"
+        )
+
+        if hours_element:
+            profile.hours = clean(
+                hours_element.get_text(" ", strip=True)
+            )
+
+        driving_element = content_root.select_one(
+            ".gz-details-driving p:not(.gz-details-subtitle)"
+        )
+
+        if driving_element:
+            profile.driving_directions = clean(
+                driving_element.get_text(" ", strip=True)
+            )
+
+        ###########################################################################
+        # Business social profiles
+        ###########################################################################
+
+        social_hosts = {
+            "facebook": ("facebook.com",),
+            "linkedin": ("linkedin.com",),
+            "instagram": ("instagram.com",),
+            "youtube": ("youtube.com", "youtu.be"),
+            "twitter": ("twitter.com", "x.com"),
+        }
+
+        social_roots = []
+
+        for selector in (
+            ".gz-card-social",
+            ".gz-details-social",
+            ".gz-member-social",
+            "[itemprop='sameAs']",
+        ):
+            social_roots.extend(content_root.select(selector))
+
+        # Fallback for pages that expose social links directly
+        if not social_roots:
+            social_roots.append(content_root)
+
+        for social_root in social_roots:
+            anchors = (
+                [social_root]
+                if social_root.name == "a"
+                else social_root.select("a[href]")
+            )
+
+            for anchor in anchors:
+                href = absolute_href(anchor)
+
+                if not href:
+                    continue
+
+                href_lower = href.lower()
+
+                anchor_classes = " ".join(anchor.get("class", [])).lower()
+                anchor_text = clean(anchor.get_text(" ", strip=True)).lower()
+
+                # Ignore social sharing widgets
+                if "share" in anchor_classes or "share" in anchor_text:
+                    continue
+
+                for field_name, hosts in social_hosts.items():
+                    if getattr(profile, field_name):
+                        continue
+
+                    if any(host in href_lower for host in hosts):
+                        setattr(profile, field_name, href)
+
+        return profile
+
+class ChamberMasterNormalizer:
+    """Converts RawMemberProfile into BusinessRecord."""
+
+    def to_business_record(
+        self,
+        profile: RawMemberProfile,
+        *,
+        source_url: str,
+        architecture: str,
+    ) -> BusinessRecord:
+
+        return BusinessRecord(
+            entity_name=profile.name,
+
+            phone=profile.phone,
+            fax=profile.fax,
+            email=profile.email,
+            website=profile.website,
+
+            facebook=profile.facebook,
+            linkedin=profile.linkedin,
+            instagram=profile.instagram,
+            youtube=profile.youtube,
+            twitter=profile.twitter,
+
+            description=profile.description,
+
+            hours=profile.hours,
+            driving_directions=profile.driving_directions,
+
+            address=profile.address,
+            city=profile.city,
+            state=profile.state,
+            postal_code=profile.postal_code,
+
+            profile_url=profile.profile_url,
+            source_url=source_url,
+
+            architecture=architecture,
+            crawl_mode="adapter_chambermaster_profile_extraction",
+
+            category_names=profile.category_names,
+        )
+
+
+class ChamberMasterAdapter(BaseDirectoryAdapter):
+    ##############################################################################
+    # Metadata
+    ##############################################################################
+    architecture = "chambermaster"
+
+    INFO = AdapterInfo(
+        key="chambermaster",
+        name="ChamberMaster",
+        version="1.0",
+        author="Adinfosys",
+        website="https://www.chambermaster.com/",
+        description="Adapter for ChamberMaster-powered chamber of commerce business directories.",
+    )
+
+    CAPABILITIES = AdapterCapabilities(
+        name="ChamberMaster",
+        support_level="fully_supported",
+        anti_bot_risk="low",
+        notes="Works as a standard supported directory adapter.",
+
+        requires_javascript=True,
+        requires_proxy=False,
+        requires_residential_proxy=False,
+        requires_external_proxy_access=False,
+
+        search=True,
+        category_filter=True,
+        location_filter=False,
+        pagination=True,
+
+        website_links=True,
+        social_links=True,
+        ratings=False,
+        reviews=False,
+        contact_details=True,
+        business_hours=True,
+    )
+
+    BAD_TEXT = {
+        "home",
+        "login",
+        "directory",
+        "contact",
+        "contact us",
+        "join",
+        "join now",
+        "events",
+        "calendar",
+        "news",
+        "about",
+        "advertise",
+        "privacy policy",
+        "terms",
+    }
+
+    ###########################################################################
+    # Initialization
+    ###########################################################################
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.parser = ChamberMasterParser()
+        self.normalizer = ChamberMasterNormalizer()
+        self.intelligence = IntelligenceScore()
+
+        self.stats = {
+            "categories": 0,
+            "member_urls": 0,
+            "profiles_processed": 0,
+            "profiles_failed": 0,
+        }
+
+    def _extract_category_name(self, html: str, category_url: str = "") -> str:
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        selectors = [
+            "h1",
+            ".gz-pagetitle",
+            ".mn-title",
+            ".page-title",
+            "title",
+        ]
+
+        for selector in selectors:
+            el = soup.select_one(selector)
+            if el:
+                text = self._clean_text(el.get_text(" ", strip=True))
+                text = re.sub(r"\s*\|\s*.*$", "", text).strip()
+                if text:
+                    return text
+
+        return category_url.rstrip("/").split("/")[-1].replace("-", " ").title()
+
+    ###########################################################################
+    # Shared helpers
+    ###########################################################################
+    def _debug(self, *args):
+        if self.debug:
+            print(*args)
+
+    def _clean_text(self, value: str) -> str:
+        return re.sub(r"\s+", " ", value or "").strip()
+
+    def _normalize_member_url(self, url: str) -> str:
+        """
+        Normalize ChamberMaster member/category URLs before deduplication.
+        Removes query strings, fragments, and trailing slashes.
+        """
+        if not url:
+            return ""
+
+        parts = urlsplit(urljoin(self.source_url, url))
+        path = parts.path.rstrip("/")
+
+        return urlunsplit(
+            (
+                parts.scheme.lower(),
+                parts.netloc.lower(),
+                path,
+                "",
+                "",
+            )
+        )
+
+    def _calculate_confidence(self, record: BusinessRecord) -> float:
+        """
+        Calculate a simple completeness score for CRM/export quality.
+        """
+        score = 0.0
+
+        if record.entity_name:
+            score += 0.30
+
+        if record.phone:
+            score += 0.20
+
+        if record.website:
+            score += 0.20
+
+        if record.address:
+            score += 0.20
+
+        if record.city and record.state:
+            score += 0.10
+
+        return round(score, 2)
+
+    ###########################################################################
+    # Category discovery
+    ###########################################################################
+
+    def _extract_category_links(self, html: str) -> list[str]:
+        """
+        Extract ChamberMaster category/search URLs from a directory landing page.
+        """
+        soup = BeautifulSoup(html or "", "html.parser")
+        categories = set()
+
+        for a in soup.select("a[href]"):
+            href = (a.get("href") or "").strip()
+
+            if not href:
+                continue
+
+            href_lower = href.lower()
+
+            if "/list/category/" in href_lower:
+                categories.add(urljoin(self.source_url, href))
+
+            elif "/list/search" in href_lower or "/list/searchalpha/" in href_lower:
+                categories.add(urljoin(self.source_url, href))
+
+        result = sorted(categories)
+
+        self._debug("DEBUG ChamberMaster categories:", len(result))
+
+        if result:
+            self._debug("DEBUG ChamberMaster first categories:", result[:5])
+
+        return result
+
+
+
+    def _extract_next_page(self, html: str) -> str | None:
+        """
+        Extract the next pagination URL from a ChamberMaster category page.
+
+        Query parameters are preserved because ChamberMaster may use them
+        to identify the next results page.
+        """
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        # Prefer explicit pagination metadata.
+        rel_next = soup.select_one("a[rel='next'][href]")
+
+        if rel_next:
+            href = (rel_next.get("href") or "").strip()
+
+            if href:
+                return urljoin(self.source_url, href)
+
+        # Common ChamberMaster and Bootstrap pagination structures.
+        pagination_selectors = (
+            "li.next a[href]",
+            ".pagination-next a[href]",
+            ".pager-next a[href]",
+            "a.next[href]",
+        )
+
+        for selector in pagination_selectors:
+            link = soup.select_one(selector)
+
+            if not link:
+                continue
+
+            href = (link.get("href") or "").strip()
+
+            if href:
+                return urljoin(self.source_url, href)
+
+        # Fallback for links identified by visible text or accessibility metadata.
+        for link in soup.select("a[href]"):
+            href = (link.get("href") or "").strip()
+
+            if not href:
+                continue
+
+            text = self._clean_text(
+                link.get_text(" ", strip=True)
+            ).lower()
+
+            aria_label = self._clean_text(
+                link.get("aria-label") or ""
+            ).lower()
+
+            title = self._clean_text(
+                link.get("title") or ""
+            ).lower()
+
+            classes = {
+                str(class_name).strip().lower()
+                for class_name in (link.get("class") or [])
+                if class_name
+            }
+
+            is_next = (
+                text in {"next", "next page", "›", "»"}
+                or aria_label in {"next", "next page"}
+                or title in {"next", "next page"}
+                or "next" in classes
+            )
+
+            if is_next:
+                return urljoin(self.source_url, href)
+
+        return None
+
+    async def discover_categories(self, page, html: str = "") -> list[str]:
+        """
+        Discover ChamberMaster/GrowthZone category pages.
+
+        If the supplied source URL is already a category or search-results page,
+        use that URL directly instead of requiring a directory landing page.
+        """
+        if not html:
+            html = await page.content()
+
+        current_url = page.url or self.source_url
+        current_lower = current_url.lower()
+
+        # The user supplied a category/search page directly.
+        direct_category_patterns = (
+            "/list/search/",
+            "/list/search?",
+            "/list/category/",
+            "/list/searchalpha/",
+        )
+
+        if any(pattern in current_lower for pattern in direct_category_patterns):
+            normalized_url = self._normalize_member_url(current_url)
+
+            self._debug(
+                "DEBUG ChamberMaster direct category URL:",
+                normalized_url,
+            )
+
+            return [normalized_url]
+
+        # Otherwise, treat the current page as a directory landing page.
+        categories = self._extract_category_links(html)
+
+        # Defensive fallback: some ChamberMaster/GrowthZone directories display
+        # member listings directly on /list without exposing category links.
+        if not categories and "/list" in current_lower:
+            normalized_url = self._normalize_member_url(current_url)
+
+            self._debug(
+                "DEBUG ChamberMaster no category links; using current list page:",
+                normalized_url,
+            )
+
+            return [normalized_url]
+
+        return categories
+
+    ###########################################################################
+    # Member discovery
+    ###########################################################################
+
+    def _extract_member_links(self, html: str) -> list[str]:
+        """
+        Extract member/profile URLs from ChamberMaster and GrowthZone pages.
+
+        Supports common ChamberMaster/GrowthZone URL structures, including:
+        - /list/member/
+        - /list/Details/
+        - /member/
+        - /members/
+        - /directory/Details/
+        - /member-directory/Details/
+        """
+        soup = BeautifulSoup(html or "", "html.parser")
+        member_urls: set[str] = set()
+
+        anchors = soup.select("a[href]")
+
+        self._debug(
+            "DEBUG ChamberMaster total anchors:",
+            len(anchors),
+        )
+
+        candidate_links: list[tuple[str, str]] = []
+
+        member_patterns = (
+            "/list/member/",
+            "/list/details/",
+            "/member/",
+            "/members/",
+            "/directory/details/",
+            "/member-directory/details/",
+        )
+
+        excluded_patterns = (
+            "newmemberapp",
+            "/login",
+            "/join",
+            "javascript:",
+            "mailto:",
+            "tel:",
+        )
+
+        for anchor in anchors:
+            href = (anchor.get("href") or "").strip()
+
+            if not href:
+                continue
+
+            text = self._clean_text(
+                anchor.get_text(" ", strip=True)
+            )
+
+            absolute_url = urljoin(self.source_url, href)
+            href_lower = absolute_url.lower()
+
+            if any(pattern in href_lower for pattern in excluded_patterns):
+                continue
+
+            if any(pattern in href_lower for pattern in member_patterns):
+                normalized_url = self._normalize_member_url(
+                    absolute_url
+                )
+
+                if normalized_url:
+                    member_urls.add(normalized_url)
+
+                    if len(candidate_links) < 30:
+                        candidate_links.append(
+                            (text, normalized_url)
+                        )
+
+        self._debug(
+            "DEBUG ChamberMaster recognized member sample:",
+            candidate_links,
+        )
+
+        self._debug(
+            "DEBUG ChamberMaster extracted member URLs:",
+            len(member_urls),
+        )
+
+        return sorted(member_urls)
+
+    async def _discover_member_urls_from_category(
+        self,
+        page,
+        category_url: str,
+    ) -> dict[str, set[str]]:
+        urls: dict[str, set[str]] = {}
+        current_url = category_url
+        visited_pages = set()
+        category_name = ""
+
+        while current_url:
+            current_url = self._normalize_member_url(current_url)
+
+            if current_url in visited_pages:
+                break
+
+            visited_pages.add(current_url)
+
+            self._debug("DEBUG ChamberMaster page:", current_url)
+
+            await page.goto(
+                current_url,
+                wait_until="domcontentloaded",
+                timeout=30000,
+            )
+
+            await page.wait_for_timeout(2000)
+
+            html = await page.content()
+
+            if self.debug:
+                debug_dir = Path("debug")
+                debug_dir.mkdir(exist_ok=True)
+
+                debug_file = debug_dir / "chambermaster_category.html"
+                debug_file.write_text(html, encoding="utf-8")
+
+                self._debug(
+                    "DEBUG saved category HTML:",
+                    str(debug_file),
+                    "bytes:",
+                    len(html),
+                )
+
+            if self.debug:
+                with open(
+                    "DEBUG_CATEGORY.html",
+                    "w",
+                    encoding="utf-8",
+                ) as f:
+                    f.write(html)
+
+                self._debug(
+                    "DEBUG saved category HTML:",
+                    len(html)
+                )
+
+            if not category_name:
+                category_name = self._extract_category_name(html, category_url)
+
+            links = self._extract_member_links(html)
+
+            for link in links:
+                urls.setdefault(link, set()).add(category_name)
+
+            self._debug(
+                "DEBUG member links:",
+                len(links),
+                "total:",
+                len(urls),
+            )
+
+            current_url = self._extract_next_page(html)
+
+        return urls
+
+    async def discover_member_urls(self, page, category_urls: list[str]) -> list[dict[str, Any]]:
+        member_map: dict[str, set[str]] = {}
+
+        for i, category_url in enumerate(category_urls, start=1):
+            try:
+                self._debug(
+                    f"DEBUG ChamberMaster category {i}/{len(category_urls)}:",
+                    category_url,
+                )
+
+                found = await self._discover_member_urls_from_category(
+                    page,
+                    category_url,
+                )
+
+                for member_url, categories in found.items():
+                    member_map.setdefault(member_url, set()).update(categories)
+
+                self._debug(
+                    "DEBUG ChamberMaster unique member URLs so far:",
+                    len(member_map),
+                )
+
+            except Exception as e:
+                self.stats["profiles_failed"] += 1
+
+                self._debug(
+                    "DEBUG ChamberMaster category discovery error:",
+                    category_url,
+                    repr(e),
+                    "\nFULL TRACEBACK:\n",
+                    traceback.format_exc(),
+                )
+
+        result = [
+            {
+                "url": member_url,
+                "category_names": "; ".join(sorted(categories)),
+            }
+            for member_url, categories in sorted(member_map.items())
+        ]
+
+        self.stats["member_urls"] = len(result)
+
+        return result
+
+    ###########################################################################
+    # Profile extraction
+    ###########################################################################
+
+    async def extract_member(
+        self,
+        page,
+        member_info,
+    ) -> dict[str, Any]:
+        if isinstance(member_info, dict):
+            member_url = member_info.get("url", "")
+            category_names = member_info.get(
+                "category_names",
+                "",
+            )
+        else:
+            member_url = str(member_info)
+            category_names = ""
+
+        if not member_url:
+            return {}
+
+        await page.goto(
+            member_url,
+            wait_until="domcontentloaded",
+            timeout=30000,
+        )
+
+        await page.wait_for_timeout(500)
+
+        html = await page.content()
+
+        profile = self.parser.parse_member_profile(
+            html,
+            category_names=category_names,
+            profile_url=member_url,
+        )
+
+        if self.debug:
+            print(
+                "DEBUG selected website:",
+                {
+                    "entity_name": profile.name,
+                    "website": profile.website,
+                },
+            )
+
+            debug_dir = Path("debug")
+            debug_dir.mkdir(exist_ok=True)
+
+            with open(
+                debug_dir / "member_debug.html",
+                "w",
+                encoding="utf-8",
+            ) as file:
+                file.write(html)
+
+
+
+        record = self.normalizer.to_business_record(
+            profile,
+            source_url=self.source_url,
+            architecture=self.architecture,
+        )
+
+        # Calculate the BI score from the normalized record before export.
+        # The exported pipeline expects the key
+        # ``business_intelligence_score`` rather than ``intelligence_score``.
+        record = self.normalizer.to_business_record(
+            profile,
+            source_url=self.source_url,
+            architecture=self.architecture,
+        )
+
+        record_dict = record.to_dict()
+
+        bi_score, bi_grade = self.intelligence.score(record_dict)
+
+        # Populate both legacy and current BI fields.
+        record.business_intelligence_score = bi_score
+        record.intelligence_score = bi_score
+        record.intelligence_grade = bi_grade
+
+        confidence = self._calculate_confidence(record)
+        record.confidence_score = confidence
+
+        final_record = record.to_dict()
+
+        # Defensive assignment in case another model conversion changes the fields.
+        final_record["business_intelligence_score"] = bi_score
+        final_record["intelligence_score"] = bi_score
+        final_record["intelligence_grade"] = bi_grade
+
+
+        return final_record
+
+    ##############################################################################
+    # Crawl Pipeline
+    ##############################################################################
+
+    async def crawl(self, page, max_records: int = 5) -> list[dict[str, Any]]:
+        """
+        ChamberMaster crawl pipeline:
+
+        directory page -> categories -> member profile URLs -> profile extraction
+        """
+        categories = await self.discover_categories(page)
+        self.stats["categories"] = len(categories)
+
+        self._debug("DEBUG ChamberMaster categories found:", len(categories))
+
+        member_urls = await self.discover_member_urls(page, categories)
+        self.stats["member_urls"] = len(member_urls)
+
+        self._debug("DEBUG ChamberMaster unique member URLs:", len(member_urls))
+
+        records = []
+
+        for i, member_info in enumerate(member_urls[:max_records], start=1):
+            member_url = (
+                member_info.get("url", "")
+                if isinstance(member_info, dict)
+                else str(member_info)
+            )
+
+            self._debug(
+                f"DEBUG ChamberMaster extracting {i}/{min(len(member_urls), max_records)}: {member_url}"
+            )
+
+            try:
+
+
+                record = await self.extract_member(page, member_info)
+
+                if record:
+                    records.append(record)
+                    self.stats["profiles_processed"] += 1
+
+            except Exception as e:
+                self.stats["profiles_failed"] += 1
+                self._debug(
+                    "DEBUG ChamberMaster extract_member error:",
+                    member_url,
+                    repr(e),
+                )
+
+        self._debug("DEBUG ChamberMaster crawl returned:", len(records))
+
+        if self.debug:
+            print("\n===== ChamberMaster Statistics =====")
+            for key, value in self.stats.items():
+                print(f"{key:20}: {value}")
+
+        return records
+
+    ##############################################################################
+    # Legacy Compatibility
+    ##############################################################################
+
+    def extract_listings(self, html: str) -> List[Dict[str, Any]]:
+        """
+        Legacy single-page extraction fallback.
+
+        This method is kept for compatibility with the generic crawler path.
+        The main ChamberMaster production path uses:
+        discover_categories() -> discover_member_urls() -> extract_member()
+        """
+        soup = BeautifulSoup(html or "", "html.parser")
+
+        if self.debug:
+            all_links = []
+
+            for a in soup.select("a[href]"):
+                href = (a.get("href") or "").strip()
+                text = self._clean_text(a.get_text(" ", strip=True))
+
+                if href and (
+                        "member" in href.lower()
+                        or "list" in href.lower()
+                        or "directory" in href.lower()
+                        or "category" in href.lower()
+                ):
+                    all_links.append((text, href))
+
+            print("DEBUG ChamberMaster all relevant links:", all_links[:50])
+
+        records: List[Dict[str, Any]] = []
+        seen_urls = set()
+        candidates = self._find_candidate_links(soup)
+
+        if self.debug:
+            print("DEBUG ChamberMaster candidate sample:", candidates[:20])
+
+        for name, href in candidates:
+            profile_url = self._normalize_member_url(
+                urljoin(self.source_url, href)
+            )
+
+            profile_key = profile_url.lower()
+
+            if profile_key in seen_urls:
+                continue
+
+            seen_urls.add(profile_key)
+
+            records.append(
+                {
+                    "entity_name": name,
+                    "profile_url": profile_url,
+                    "source_url": self.source_url,
+                    "architecture": self.architecture,
+                    "crawl_mode": "adapter_chambermaster_legacy_listing",
+                    "status": "success",
+                    "records_found": 0,
+                    "blocked_reason": "",
+                }
+            )
+
+        total = len(records)
+
+        for record in records:
+            record["records_found"] = total
+
+        if self.debug:
+            print("DEBUG ChamberMaster candidates:", len(candidates))
+            print("DEBUG ChamberMaster returned:", len(records))
+
+        return records
+
+    def _find_candidate_links(self, soup: BeautifulSoup) -> List[tuple[str, str]]:
+        candidates: List[tuple[str, str]] = []
+
+        for a in soup.select("a[href]"):
+            href = (a.get("href") or "").strip()
+            name = self._clean_text(a.get_text(" ", strip=True))
+
+            if not href or not name:
+                continue
+
+            if not self._looks_like_business_link(href):
+                continue
+
+            if not self._looks_like_business_name(name):
+                continue
+
+            candidates.append((name, href))
+
+        return candidates
+
+    def _looks_like_business_link(self, href: str) -> bool:
+        h = href.lower()
+
+        patterns = [
+            "/list/member/",
+            "/member/",
+            "/members/",
+            "/directory/",
+            "business.hobbschamber.org/list/member",
+        ]
+
+        return any(p in h for p in patterns)
+
+    def _looks_like_business_name(self, name: str) -> bool:
+        n = name.lower().strip()
+
+        if not n:
+            return False
+
+        if n in self.BAD_TEXT:
+            return False
+
+        if len(n) < 3:
+            return False
+
+        if len(n) > 120:
+            return False
+
+        if re.fullmatch(r"[\d\W]+", n):
+            return False
+
+        return True

@@ -1,0 +1,38 @@
+{
+  "mode": "embedded_js",
+  "startUrls": [
+    { "url": "https://regenerationcanada.org/en/map/" }
+  ],
+  "maxListings": 25,
+  "maxPages": 1,
+  "enrichProfiles": false,
+  "outputCsv": true,
+  "outputXlsx": true,
+  "outputColumnsMode": "default",
+  "outputBaseName": "output",
+  "debug": false,
+  "embedded": {
+    "anchorKey": "logoMedium",
+    "keys": ["name","loc","address","lat","lng","email","tel","website","pageURL","categories","products","services","buy","size","results","quote","logo","logoMedium"],
+    "fieldMap": {
+      "name": "entity_name",
+      "loc": "location",
+      "address": "address",
+      "lat": "lat",
+      "lng": "lng",
+      "email": "email",
+      "tel": "phone",
+      "website": "website",
+      "pageURL": "profile_url",
+      "categories": "categories",
+      "products": "products",
+      "services": "services",
+      "buy": "how_to_buy",
+      "size": "size",
+      "results": "results",
+      "quote": "quote",
+      "logo": "logo",
+      "logoMedium": "logo_medium"
+    }
+  }
+}

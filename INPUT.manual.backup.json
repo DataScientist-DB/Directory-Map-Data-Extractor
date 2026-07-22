@@ -1,0 +1,14 @@
+{
+  "mode": "generic_directory",
+  "startUrls": [
+    {
+      "url": "https://www.yelp.com/search?find_desc=web+design&find_loc=Los+Angeles%2C+CA"
+    }
+  ],
+  "maxListings": 20,
+  "maxPages": 1,
+  "outputCsv": true,
+  "outputXlsx": true,
+  "outputBaseName": "yelp_directory_test",
+  "debug": true
+}

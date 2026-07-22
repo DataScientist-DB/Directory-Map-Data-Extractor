@@ -7,6 +7,7 @@ import html
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from src.taxonomy_static import map_product_labels_to_rpc, RPC_CATEGORY_MAP
+from src.export_columns import DEFAULT_COLUMNS, ADVANCED_COLUMNS
 
 from openpyxl import Workbook
 
@@ -112,37 +113,6 @@ def _decode_codes(codes: list[str], mapping: dict[str, str]) -> list[str]:
     return decoded
 
 
-# =========================
-# Output column definitions
-# =========================
-
-DEFAULT_COLUMNS = [
-    "entity_name",
-    "category_names",
-    "service_names",
-    "products",
-    "products_rpc_codes",
-    "products_rpc_names",
-    "email",
-    "phone",
-    "website",
-    "location",
-    "profile_url",
-    "source_url",
-]
-
-
-ADVANCED_COLUMNS = [
-    "category_codes",
-    "service_codes",
-    "address",
-    "how_to_buy",
-    "size",
-    "results",
-    "quote",
-    "logo",
-    "logo_medium",
-]
 
 
 # =========================

@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Logs
+*.log
+
+# Debug HTML
+*_debug.html
+test*.html
+
+# Generated outputs
+output*.csv
+output*.xlsx
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Apify local storage
+storage/
+apify_storage/

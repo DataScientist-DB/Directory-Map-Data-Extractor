@@ -14,16 +14,73 @@ from src.taxonomy import (
     extract_taxonomy_maps_from_json,
     try_parse_json,
 )
+from src.modes.generic_cards import extract_generic_cards
+from src.modes.generic_directory import extract_generic_directory_page
+from src.modes.detail_page_enrichment import enrich_detail_page
+from src.modes.confidence import (
+    calculate_confidence,
+    confidence_level,
+)
+from src.modes.profile_matching import match_profile_url
+from src.adapters.router import get_adapter
+from src.enrichment.website_enricher import WebsiteEnricher
+from src.models.proxy_config import ProxyConfig
+from src.browser.browser_factory import BrowserFactory
+from src.intelligence.company_qualifier import CompanyQualifier
+from src.discovery.request_parser import RequestParser
+from src.discovery.search_orchestrator import SearchOrchestrator
 
 FieldSpec = Union[str, Dict[str, Any]]
 
 # -------------------------
 # Small helpers / constants
 # -------------------------
+website_enricher = WebsiteEnricher()
+
+
+qualifier = CompanyQualifier()
 
 _RPC_RE = re.compile(r"\brpc\d+\b", re.I)
 _RSS_RE = re.compile(r"\brss\d+\b", re.I)
 _SS_RE = re.compile(r"\bss\d+\b", re.I)  # some pages show ss1
+def detect_directory_architecture(html: str, url: str = "") -> str:
+    h = (html or "").lower()
+    u = (url or "").lower()
+
+    if (
+        "growthzoneapp.com" in h
+        or "growthzoneapp.com" in u
+        or "gzcontent/publicwidgets" in h
+        or "publicwidgets/partners.js" in h
+        or "/public/js/mmp/" in h
+        or "/public/css/mmp/" in h
+    ):
+        return "growthzone"
+
+    if "custom_listings_lib.js" in h or "simpleview" in h:
+        return "simpleview"
+
+    if "resourcedirectoryrwd.js" in h or "enhancedbusinessdirectory" in h:
+        return "civicplus"
+
+    if (
+        "chambermaster" in h
+        or "content/bundles/mni" in h
+        or ("business." in u and "/list" in u)
+    ):
+        return "chambermaster"
+
+    if (
+        "wildapricot" in h
+        or "wildapricot" in u
+        or "powered by wild apricot" in h
+    ):
+        return "wildapricot"
+
+    if "wix-thunderbolt" in h or "static.parastorage.com" in h:
+        return "wix"
+
+    return "unknown"
 
 import json
 from typing import Callable, Awaitable
@@ -101,7 +158,52 @@ def _normalize_url(base_url: str, maybe_relative: Optional[str]) -> Optional[str
 def _is_empty(v: Any) -> bool:
     return v is None or (isinstance(v, str) and v.strip() == "")
 
+def _split_products_into_category_and_services(products: Any) -> tuple[list[str], list[str]]:
+    """
+    Regeneration Canada stores product/category and regenerative practice text
+    inside the `products` field.
 
+    Before 'REGENERATIVE PRACTICES' = product/category information.
+    After 'REGENERATIVE PRACTICES' = service/practice information.
+    """
+    if not products:
+        return [], []
+
+    text = _html.unescape(str(products)).strip()
+    if not text:
+        return [], []
+
+    markers = ["REGENERATIVE PRACTICES", "OBSERVATIONS"]
+    upper = text.upper()
+
+    product_part = text
+    practice_part = ""
+
+    if "REGENERATIVE PRACTICES" in upper:
+        idx = upper.find("REGENERATIVE PRACTICES")
+        product_part = text[:idx]
+        practice_part = text[idx:].replace("REGENERATIVE PRACTICES", "").strip()
+
+    if "OBSERVATIONS" in practice_part.upper():
+        idx = practice_part.upper().find("OBSERVATIONS")
+        practice_part = practice_part[:idx]
+
+    def clean_parts(value: str) -> list[str]:
+        parts = []
+        for x in value.split(";"):
+            x = " ".join(x.split()).strip(" .:-")
+            if x:
+                parts.append(x)
+
+        seen = set()
+        out = []
+        for x in parts:
+            if x not in seen:
+                seen.add(x)
+                out.append(x)
+        return out
+
+    return clean_parts(product_part), clean_parts(practice_part)
 async def _scroll_to_load_more(page, scroll_delay_ms: int = 800, max_scrolls: int = 30) -> None:
     last_height = await page.evaluate("document.body.scrollHeight")
     for _ in range(max_scrolls):
@@ -164,22 +266,76 @@ async def _extract_field(card, base_url: str, spec: FieldSpec) -> Optional[str]:
 
 def _extract_fields_from_js_object(js_obj: str, keys: list[str]) -> dict:
     out: dict = {}
+
     for k in keys:
+        # 1) String value: key: "value"
         m = re.search(r"\b" + re.escape(k) + r'\s*:\s*"([^"]*)"', js_obj)
-        out[k] = m.group(1) if m else None
+        if m:
+            out[k] = _html.unescape(m.group(1)).strip()
+            continue
+
+        # 2) Array value: key: ["a","b"] or key: [ ... ]
+        m = re.search(r"\b" + re.escape(k) + r"\s*:\s*\[([^\]]*)\]", js_obj, re.S)
+        if m:
+            raw = m.group(1)
+            values = re.findall(r'"([^"]+)"', raw)
+            if values:
+                out[k] = "; ".join(_html.unescape(v).strip() for v in values if v.strip())
+            else:
+                out[k] = raw.strip()
+            continue
+
+        # 3) Object value: key: { ... }
+        m = re.search(r"\b" + re.escape(k) + r"\s*:\s*\{([^{}]*)\}", js_obj, re.S)
+        if m:
+            raw = m.group(1)
+            values = re.findall(r'"([^"]+)"', raw)
+            if values:
+                out[k] = "; ".join(_html.unescape(v).strip() for v in values if v.strip())
+            else:
+                out[k] = raw.strip()
+            continue
+
+        out[k] = None
+
     return out
 
-
 def _extract_embedded_objects(html: str, anchor_key: str, keys: Optional[list[str]] = None) -> list[dict]:
-    pattern = re.compile(r"\{[^{}]*" + re.escape(anchor_key) + r'\s*:\s*"[^"]*"[^{}]*\}')
-    matches = pattern.findall(html)
+    """
+    Extract embedded listing objects from JavaScript/HTML.
 
+    The old version captured only a small {...logoMedium...} object.
+    Some fields such as products/services/results may be outside that small object,
+    so this version extracts a wider window around each listing.
+    """
     if not keys:
-        keys = ["name", "loc", "address", "email", "tel", "website", "pageURL", "logo", "logoMedium"]
+        keys = [
+            "name", "loc", "address", "lat", "lng", "email", "tel",
+            "website", "pageURL", "categories", "products", "services",
+            "buy", "size", "results", "quote", "logo", "logoMedium"
+        ]
 
-    return [_extract_fields_from_js_object(m, keys) for m in matches]
+    objects = []
+    seen = set()
 
+    for m in re.finditer(re.escape(anchor_key), html):
+        start = max(0, m.start() - 8000)
+        end = min(len(html), m.end() + 8000)
+        window = html[start:end]
 
+        obj = _extract_fields_from_js_object(window, keys)
+
+        key = obj.get("pageURL") or obj.get("website") or obj.get("name") or obj.get("logoMedium")
+        if not key:
+            continue
+
+        if key in seen:
+            continue
+
+        seen.add(key)
+        objects.append(obj)
+
+    return objects
 # -------------------------
 # Taxonomy code helpers
 # -------------------------
@@ -296,13 +452,85 @@ async def _discover_taxonomy_via_endpoints(page, source_url: str, html: str, deb
 # Main crawler
 # -------------------------
 
-async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
+async def run_crawler(
+
+    input_data: Dict[str, Any],
+    enable_website_enrichment: bool = False,
+    website_timeout_ms: int = 15000,
+) -> Dict[str, Any]:
+    # Parse the user's search request
+    search_request = RequestParser.parse(input_data)
+
+    start_urls = input_data.get("startUrls") or []
+
+    directory_source_url = (
+        start_urls[0].get("url", "")
+        if start_urls
+        else ""
+    )
+
+
+    orchestrator = SearchOrchestrator()
+    selected = orchestrator.get_directories(search_request)
+
+    print("\n===== SEARCH ORCHESTRATION =====")
+    print("Requested country :", search_request.country)
+    print("Requested services:", search_request.services)
+    print("Directories       :", ", ".join(selected))
+    print("===============================\n")
+
+    proxy_input = input_data.get("proxyConfiguration", {}) or {}
+
+    proxy_config = ProxyConfig(
+        use_apify_proxy=bool(proxy_input.get("useApifyProxy", False)),
+        proxy_groups=proxy_input.get("apifyProxyGroups", []) or [],
+        proxy_country=proxy_input.get("countryCode", ""),
+        proxy_url=proxy_input.get("proxyUrl", ""),
+        username=proxy_input.get("username", ""),
+        password=proxy_input.get("password", ""),
+        request_delay=int(input_data.get("requestDelay", 1500)),
+    )
+
+
     mode = (input_data.get("mode") or "dom").strip()
+    # Legacy support
+    requested_architecture = (
+        input_data.get("architecture") or ""
+    ).strip().lower()
+
+    if not requested_architecture and search_request.directories:
+        requested_architecture = (
+            search_request.directories[0]
+            .strip()
+            .lower()
+        )
+    # New preferred mechanism
+    requested_directories = search_request.directories
 
     start_urls = input_data.get("startUrls") or []
     max_listings = int(input_data.get("maxListings", 200))
     max_pages = int(input_data.get("maxPages", 50))
     debug = bool(input_data.get("debug", False))
+
+    enable_profile_enrichment = bool(
+        input_data.get("enableProfileEnrichment", True)
+    )
+
+    max_profile_pages = int(
+        input_data.get("maxProfilePages", 5)
+    )
+
+    confidence_threshold = int(
+        input_data.get("confidenceThreshold", 0)
+    )
+
+    if debug:
+        print(
+            "CONFIG:",
+            enable_profile_enrichment,
+            max_profile_pages,
+            confidence_threshold,
+        )
 
     listing_selector = input_data.get("listingSelector")
     fields: Dict[str, FieldSpec] = input_data.get("fields") or {}
@@ -321,21 +549,38 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
     keys_to_extract = embedded.get("keys") or None
     field_map: Dict[str, str] = embedded.get("fieldMap") or {}
 
+
     if not start_urls:
         raise ValueError("Input must include startUrls.")
-
     if mode == "dom":
         if not listing_selector:
             raise ValueError("DOM mode: Input must include listingSelector.")
         if not isinstance(fields, dict) or not fields:
             raise ValueError("DOM mode: Input must include fields mapping.")
+
     elif mode == "embedded_js":
         pass
+
+    elif mode == "generic_cards":
+        pass
+
+    elif mode == "generic_directory":
+        pass
+
+    elif mode == "auto":
+        pass
+
     else:
-        raise ValueError("mode must be 'dom' or 'embedded_js'")
+        raise ValueError(
+            "mode must be 'auto', 'dom', 'embedded_js', 'generic_cards', or 'generic_directory'"
+        )
 
     # ✅ MUST be defined before Playwright + while-loop
     to_visit = [u["url"] if isinstance(u, dict) else str(u) for u in start_urls]
+
+
+    # ✅ MUST be defined before Playwright + while-loop
+
     visited: Set[str] = set()
     seen_keys: Set[str] = set()
     pushed = 0
@@ -347,10 +592,15 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
     TAX_MAX_BYTES = int(input_data.get("taxonomyMaxBytes", 2_000_000))
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
-            headless=True,
-            args=["--disable-dev-shm-usage", "--no-sandbox"],
+
+        factory = BrowserFactory(
+            proxy=proxy_config,
+            debug=debug,
+            headless=not bool(input_data.get("headful", False)),
         )
+
+        browser = await factory.launch(p)
+
         page = await browser.new_page()
         page.set_default_timeout(90000)
         page.set_default_navigation_timeout(90000)
@@ -378,13 +628,84 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                 ct = (resp.headers.get("content-type") or "").lower()
                 url2 = (resp.url or "").lower()
 
-                # Keep this permissive; many sites send JSON as text/html or text/plain
-                if any(x in url2 for x in (".png", ".jpg", ".jpeg", ".webp", ".svg", ".css", ".woff", ".woff2")):
-                    return
-                if resp.status in (301, 302, 303, 307, 308):
+                if "token.awswaf.com" in url2:
+                    all_cat["_blocked"] = "aws_waf"
                     return
 
-                body = await resp.body()
+                if "cdn-cgi/challenge-platform" in url2:
+                    all_cat["_blocked"] = "cloudflare"
+                    return
+
+                if "recaptcha" in url2:
+                    all_cat["_blocked"] = "recaptcha"
+
+                if any(
+                        x in url2
+                        for x in (
+                                ".png",
+                                ".jpg",
+                                ".jpeg",
+                                ".webp",
+                                ".svg",
+                                ".css",
+                                ".woff",
+                                ".woff2",
+                                ".ico",
+                                ".map",
+                        )
+                ):
+                    return
+
+                if resp.status in (301, 302, 303, 307, 308, 204, 304):
+                    return
+
+                interesting_url = any(
+                    x in url2
+                    for x in (
+                        "rpc",
+                        "rss",
+                        "category",
+                        "service",
+                        "taxonomy",
+                        "member",
+                        "directory",
+                        "list",
+                        "api",
+                        "json",
+                    )
+                )
+
+                interesting_ct = any(
+                    x in ct
+                    for x in (
+                        "json",
+                        "javascript",
+                        "text",
+                        "html",
+                        "xml",
+                    )
+                )
+
+                if not interesting_url and not interesting_ct:
+                    return
+
+                try:
+                    body = await resp.body()
+                except Exception as e:
+                    msg = repr(e)
+
+                    if (
+                            "No data found for resource" in msg
+                            or "Target page, context or browser has been closed" in msg
+                            or "TargetClosedError" in msg
+                    ):
+                        return
+
+                    if debug:
+                        print("on_response body error:", msg)
+
+                    return
+
                 if not body or len(body) > TAX_MAX_BYTES:
                     return
 
@@ -393,7 +714,15 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                 if debug:
                     tlow = text.lower()
                     if ("rpc" in tlow) or ("rss" in tlow) or ("ss" in tlow):
-                        print("✅ HIT taxonomy-ish payload:", resp.status, resp.url, "bytes=", len(body), "ct=", ct)
+                        print(
+                            "✅ HIT taxonomy-ish payload:",
+                            resp.status,
+                            resp.url,
+                            "bytes=",
+                            len(body),
+                            "ct=",
+                            ct,
+                        )
 
                 await _ingest_text_for_taxonomy(text)
 
@@ -428,6 +757,378 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
             if infinite_enabled:
                 await _scroll_to_load_more(page, scroll_delay_ms, max_scrolls)
 
+
+            # -------------------------
+            # GENERIC DIRECTORY MODE
+            # -------------------------
+
+            if mode in {"generic_directory", "auto"}:
+
+                html = await page.content()
+
+                detected_architecture = detect_directory_architecture(html, page.url)
+                architecture = requested_architecture or detected_architecture
+
+                if debug:
+                    print(
+                        f"DEBUG architecture: requested={requested_architecture!r}, "
+                        f"detected={detected_architecture!r}, "
+                        f"using={architecture!r}"
+                    )
+
+                if architecture and architecture != "unknown":
+                    adapter = get_adapter(
+                        architecture=architecture,
+                        source_url=page.url,
+                        debug=debug,
+                        config=input_data,
+                    )
+
+                    if debug:
+                        print("DEBUG adapter:", adapter)
+                        print("DEBUG mode:", mode)
+                        print("DEBUG architecture:", architecture)
+
+                    if mode == "auto" and adapter:
+                        adapter_records = await adapter.crawl(
+                            page,
+                            max_records=max_listings,
+                        )
+                        if not adapter_records and getattr(adapter, "access_report", None):
+                            report = adapter.access_report
+
+                            if report.blocked():
+                                await Actor.push_data(
+                                    {
+                                        "status": "blocked",
+                                        "blocked_reason": report.blocked_reason,
+                                        "architecture": report.architecture,
+                                        "source_url": directory_source_url,
+                                        "records_found": 0,
+                                        "crawl_mode": "adapter_access_diagnostic",
+
+                                        "entity_name": "ACCESS DIAGNOSTIC - Better Business Bureau",
+                                        "category_names": report.search_keyword,
+                                        "location": report.search_location,
+
+                                        "access_status": report.status,
+                                        "access_reason": report.blocked_reason,
+                                        "access_http_status": report.http_status,
+                                        "access_pages_visited": report.pages_visited,
+                                        "access_profiles_found": report.profiles_found,
+                                        "access_recommendation": report.recommendation,
+                                        "access_strategy": report.access_strategy,
+                                    }
+                                )
+                                pushed += 1
+
+                        if debug:
+                            print("DEBUG adapter records:", len(adapter_records))
+
+                        for record in adapter_records[:max_listings]:
+
+                            if enable_website_enrichment and record.get("website"):
+                                record = await website_enricher.enrich_record_from_website(
+                                    page,
+                                    record,
+                                    timeout_ms=website_timeout_ms,
+                                )
+
+                            record = qualifier.qualify(
+                                record=record,
+                                request={
+                                    "keyword": search_request.keyword,
+                                    "services": search_request.services,
+                                    "products": search_request.products,
+                                    "industries": search_request.industries,
+                                    "location": search_request.location,
+                                    "country": search_request.country,
+                                },
+                            )
+
+                            await Actor.push_data(record)
+                            pushed += 1
+                        if enable_website_enrichment and debug:
+                            website_enricher.print_statistics()
+
+                        return {
+                            "status": "adapter_extraction_complete",
+                            "architecture": architecture,
+                            "source_url": directory_source_url,
+                            "records_found": len(adapter_records),
+                            "crawl_mode": "auto",
+                            "recommended_strategy": f"{architecture}_adapter",
+                        }
+
+                    await Actor.push_data({
+                        "source_url": page.url,
+                        "status": "architecture_detected",
+                        "architecture": architecture,
+                        "records_found": 0,
+                        "crawl_mode": mode,
+                        "recommended_strategy": f"{architecture}_adapter",
+                        "note": "Known directory platform detected. Dedicated adapter recommended."
+                    })
+
+                    return {
+                        "status": "architecture_detected",
+                        "architecture": architecture,
+                        "source_url": directory_source_url,
+                        "records_found": 0,
+                        "crawl_mode": mode,
+                        "recommended_strategy": f"{architecture}_adapter",
+                    }
+
+                await Actor.set_value(
+                    "DEBUG_PAGE.html",
+                    html,
+                    content_type="text/html",
+                )
+
+                result = extract_generic_directory_page(
+                    html=html,
+                    source_url=url,
+                )
+                if all_cat.get("_blocked"):
+                    reason_map = {
+                        "aws_waf": "AWS WAF",
+                        "cloudflare": "Cloudflare Challenge",
+                        "recaptcha": "reCAPTCHA",
+                    }
+
+                    await Actor.push_data({
+                        "source_url": url,
+                        "status": "blocked",
+                        "blocked_reason": reason_map.get(all_cat.get("_blocked"), all_cat.get("_blocked")),
+                        "records_found": 0,
+                        "crawl_mode": mode,
+                    })
+
+                    continue
+
+                if all_cat.get("_blocked"):
+                    result["stats"]["blocked"] = True
+
+                if debug:
+                    print(f"DEBUG generic_directory stats: {result.get('stats')}")
+                    print(f"DEBUG generic_directory selectors: {result.get('selectors')[:3]}")
+                    print(f"DEBUG profile links found: {len(result.get('profile_links', []))}")
+
+                if result.get("stats", {}).get("blocked"):
+                    continue
+
+                # Push records found directly on directory page
+                records = result.get("records", [])
+                profile_links = result.get(
+                    "profile_links",
+                    []
+                )[:max_profile_pages]
+
+                used_profiles = set()
+
+                for idx, record in enumerate(records):
+                    if pushed >= max_listings:
+                        break
+
+                    profile_url = match_profile_url(
+                        record,
+                        profile_links,
+                    )
+
+                    if not profile_url and idx < len(profile_links):
+                        profile_url = profile_links[idx]
+
+                    merged = {
+                        "entity_name": record.get("name"),
+                        "website": record.get("website"),
+                        "email": record.get("email"),
+                        "phone": record.get("phone"),
+                        "source_url": record.get("source_url"),
+                        "services": record.get("description"),
+                        "social_links": record.get("social_links"),
+                        "profile_url": profile_url,
+                        "blocked": False,
+                    }
+
+                    if (
+                            enable_profile_enrichment
+                            and profile_url
+                            and profile_url not in used_profiles
+                    ):
+                        try:
+                            await page.goto(
+                                profile_url,
+                                wait_until="domcontentloaded",
+                                timeout=30000,
+                            )
+
+                            detail_html = await page.content()
+                            enrichment = enrich_detail_page(detail_html)
+                            socials = enrichment.get("socials", {}) or {}
+
+                            merged["website"] = merged.get("website") or enrichment.get("website", "")
+                            merged["email"] = merged.get("email") or enrichment.get("email", "")
+                            merged["phone"] = merged.get("phone") or enrichment.get("phone", "")
+
+                            merged["linkedin"] = enrichment.get("linkedin") or socials.get("linkedin", "")
+                            merged["facebook"] = enrichment.get("facebook") or socials.get("facebook", "")
+                            merged["instagram"] = enrichment.get("instagram") or socials.get("instagram", "")
+                            merged["youtube"] = enrichment.get("youtube") or socials.get("youtube", "")
+                            merged["twitter"] = enrichment.get("twitter") or socials.get("twitter", "")
+
+                            used_profiles.add(profile_url)
+
+                        except Exception as e:
+                            if debug:
+                                print("DETAIL PAGE ERROR:", profile_url, repr(e))
+
+                    merged["confidence_score"] = calculate_confidence(merged)
+                    merged["confidence_level"] = confidence_level(
+                        merged["confidence_score"]
+                    )
+
+                    if merged["confidence_score"] < confidence_threshold:
+                        continue
+
+                    key = (
+                            merged.get("website")
+                            or merged.get("email")
+                            or merged.get("phone")
+                            or merged.get("entity_name")
+                            or merged.get("profile_url")
+                    )
+
+                    if key in seen_keys:
+                        continue
+
+                    seen_keys.add(key)
+                    await Actor.push_data(merged)
+                    pushed += 1
+
+                continue
+            # -------------------------
+            # GENERIC CARDS MODE
+            # -------------------------
+
+            if mode == "generic_cards":
+
+                try:
+                    await page.wait_for_load_state("domcontentloaded", timeout=15000)
+                    await page.wait_for_timeout(2000)
+                    html = await page.content()
+
+                    detected_architecture = detect_directory_architecture(html, page.url)
+                    architecture = requested_architecture or detected_architecture
+
+                    if debug:
+                        print(
+                            f"DEBUG architecture: requested={requested_architecture!r}, "
+                            f"detected={detected_architecture!r}, "
+                            f"using={architecture!r}"
+                        )
+
+                    if architecture and architecture != "unknown":
+                        adapter = get_adapter(
+                            architecture=architecture,
+                            source_url=page.url,
+                            debug=debug,
+                            config=input_data,
+                        )
+
+                        if debug:
+                            print("DEBUG adapter:", adapter)
+                            print("DEBUG mode:", mode)
+                            print("DEBUG architecture:", architecture)
+
+                        if architecture != "unknown":
+                            await Actor.push_data(
+                                {
+                                    "source_url": page.url,
+                                    "status": "architecture_detected",
+                                    "architecture": architecture,
+                                    "records_found": 0,
+                                    "crawl_mode": mode,
+                                    "note": "Known directory platform detected. Dedicated adapter recommended."
+                                }
+                            )
+                            return {
+                                "status": "architecture_detected",
+                                "architecture": architecture,
+                                "source_url": directory_source_url,
+                                "records_found": 0,
+                                "crawl_mode": mode,
+                            }
+
+                        await Actor.push_data(
+                            {
+                                "source_url": page.url,
+                                "status": "architecture_detected",
+                                "architecture": architecture,
+                                "crawl_mode": mode,
+                                "records_found": 0,
+                            }
+                        )
+
+                        if architecture in {
+                            "simpleview",
+                            "civicplus",
+                            "chambermaster",
+                            "growthzone",
+                            "wildapricot",
+                            "wix",
+                        }:
+                            return {
+                                "status": "architecture_detected",
+                                "architecture": architecture,
+                                "source_url": directory_source_url,
+                                "records_found": 0,
+                                "crawl_mode": mode,
+                            }
+
+                except Exception as e:
+                    if debug:
+                        print("WARNING: could not capture page HTML:", url, repr(e))
+                    continue
+
+                records = extract_generic_cards(
+                    html=html,
+                    source_url=url,
+                )
+
+                if debug:
+                    print(
+                        f"DEBUG generic_cards: extracted {len(records)} records"
+                    )
+
+                for record in records:
+
+                    if pushed >= max_listings:
+                        break
+
+                    key = (
+                            record.get("website")
+                            or record.get("email")
+                            or record.get("name")
+                    )
+
+                    if key in seen_keys:
+                        continue
+
+                    seen_keys.add(key)
+
+                    await Actor.push_data({
+                        "entity_name": record.get("name"),
+                        "website": record.get("website"),
+                        "email": record.get("email"),
+                        "phone": record.get("phone"),
+                        "source_url": record.get("source_url"),
+                        "services": record.get("description"),
+                        "social_links": record.get("social_links"),
+                    })
+
+                    pushed += 1
+
+                continue
             # ---------- EMBEDDED JS MODE ----------
             if mode == "embedded_js":
                 await _wait_for_embedded_data(page, anchor_key=anchor_key, timeout_ms=45000)
@@ -484,6 +1185,35 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     if all(_is_empty(record.get(k)) for k in record.keys() if k != "source_url"):
                         continue
 
+                    def _fallback_list(*values):
+                        out = []
+                        for value in values:
+                            if not value:
+                                continue
+
+                            if isinstance(value, list):
+                                for x in value:
+                                    if x:
+                                        out.append(str(x).strip())
+                            elif isinstance(value, dict):
+                                for x in value.values():
+                                    if x:
+                                        out.append(str(x).strip())
+                            else:
+                                s = str(value).strip()
+                                if s:
+                                    out.append(s)
+
+                        # remove duplicates
+                        seen = set()
+                        clean = []
+                        for x in out:
+                            if x and x not in seen:
+                                seen.add(x)
+                                clean.append(x)
+
+                        return clean
+
                     cat_codes = _extract_codes_any(record.get("categories"), kind="rpc")
                     srv_codes = _extract_codes_any(record.get("services"), kind="rss")
 
@@ -493,8 +1223,41 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     record["category_names"] = _map_codes(cat_codes, all_cat)
                     record["service_names"] = _map_codes(srv_codes, all_srv)
 
-                    record["category_names_str"] = "; ".join(record["category_names"]) if record["category_names"] else ""
+                    # Regeneration Canada fallback:
+                    # products contains both product/category info and regenerative practices.
+                    product_categories, regenerative_services = _split_products_into_category_and_services(
+                        record.get("products")
+                    )
+
+                    if not record["category_names"] and product_categories:
+                        record["category_names"] = product_categories
+
+                    if not record["service_names"] and regenerative_services:
+                        record["service_names"] = regenerative_services
+
+                    record["category_names_str"] = "; ".join(record["category_names"]) if record[
+                        "category_names"] else ""
                     record["service_names_str"] = "; ".join(record["service_names"]) if record["service_names"] else ""
+                    # Strong fallback: use products/categories when decoded taxonomy is empty
+                    if not record["category_names"]:
+                        record["category_names"] = _fallback_list(
+                            record.get("products"),
+                            record.get("category"),
+                            record.get("categories"),
+                        )
+
+                    # Strong fallback: use services/how_to_buy when decoded taxonomy is empty
+                    if not record["service_names"]:
+                        record["service_names"] = _fallback_list(
+                            record.get("services"),
+                            record.get("service"),
+                            record.get("how_to_buy"),
+                        )
+
+                    record["category_names_str"] = "; ".join(record["category_names"]) if record[
+                        "category_names"] else ""
+                    record["service_names_str"] = "; ".join(record["service_names"]) if record["service_names"] else ""
+
 
                     await Actor.push_data(record)
                     pushed += 1
@@ -525,6 +1288,12 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
                     continue
                 seen_keys.add(key)
 
+                if record.get("products"):
+                    product_categories, regenerative_services = _split_products_into_category_and_services(
+                        record.get("products"))
+                    record["category_names_str"] = "; ".join(product_categories)
+                    record["service_names_str"] = "; ".join(regenerative_services)
+
                 await Actor.push_data(record)
                 pushed += 1
 
@@ -553,4 +1322,20 @@ async def run_crawler(input_data: Dict[str, Any]) -> Dict[str, Any]:
         {"pushed": pushed, "visited_pages": len(visited), "unique_keys": len(seen_keys), "mode": mode},
     )
 
-    return {"category_map": all_cat, "service_map": all_srv}
+    # ---- Monetization: charge per validated business record ----
+    if pushed > 0:
+        try:
+            await Actor.charge(
+                event_name="business_result",
+                count=pushed,
+            )
+            Actor.log.info(f"Charged business_result event for {pushed} business records.")
+        except Exception as e:
+            Actor.log.warning(f"Could not charge business_result event: {e}")
+
+    return {
+        "category_map": all_cat,
+        "service_map": all_srv,
+        "architecture": requested_architecture or "",
+        "source_url": directory_source_url,
+    }
