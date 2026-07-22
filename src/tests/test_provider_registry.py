@@ -4,7 +4,7 @@ from src.adapters.providers.base_provider import BaseProvider
 from src.adapters.providers.registry import ProviderRegistry
 
 
-class TestProvider(BaseProvider):
+class MockProvider(BaseProvider):
 
     def __init__(
         self,
@@ -42,7 +42,7 @@ class TestProvider(BaseProvider):
 
 def test_register_and_get_provider():
     registry = ProviderRegistry()
-    provider = TestProvider("provider-a")
+    provider = MockProvider("provider-a")
 
     registry.register(provider)
 
@@ -52,23 +52,23 @@ def test_register_and_get_provider():
 
 def test_duplicate_registration_is_rejected():
     registry = ProviderRegistry()
-    registry.register(TestProvider("provider-a"))
+    registry.register(MockProvider("provider-a"))
 
     with pytest.raises(ValueError):
-        registry.register(TestProvider("provider-a"))
+        registry.register(MockProvider("provider-a"))
 
 
 def test_enabled_providers_are_sorted_by_priority():
     registry = ProviderRegistry()
 
     registry.register(
-        TestProvider("low-priority", provider_priority=50)
+        MockProvider("low-priority", provider_priority=50)
     )
     registry.register(
-        TestProvider("high-priority", provider_priority=10)
+        MockProvider("high-priority", provider_priority=10)
     )
     registry.register(
-        TestProvider(
+        MockProvider(
             "disabled",
             provider_priority=1,
             provider_enabled=False,
@@ -87,10 +87,10 @@ def test_filter_by_capability():
     registry = ProviderRegistry()
 
     registry.register(
-        TestProvider("search-provider", search_enabled=True)
+        MockProvider("search-provider", search_enabled=True)
     )
     registry.register(
-        TestProvider("no-search-provider", search_enabled=False)
+        MockProvider("no-search-provider", search_enabled=False)
     )
 
     names = [
@@ -105,10 +105,10 @@ def test_select_highest_priority_provider():
     registry = ProviderRegistry()
 
     registry.register(
-        TestProvider("second", provider_priority=20)
+        MockProvider("second", provider_priority=20)
     )
     registry.register(
-        TestProvider("first", provider_priority=10)
+        MockProvider("first", provider_priority=10)
     )
 
     selected = registry.select(capability="search")
@@ -118,7 +118,7 @@ def test_select_highest_priority_provider():
 
 def test_select_named_provider():
     registry = ProviderRegistry()
-    registry.register(TestProvider("provider-a"))
+    registry.register(MockProvider("provider-a"))
 
     selected = registry.select(
         name="provider-a",
