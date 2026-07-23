@@ -18,7 +18,10 @@ from src.intelligence.company_resolver import CompanyResolver
 from src.models.provider_status import ProviderStatus
 from src.run_summary import print_run_summary
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
-
+from src.adapters.providers.bootstrap import build_provider_registry
+from src.adapters.providers.bbb_crawlerbros import BBBCrawlerBrosProvider
+from src.adapters.providers.bbb_native import BBBNativeProvider
+from src.discovery.provider_orchestrator import ProviderOrchestrator
 
 def _clean_label(value: Any) -> str:
     if value is None:
@@ -377,7 +380,13 @@ async def main() -> None:
 
         local_only = bool(input_data.get("localOnly", True))
         requested_providers = _normalize_requested_providers(input_data)
+        enable_website_enrichment = bool(
+            input_data.get("enableWebsiteEnrichment", False)
+        )
 
+        website_timeout_ms = int(
+            input_data.get("websiteTimeoutMs", 15000)
+        )
         Actor.log.info(f"LOADED INPUT keys={list(input_data.keys())}")
         Actor.log.info(
             "REQUESTED PROVIDERS: "
@@ -396,10 +405,16 @@ async def main() -> None:
             content_type="application/json",
         )
 
-        enable_website_enrichment = bool(
-            input_data.get("enableWebsiteEnrichment", False)
+        use_provider_framework = bool(
+            input_data.get(
+                "useProviderFramework",
+                False,
+            )
         )
-        website_timeout_ms = int(input_data.get("websiteTimeoutMs", 15000))
+
+        Actor.log.info(
+            f"Provider Framework: {'ENABLED' if use_provider_framework else 'DISABLED'}"
+        )
 
         search_request = RequestParser.parse(input_data)
         search_orchestrator = SearchOrchestrator()
@@ -441,6 +456,53 @@ async def main() -> None:
                 bbb_provider_mode = str(
                     bbb_provider_config.get("mode", "native")
                 ).strip().lower()
+
+                provider_registry = build_provider_registry(
+                    [
+                        BBBCrawlerBrosProvider(
+                            actor_id=bbb_provider_config.get(
+                                "actorId",
+                                "ocrad/bbb-company-scraper",
+                            ),
+                            timeout_seconds=int(
+                                bbb_provider_config.get(
+                                    "timeoutSeconds",
+                                    600,
+                                )
+                            ),
+                        ),
+                        BBBNativeProvider(),
+                    ]
+                )
+
+                provider_orchestrator = ProviderOrchestrator(
+                    provider_registry
+                )
+
+                if (
+                    use_provider_framework
+                    and directory == "bbb"
+                ):
+                    execution_results = await provider_orchestrator.search_with_fallback(
+                        request={
+                            "search_url": url,
+                            "max_pages": input_data.get("maxPages", 10),
+                            "max_companies": input_data.get("maxListings", 100),
+                            "max_concurrency": 5,
+                            "use_apify_proxy": True,
+                        },
+                        primary_name="bbb_external",
+                        fallback_name="bbb_native",
+                        fallback_enabled=True,
+                    )
+
+                    for result in execution_results:
+                        Actor.log.info(
+                            "[PF] "
+                            f"{result.provider_name} "
+                            f"status={result.status} "
+                            f"records={len(result.records)}"
+                        )
 
                 external_requested = _provider_requested(
                     requested_providers,
