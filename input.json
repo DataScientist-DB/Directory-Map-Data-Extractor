@@ -1,0 +1,18 @@
+{
+  "mode": "auto",
+  "architecture": "chambermaster",
+  "startUrls": [
+    {
+      "url": "https://www.costamesachamber.com/list/"
+    }
+  ],
+  "maxListings": 30,
+  "maxPages": 3,
+  "enableWebsiteEnrichment": true,
+  "websiteTimeoutMs": 15000,
+  "outputCsv": true,
+  "outputXlsx": true,
+  "outputColumnsMode": "all",
+  "outputBaseName": "rc1_7_chambermaster_real_test",
+  "debug": true
+}

@@ -1,0 +1,40 @@
+{
+  "mode": "auto",
+  "architecture": "bbb",
+
+  "search": {
+    "keyword": "traffic engineers",
+    "location": "Costa Mesa, CA",
+    "country": "USA"
+  },
+
+  "startUrls": [
+    {
+      "url": "https://www.bbb.org/us/ca/costa-mesa/category/traffic-engineers"
+    }
+  ],
+
+  "scrapeDetails": true,
+
+  "enableWebsiteEnrichment": false,
+  "enableProfileEnrichment": false,
+
+  "maxListings": 5,
+  "maxPages": 1,
+
+  "requestDelay": 1500,
+  "maxConcurrency": 1,
+
+  "proxyConfiguration": {
+    "useApifyProxy": true,
+    "apifyProxyGroups": [
+      "RESIDENTIAL"
+    ]
+  },
+
+  "outputCsv": true,
+  "outputXlsx": true,
+  "outputBaseName": "bbb_provider_framework_test",
+
+  "debug": true
+}
