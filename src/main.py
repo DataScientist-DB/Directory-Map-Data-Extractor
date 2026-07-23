@@ -479,31 +479,6 @@ async def main() -> None:
                     provider_registry
                 )
 
-                if (
-                    use_provider_framework
-                    and directory == "bbb"
-                ):
-                    execution_results = await provider_orchestrator.search_with_fallback(
-                        request={
-                            "search_url": url,
-                            "max_pages": input_data.get("maxPages", 10),
-                            "max_companies": input_data.get("maxListings", 100),
-                            "max_concurrency": 5,
-                            "use_apify_proxy": True,
-                        },
-                        primary_name="bbb_external",
-                        fallback_name="bbb_native",
-                        fallback_enabled=True,
-                    )
-
-                    for result in execution_results:
-                        Actor.log.info(
-                            "[PF] "
-                            f"{result.provider_name} "
-                            f"status={result.status} "
-                            f"records={len(result.records)}"
-                        )
-
                 external_requested = _provider_requested(
                     requested_providers,
                     "bbb_external",
@@ -512,6 +487,54 @@ async def main() -> None:
                     requested_providers,
                     "bbb_native",
                 )
+                if use_provider_framework and directory == "bbb":
+                    provider_request = {
+                        "search_url": url,
+                        "max_pages": int(
+                            bbb_provider_config.get(
+                                "maxPages",
+                                input_data.get("maxPages", 10),
+                            )
+                        ),
+                        "max_companies": int(
+                            bbb_provider_config.get(
+                                "maxCompanies",
+                                input_data.get("maxListings", 100),
+                            )
+                        ),
+                        "max_concurrency": int(
+                            bbb_provider_config.get(
+                                "maxConcurrency",
+                                input_data.get("maxConcurrency", 1),
+                            )
+                        ),
+                        "use_apify_proxy": bool(
+                            bbb_provider_config.get("useApifyProxy", True)
+                        ),
+                    }
+
+                    if local_only or not external_requested:
+                        execution_results = await provider_orchestrator.search(
+                            request=provider_request,
+                            provider_names=["bbb_native"],
+                        )
+                    else:
+                        execution_results = (
+                            await provider_orchestrator.search_with_fallback(
+                                request=provider_request,
+                                primary_name="bbb_external",
+                                fallback_name="bbb_native",
+                                fallback_enabled=native_requested,
+                            )
+                        )
+
+                    for result in execution_results:
+                        Actor.log.info(
+                            "[PF] "
+                            f"{result.provider_name} "
+                            f"status={result.status} "
+                            f"records={len(result.records)}"
+                        )
 
                 # Explicit provider input overrides legacy bbbProvider.mode.
                 use_external_bbb = (
