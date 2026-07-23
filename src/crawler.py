@@ -82,8 +82,6 @@ def detect_directory_architecture(html: str, url: str = "") -> str:
 
     return "unknown"
 
-import json
-from typing import Callable, Awaitable
 
 def _lower_keys(m: dict[str, str]) -> dict[str, str]:
     out: dict[str, str] = {}
@@ -173,7 +171,7 @@ def _split_products_into_category_and_services(products: Any) -> tuple[list[str]
     if not text:
         return [], []
 
-    markers = ["REGENERATIVE PRACTICES", "OBSERVATIONS"]
+
     upper = text.upper()
 
     product_part = text
@@ -505,7 +503,7 @@ async def run_crawler(
             .lower()
         )
     # New preferred mechanism
-    requested_directories = search_request.directories
+
 
     start_urls = input_data.get("startUrls") or []
     max_listings = int(input_data.get("maxListings", 200))

@@ -5,7 +5,7 @@ async def extract_listing(element, fields):
         try:
             loc = element.locator(selector)
             data[field] = (await loc.inner_text()).strip()
-        except:
+        except Exception:
             data[field] = None
 
     return data

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import html as html_lib
+import json
 import re
-from typing import Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 
 # "rpc5":"Vegetables"  OR  'rpc5':'Vegetables'
@@ -75,8 +76,7 @@ def merge_maps(auto_map: Dict[str, str], manual_map: Dict[str, str]) -> Dict[str
             out[str(k).strip()] = str(v).strip()
     return out
 
-import json
-from typing import Any, Iterable, Optional
+
 
 def extract_taxonomy_maps_from_json(obj: Any) -> tuple[dict[str, str], dict[str, str]]:
     """

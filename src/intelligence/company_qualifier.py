@@ -180,8 +180,8 @@ class CompanyQualifier:
 
         parts = []
 
-        for field in fields:
-            value = record.get(field)
+        for field_name in fields:
+            value = record.get(field_name)
             if value:
                 parts.append(str(value))
 

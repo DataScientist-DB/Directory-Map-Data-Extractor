@@ -167,11 +167,8 @@ class WebsiteEnricher:
         primary = phone_records[0]
 
         if not record.get("phone"):
-            self._apply_phone_records(
-                record=record,
-                html=html,
-                source=candidate,
-            )
+            record["phone"] = getattr(primary, "phone", "")
+
 
         record["primary_phone_quality_score"] = getattr(
             primary,
