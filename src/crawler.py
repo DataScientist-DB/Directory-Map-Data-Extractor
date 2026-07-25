@@ -792,30 +792,33 @@ async def run_crawler(
                             page,
                             max_records=max_listings,
                         )
-                        if not adapter_records and getattr(adapter, "access_report", None):
-                            report = adapter.access_report
 
-                            if report.blocked():
+                        access_report = getattr(adapter, "access_report", None)
+
+                        if not adapter_records and access_report:
+                            if access_report.blocked():
                                 await Actor.push_data(
                                     {
                                         "status": "blocked",
-                                        "blocked_reason": report.blocked_reason,
-                                        "architecture": report.architecture,
+                                        "blocked_reason": access_report.blocked_reason,
+                                        "architecture": access_report.architecture,
                                         "source_url": directory_source_url,
                                         "records_found": 0,
                                         "crawl_mode": "adapter_access_diagnostic",
 
-                                        "entity_name": "ACCESS DIAGNOSTIC - Better Business Bureau",
-                                        "category_names": report.search_keyword,
-                                        "location": report.search_location,
+                                        "entity_name": (
+                                            "ACCESS DIAGNOSTIC - Better Business Bureau"
+                                        ),
+                                        "category_names": access_report.search_keyword,
+                                        "location": access_report.search_location,
 
-                                        "access_status": report.status,
-                                        "access_reason": report.blocked_reason,
-                                        "access_http_status": report.http_status,
-                                        "access_pages_visited": report.pages_visited,
-                                        "access_profiles_found": report.profiles_found,
-                                        "access_recommendation": report.recommendation,
-                                        "access_strategy": report.access_strategy,
+                                        "access_status": access_report.status,
+                                        "access_reason": access_report.blocked_reason,
+                                        "access_http_status": access_report.http_status,
+                                        "access_pages_visited": access_report.pages_visited,
+                                        "access_profiles_found": access_report.profiles_found,
+                                        "access_recommendation": access_report.recommendation,
+                                        "access_strategy": access_report.access_strategy,
                                     }
                                 )
                                 pushed += 1
@@ -824,7 +827,6 @@ async def run_crawler(
                             print("DEBUG adapter records:", len(adapter_records))
 
                         for record in adapter_records[:max_listings]:
-
                             if enable_website_enrichment and record.get("website"):
                                 record = await website_enricher.enrich_record_from_website(
                                     page,
@@ -846,10 +848,11 @@ async def run_crawler(
 
                             await Actor.push_data(record)
                             pushed += 1
+
                         if enable_website_enrichment and debug:
                             website_enricher.print_statistics()
 
-                        return {
+                        result = {
                             "status": "adapter_extraction_complete",
                             "architecture": architecture,
                             "source_url": directory_source_url,
@@ -857,6 +860,22 @@ async def run_crawler(
                             "crawl_mode": "auto",
                             "recommended_strategy": f"{architecture}_adapter",
                         }
+
+                        if access_report:
+                            result.update(
+                                {
+                                    "access_status": access_report.status,
+                                    "access_reason": access_report.blocked_reason,
+                                    "blocked_reason": access_report.blocked_reason,
+                                    "access_http_status": access_report.http_status,
+                                    "access_pages_visited": access_report.pages_visited,
+                                    "access_profiles_found": access_report.profiles_found,
+                                    "access_recommendation": access_report.recommendation,
+                                    "access_strategy": access_report.access_strategy,
+                                }
+                            )
+
+                        return result
 
                     await Actor.push_data({
                         "source_url": page.url,

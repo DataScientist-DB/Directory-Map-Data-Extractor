@@ -16,13 +16,15 @@ async def test_native_provider_preserves_blocked_status() -> None:
         website_timeout_ms: int = 15000,
     ) -> dict[str, Any]:
         return {
-            "status": "blocked",
+            "status": "adapter_extraction_complete",
+            "access_status": "blocked",
             "blocked_reason": "Cloudflare Turnstile",
+            "access_reason": "Cloudflare Turnstile",
             "records_found": 0,
-            "http_status": 403,
-            "pages_visited": 1,
-            "profiles_found": 0,
-            "recommendation": "Use Apify Residential Proxy.",
+            "access_http_status": 403,
+            "access_pages_visited": 1,
+            "access_profiles_found": 0,
+            "access_recommendation": "Use Apify Residential Proxy.",
         }
 
     provider = BBBNativeProvider(crawler=fake_crawler)

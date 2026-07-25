@@ -109,8 +109,8 @@ class BBBNativeProvider(BaseProvider):
         self._last_result = dict(result)
 
         raw_status = str(
-            result.get("status")
-            or result.get("access_status")
+            result.get("access_status")
+            or result.get("status")
             or ""
         ).strip().lower()
 

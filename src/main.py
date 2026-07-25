@@ -489,7 +489,10 @@ async def main() -> None:
                 )
                 if use_provider_framework and directory == "bbb":
                     provider_request = {
+                        "input_data": input_data,
                         "search_url": url,
+                        "enable_website_enrichment": enable_website_enrichment,
+                        "website_timeout_ms": website_timeout_ms,
                         "max_pages": int(
                             bbb_provider_config.get(
                                 "maxPages",
@@ -535,6 +538,25 @@ async def main() -> None:
                             f"status={result.status} "
                             f"records={len(result.records)}"
                         )
+
+                        crawl_results.append(
+                            {
+                                "architecture": directory,
+                                "directory": directory,
+                                "source_url": url,
+                                "target_url": url,
+                                "status": result.status.value
+                                if hasattr(result.status, "value")
+                                else str(result.status),
+                                "records_found": len(result.records),
+                                "provider": result.provider_name,
+                                "category_map": {},
+                                "service_map": {},
+                                "access_reason": result.report.reason,
+                            }
+                        )
+
+                    continue
 
                 # Explicit provider input overrides legacy bbbProvider.mode.
                 use_external_bbb = (
