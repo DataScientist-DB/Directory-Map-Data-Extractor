@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from copy import deepcopy
+
 from typing import Any, Awaitable, Callable, Dict, Mapping, Optional
 
 from src.adapters.providers.base_provider import BaseProvider
@@ -8,7 +8,7 @@ from src.crawler import run_crawler
 from src.models.provider_report import ProviderReport
 from src.models.provider_result import ProviderResult
 from src.models.provider_status import ProviderStatus
-
+from src.adapters.providers.request_builder import build_provider_input
 CrawlerCallable = Callable[..., Awaitable[Optional[dict[str, Any]]]]
 
 
@@ -81,14 +81,11 @@ class BBBNativeProvider(BaseProvider):
                 "BBBNativeProvider requires request['search_url']."
             )
 
-        target_input = deepcopy(dict(source_input))
-        target_input["architecture"] = "bbb"
-        target_input["startUrls"] = [{"url": search_url}]
-
-        target_search = dict(target_input.get("search") or {})
-        target_search["directories"] = ["bbb"]
-        target_search["autoSelectDirectories"] = False
-        target_input["search"] = target_search
+        target_input = build_provider_input(
+            source_input,
+            "bbb",
+            search_url,
+        )
 
         result = await self._crawler(
             target_input,
