@@ -9,13 +9,13 @@ from typing import Any, Dict, Iterable
 
 from apify import Actor
 
-from src.adapters.external_bbb import ExternalBBBAdapter
+
 from src.crawler import run_crawler
 from src.discovery.request_parser import RequestParser
 from src.discovery.search_orchestrator import SearchOrchestrator
 from src.export_columns import ALL_COLUMNS, DEFAULT_COLUMNS
 from src.intelligence.company_resolver import CompanyResolver
-from src.models.provider_status import ProviderStatus
+
 from src.run_summary import print_run_summary
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
 from src.adapters.providers.bootstrap import build_provider_registry
@@ -405,16 +405,9 @@ async def main() -> None:
             content_type="application/json",
         )
 
-        use_provider_framework = bool(
-            input_data.get(
-                "useProviderFramework",
-                False,
-            )
-        )
+        Actor.log.info("Provider Framework: ENABLED")
 
-        Actor.log.info(
-            f"Provider Framework: {'ENABLED' if use_provider_framework else 'DISABLED'}"
-        )
+
 
         search_request = RequestParser.parse(input_data)
         search_orchestrator = SearchOrchestrator()
@@ -453,9 +446,6 @@ async def main() -> None:
                 target_input["search"] = target_search
 
                 bbb_provider_config = input_data.get("bbbProvider", {}) or {}
-                bbb_provider_mode = str(
-                    bbb_provider_config.get("mode", "native")
-                ).strip().lower()
 
                 provider_registry = build_provider_registry(
                     [
@@ -487,7 +477,7 @@ async def main() -> None:
                     requested_providers,
                     "bbb_native",
                 )
-                if use_provider_framework and directory == "bbb":
+                if directory == "bbb":
                     provider_request = {
                         "input_data": input_data,
                         "search_url": url,
@@ -558,145 +548,6 @@ async def main() -> None:
 
                     continue
 
-                # Explicit provider input overrides legacy bbbProvider.mode.
-                use_external_bbb = (
-                    directory == "bbb"
-                    and not local_only
-                    and external_requested
-                    and (
-                        bool(requested_providers)
-                        or bbb_provider_mode == "external_actor"
-                    )
-                )
-
-                external_report: dict[str, Any] | None = None
-
-                if use_external_bbb:
-                    try:
-                        external_bbb = ExternalBBBAdapter(
-                            actor_id=bbb_provider_config.get(
-                                "actorId",
-                                "ocrad/bbb-company-scraper",
-                            ),
-                            timeout_seconds=int(
-                                bbb_provider_config.get("timeoutSeconds", 600)
-                            ),
-                        )
-
-                        external_result = await external_bbb.search(
-                            search_url=url,
-                            max_pages=int(
-                                bbb_provider_config.get(
-                                    "maxPages",
-                                    input_data.get("maxPages", 10),
-                                )
-                            ),
-                            max_companies=int(
-                                bbb_provider_config.get(
-                                    "maxCompanies",
-                                    input_data.get("maxListings", 100),
-                                )
-                            ),
-                            max_concurrency=int(
-                                bbb_provider_config.get("maxConcurrency", 5)
-                            ),
-                            use_apify_proxy=bool(
-                                bbb_provider_config.get("useApifyProxy", True)
-                            ),
-                        )
-
-                        external_records = external_result.records or []
-                        external_report = external_result.report.to_dict()
-
-                        external_status = str(
-                            external_report.get(
-                                "status",
-                                ProviderStatus.FAILED.value,
-                            )
-                        )
-                        external_reason = str(
-                            external_report.get("reason", "")
-                        )
-
-                        _log_provider_result(
-                            provider_name="bbb_external",
-                            status=external_status,
-                            records=len(external_records),
-                            error=external_reason,
-                        )
-
-                        if external_records:
-                            for record in external_records:
-                                await Actor.push_data(record)
-
-                            crawl_results.append(
-                                {
-                                    "architecture": "bbb",
-                                    "directory": "bbb",
-                                    "source_url": url,
-                                    "target_url": url,
-                                    "status": "success",
-                                    "records_found": len(external_records),
-                                    "external_provider": external_report,
-                                    "category_map": {},
-                                    "service_map": {},
-                                }
-                            )
-                            continue
-
-                        Actor.log.warning(
-                            "External BBB provider unavailable: "
-                            f"status={external_status} "
-                            f"reason={external_reason}"
-                        )
-
-                    except Exception as exc:
-                        external_report = {
-                            "status": ProviderStatus.FAILED.value,
-                            "reason": str(exc),
-                        }
-                        _log_provider_result(
-                            provider_name="bbb_external",
-                            status="failed",
-                            records=0,
-                            error=str(exc),
-                        )
-
-                    fallback_to_native = bool(
-                        bbb_provider_config.get("fallbackToNative", True)
-                    )
-
-                    # An explicit providers=["bbb_external"] request should not
-                    # silently run native unless fallbackToNative is enabled.
-                    if not fallback_to_native or not native_requested:
-                        crawl_results.append(
-                            {
-                                "architecture": "bbb",
-                                "directory": "bbb",
-                                "source_url": url,
-                                "target_url": url,
-                                "status": (
-                                    external_report or {}
-                                ).get("status", "failed"),
-                                "records_found": 0,
-                                "external_provider": external_report or {},
-                                "category_map": {},
-                                "service_map": {},
-                            }
-                        )
-                        continue
-
-                    Actor.log.info(
-                        "External BBB provider requires fallback. "
-                        "Falling back to native BBB adapter."
-                    )
-
-                # Respect an explicit provider list that excludes native BBB.
-                if directory == "bbb" and requested_providers and not native_requested:
-                    Actor.log.info(
-                        "Skipping native BBB because it was not requested."
-                    )
-                    continue
 
                 try:
                     target_result = await run_crawler(
@@ -708,8 +559,7 @@ async def main() -> None:
                     target_result["directory"] = directory
                     target_result["target_url"] = url
 
-                    if external_report is not None:
-                        target_result["external_provider"] = external_report
+
 
                     crawl_results.append(target_result)
 
