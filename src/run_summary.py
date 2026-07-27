@@ -263,6 +263,17 @@ def print_provider_summary(
     items: list[dict[str, Any]],
     crawl_info: dict[str, Any],
 ) -> None:
+
+    architecture = str(
+        crawl_info.get(
+            "architecture",
+            "",
+        )
+    ).strip().lower()
+
+    if architecture != "bbb":
+        return
+
     external_report = crawl_info.get(
         "external_provider",
         {},

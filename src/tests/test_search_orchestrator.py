@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 from src.discovery.search_orchestrator import SearchOrchestrator
 from src.models.search_request import SearchRequest
 
@@ -54,3 +56,33 @@ def test_removes_duplicate_targets():
     )
 
     assert len(targets) == 1
+
+
+def test_builds_target_from_architecture_and_start_url() -> None:
+    orchestrator = SearchOrchestrator()
+
+    input_data = {
+        "architecture": "chambermaster",
+        "startUrls": [
+            {
+                "url": "https://example.com/list",
+            }
+        ],
+    }
+
+    request = SimpleNamespace(
+        directories=[],
+        auto_select_directories=False,
+    )
+
+    targets = orchestrator.build_targets(
+        input_data=input_data,
+        request=request,
+    )
+
+    assert targets == [
+        {
+            "directory": "chambermaster",
+            "url": "https://example.com/list",
+        }
+    ]

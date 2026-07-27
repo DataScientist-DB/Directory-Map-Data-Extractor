@@ -10,10 +10,21 @@ class RequestParser:
 
         search = actor_input.get("search", {})
 
-        return SearchRequest(
-            keyword=search.get("keyword", ""),
+        keyword = str(
+            search.get("keyword", "")
+        ).strip()
 
-            services=search.get("services", []),
+        services = search.get("services", [])
+
+        # If the user specifies only a keyword,
+        # treat it as the requested service.
+        if not services and keyword:
+            services = [keyword]
+
+        return SearchRequest(
+            keyword=keyword,
+
+            services=services,
 
             products=search.get("products", []),
 

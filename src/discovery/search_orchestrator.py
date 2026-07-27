@@ -67,6 +67,35 @@ class SearchOrchestrator:
 
         if targets:
             return self._deduplicate_targets(targets)
+        if targets:
+            return self._deduplicate_targets(targets)
+
+        # NEW: Explicit architecture + startUrls support
+        architecture = str(
+            input_data.get("architecture") or ""
+        ).strip().lower()
+
+        start_urls = input_data.get("startUrls") or []
+
+        if (
+            architecture
+            and architecture not in {"auto", "unknown"}
+            and start_urls
+        ):
+            first_url = str(
+                (start_urls[0] or {}).get("url") or ""
+            ).strip()
+
+            if first_url:
+                return self._deduplicate_targets(
+                    [
+                        {
+                            "directory": architecture,
+                            "url": first_url,
+                        }
+                    ]
+                )
+
 
         # Backward-compatible single-target mode
         selected = self.get_directories(request)

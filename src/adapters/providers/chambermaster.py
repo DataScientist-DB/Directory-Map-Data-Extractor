@@ -12,7 +12,7 @@ from src.adapters.providers.request_builder import build_provider_input
 CrawlerCallable = Callable[..., Awaitable[Optional[dict[str, Any]]]]
 
 
-class BBBNativeProvider(BaseProvider):
+class ChamberMasterProvider(BaseProvider):
     """
     Native BBB provider backed by the platform's existing crawler.
 
@@ -35,7 +35,7 @@ class BBBNativeProvider(BaseProvider):
         self._last_result: Dict[str, Any] = {}
 
     def provider_name(self) -> str:
-        return "bbb_native"
+        return "chambermaster"
 
     def capabilities(self) -> Dict[str, bool]:
         return {

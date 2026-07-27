@@ -18,11 +18,10 @@ from src.intelligence.company_resolver import CompanyResolver
 
 from src.run_summary import print_run_summary
 from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
-from src.adapters.providers.bootstrap import build_provider_registry
-from src.adapters.providers.bbb_crawlerbros import BBBCrawlerBrosProvider
-from src.adapters.providers.bbb_native import BBBNativeProvider
+from src.adapters.providers.default_registry import (
+    build_default_provider_registry,
+)
 from src.discovery.provider_orchestrator import ProviderOrchestrator
-
 def _clean_label(value: Any) -> str:
     if value is None:
         return ""
@@ -447,23 +446,8 @@ async def main() -> None:
 
                 bbb_provider_config = input_data.get("bbbProvider", {}) or {}
 
-                provider_registry = build_provider_registry(
-                    [
-                        BBBCrawlerBrosProvider(
-                            actor_id=bbb_provider_config.get(
-                                "actorId",
-                                "ocrad/bbb-company-scraper",
-                            ),
-                            timeout_seconds=int(
-                                bbb_provider_config.get(
-                                    "timeoutSeconds",
-                                    600,
-                                )
-                            ),
-                        ),
-                        BBBNativeProvider(),
-                    ]
-                )
+                provider_registry = build_default_provider_registry(input_data)
+
 
                 provider_orchestrator = ProviderOrchestrator(
                     provider_registry
@@ -505,6 +489,7 @@ async def main() -> None:
                             bbb_provider_config.get("useApifyProxy", True)
                         ),
                     }
+
 
                     if local_only or not external_requested:
                         execution_results = await provider_orchestrator.search(
@@ -548,6 +533,26 @@ async def main() -> None:
 
                     continue
 
+                elif directory == "chambermaster":
+                    provider_request = {
+                        "input_data": target_input,
+                        "search_url": url,
+                        "enable_website_enrichment": enable_website_enrichment,
+                        "website_timeout_ms": website_timeout_ms,
+                    }
+
+                    execution_results = await provider_orchestrator.search(
+                        request=provider_request,
+                        provider_names=["chambermaster"],
+                    )
+
+                    crawl_results.extend(
+                        result.report.metadata.get("crawler_result", {})
+                        for result in execution_results
+                        if result.report
+                    )
+
+                    continue
 
                 try:
                     target_result = await run_crawler(

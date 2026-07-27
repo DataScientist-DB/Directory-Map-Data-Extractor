@@ -1032,11 +1032,7 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return None
 
-    async def discover_categories(
-        self,
-        page,
-        html: str = "",
-    ) -> list[str]:
+    async def discover_categories(self, page, html: str = "") -> list[str]:
         """
         Discover ChamberMaster/GrowthZone category pages.
 
@@ -1084,72 +1080,6 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         return categories
 
-    def _filter_categories_by_request(
-        self,
-        categories: list[str],
-    ) -> list[str]:
-        """
-        Filter ChamberMaster category URLs using requested
-        services and keyword.
-        """
-        requested_terms: list[str] = []
-
-        services = getattr(
-            self.discovery,
-            "services",
-            [],
-        ) or []
-
-        for service in services:
-            term = str(service).strip().lower()
-
-            if term:
-                requested_terms.append(term)
-
-        keyword = str(
-            getattr(
-                self.discovery,
-                "keyword",
-                "",
-            ) or ""
-        ).strip().lower()
-
-        if keyword:
-            requested_terms.append(keyword)
-
-        requested_terms = list(
-            dict.fromkeys(requested_terms)
-        )
-
-        self._debug(
-            "DEBUG ChamberMaster requested category terms:",
-            requested_terms,
-        )
-
-        if not requested_terms:
-            self._debug(
-                "DEBUG ChamberMaster no requested terms; "
-                "using all categories"
-            )
-            return categories
-
-        matched_categories: list[str] = []
-
-        for category_url in categories:
-            searchable = str(category_url).lower()
-
-            if any(
-                term in searchable
-                for term in requested_terms
-            ):
-                matched_categories.append(category_url)
-
-        self._debug(
-            "DEBUG ChamberMaster matching categories:",
-            matched_categories,
-        )
-
-        return matched_categories
     ###########################################################################
     # Member discovery
     ###########################################################################
@@ -1242,7 +1172,6 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         page,
         category_url: str,
     ) -> dict[str, set[str]]:
-
         urls: dict[str, set[str]] = {}
         current_url = category_url
         self._debug("DEBUG ENTER CATEGORY:", current_url)
@@ -1330,33 +1259,19 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         page,
         category_urls: list[str],
     ) -> list[dict[str, Any]]:
-
-        self._debug("=" * 70)
-        self._debug("ENTER discover_member_urls()")
-        self._debug("CATEGORY URL COUNT:", len(category_urls))
-        self._debug("CATEGORY URLS:", category_urls)
-        self._debug("=" * 70)
-
         member_map: dict[str, set[str]] = {}
 
-        max_listings = max(
-            1,
-            int(self.discovery.max_results),
-        )
+        max_listings = max(1, int(self.discovery.max_results))
 
         self._debug(
             "DEBUG ChamberMaster effective maxListings:",
             max_listings,
         )
 
-        for i, category_url in enumerate(
-            category_urls,
-            start=1,
-        ):
+        for i, category_url in enumerate(category_urls, start=1):
             try:
                 self._debug(
-                    f"DEBUG ChamberMaster category "
-                    f"{i}/{len(category_urls)}:",
+                    f"DEBUG ChamberMaster category {i}/{len(category_urls)}:",
                     category_url,
                 )
 
@@ -1512,41 +1427,13 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
 
         directory page -> categories -> member profile URLs -> profile extraction
         """
-
-
-
         categories = await self.discover_categories(page)
+        self.stats["categories"] = len(categories)
 
-        self.stats["categories_discovered"] = len(
-            categories
-        )
+        self._debug("DEBUG ChamberMaster categories found:", len(categories))
 
-        self._debug(
-            "DEBUG ChamberMaster categories found:",
-            len(categories),
-        )
-
-        matched_categories = (
-            self._filter_categories_by_request(
-                categories
-            )
-        )
-
-        if not matched_categories:
-            self._debug(
-                "DEBUG ChamberMaster no matching categories "
-                "found for the request"
-            )
-
-            return []
-
-        self.stats["categories"] = len(
-            matched_categories
-        )
-        member_urls = await self.discover_member_urls(
-            page,
-            matched_categories,
-        )
+        member_urls = await self.discover_member_urls(page, categories)
+        self.stats["member_urls"] = len(member_urls)
 
         self._debug("DEBUG ChamberMaster unique member URLs:", len(member_urls))
 
