@@ -1,138 +1,142 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping
 
-from src.discovery.directory_selector import DirectorySelector
+from src.adapters.providers.registry import ProviderRegistry
+from src.discovery.directory_selector import (
+    DirectorySelection,
+    DirectorySelector,
+)
+from src.discovery.search_plan import build_search_plan
 
 
 class SearchOrchestrator:
-    """
-    Builds executable directory targets for one user search request.
+    """Build executable, backward-compatible directory targets."""
 
-    RC1.7.2:
-      - supports one or more explicitly configured directory URLs
-      - keeps adapter execution sequential
-      - allows one combined dataset/export
-    """
-
-    def __init__(self) -> None:
-        self.selector = DirectorySelector()
+    def __init__(
+        self,
+        *,
+        registry: ProviderRegistry | None = None,
+        selector: DirectorySelector | None = None,
+    ) -> None:
+        self.registry = registry
+        available = (
+            registry.directory_names()
+            if registry is not None
+            else None
+        )
+        self.selector = selector or DirectorySelector(
+            implemented_only=True,
+            available_provider_ids=available,
+        )
 
     def get_directories(self, request: Any) -> list[str]:
-        return self.selector.select(request)
+        result = self.selector.select(request)
+        if isinstance(result, DirectorySelection):
+            return list(result.provider_ids)
+        return result
+
+    def get_search_plan(self, request: Any) -> dict[str, Any]:
+        self.get_directories(request)
+        selection = self.selector.last_selection
+        if selection is None:
+            raise RuntimeError("Directory selection did not produce a result.")
+        return build_search_plan(selection)
 
     def build_targets(
         self,
         input_data: dict[str, Any],
         request: Any,
     ) -> list[dict[str, str]]:
-        """
-        Return targets such as:
+        explicit = self._explicit_targets(input_data)
+        if explicit:
+            return self._deduplicate_targets(explicit)
 
-        [
-            {
-                "directory": "chambermaster",
-                "url": "https://www.costamesachamber.com/list"
-            },
-            {
-                "directory": "bbb",
-                "url": "https://www.bbb.org/..."
-            }
-        ]
-        """
-
-        explicit_targets = input_data.get("directoryTargets") or []
-
-        targets: list[dict[str, str]] = []
-
-        for target in explicit_targets:
-            if not isinstance(target, dict):
-                continue
-
-            directory = str(
-                target.get("directory")
-                or target.get("architecture")
-                or ""
-            ).strip().lower()
-
-            url = str(target.get("url") or "").strip()
-
-            if directory and url:
-                targets.append(
-                    {
-                        "directory": directory,
-                        "url": url,
-                    }
-                )
-
-        if targets:
-            return self._deduplicate_targets(targets)
-        if targets:
-            return self._deduplicate_targets(targets)
-
-        # NEW: Explicit architecture + startUrls support
         architecture = str(
             input_data.get("architecture") or ""
         ).strip().lower()
-
-        start_urls = input_data.get("startUrls") or []
+        start_urls = self._start_urls(input_data)
 
         if (
             architecture
             and architecture not in {"auto", "unknown"}
             and start_urls
         ):
-            first_url = str(
-                (start_urls[0] or {}).get("url") or ""
-            ).strip()
+            return self._deduplicate_targets(
+                [
+                    {"directory": architecture, "url": url}
+                    for url in start_urls
+                ]
+            )
 
-            if first_url:
-                return self._deduplicate_targets(
-                    [
-                        {
-                            "directory": architecture,
-                            "url": first_url,
-                        }
-                    ]
-                )
-
-
-        # Backward-compatible single-target mode
         selected = self.get_directories(request)
-        start_urls = input_data.get("startUrls") or []
 
+        # A supplied URL historically represents one directory page. Preserve
+        # that behavior instead of assigning the same URL to unrelated sources.
         if selected and start_urls:
-            first_url = str(
-                (start_urls[0] or {}).get("url") or ""
-            ).strip()
+            return [
+                {
+                    "directory": selected[0],
+                    "url": start_urls[0],
+                }
+            ]
 
-            if first_url:
-                targets.append(
-                    {
-                        "directory": selected[0],
-                        "url": first_url,
-                    }
-                )
+        # Catalog selection cannot invent directory-specific search URLs.
+        # URL construction belongs in the provider/request-builder layer.
+        return []
 
-        return self._deduplicate_targets(targets)
+    def resolve_provider(self, directory: str):
+        """Resolve a target directory to its best registered provider."""
+        if self.registry is None:
+            raise RuntimeError(
+                "Provider resolution requires a ProviderRegistry."
+            )
+        return self.registry.select_for_directory(directory)
 
+    @staticmethod
+    def _start_urls(input_data: Mapping[str, Any]) -> list[str]:
+        result: list[str] = []
+        for item in input_data.get("startUrls") or []:
+            if isinstance(item, str):
+                url = item.strip()
+            elif isinstance(item, Mapping):
+                url = str(item.get("url") or "").strip()
+            else:
+                continue
+            if url:
+                result.append(url)
+        return result
+
+    @staticmethod
+    def _explicit_targets(
+        input_data: Mapping[str, Any],
+    ) -> list[dict[str, str]]:
+        result: list[dict[str, str]] = []
+        for target in input_data.get("directoryTargets") or []:
+            if not isinstance(target, Mapping):
+                continue
+            directory = str(
+                target.get("directory")
+                or target.get("architecture")
+                or ""
+            ).strip().lower()
+            url = str(target.get("url") or "").strip()
+            if directory and url:
+                result.append({"directory": directory, "url": url})
+        return result
+
+    @staticmethod
     def _deduplicate_targets(
-        self,
         targets: list[dict[str, str]],
     ) -> list[dict[str, str]]:
         result: list[dict[str, str]] = []
         seen: set[tuple[str, str]] = set()
-
         for target in targets:
             key = (
-                target["directory"].lower(),
-                target["url"].rstrip("/").lower(),
+                target["directory"].strip().casefold(),
+                target["url"].rstrip("/").casefold(),
             )
-
-            if key in seen:
-                continue
-
-            seen.add(key)
-            result.append(target)
-
+            if key not in seen:
+                seen.add(key)
+                result.append(target)
         return result

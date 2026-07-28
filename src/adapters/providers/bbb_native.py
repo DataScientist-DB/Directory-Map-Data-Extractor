@@ -56,7 +56,7 @@ class BBBNativeProvider(BaseProvider):
 
     def metadata(self) -> Dict[str, Any]:
         return {
-            "directory": "chambermaster",
+            "directory": "bbb",
             "access_strategy": "native_adapter",
             "last_result": self._last_result,
         }
@@ -83,7 +83,7 @@ class BBBNativeProvider(BaseProvider):
 
         target_input = build_provider_input(
             source_input,
-            "chambermaster",
+            "bbb",
             search_url,
         )
 
@@ -166,7 +166,7 @@ class BBBNativeProvider(BaseProvider):
             self._last_health = "degraded"
 
         report = ProviderReport(
-            directory="chambermaster",
+            directory="bbb",
             provider=self.provider_name(),
             status=status,
             reason=reason,
