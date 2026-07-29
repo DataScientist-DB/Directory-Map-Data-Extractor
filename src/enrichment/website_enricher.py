@@ -81,6 +81,8 @@ class WebsiteEnricher:
 
     def _apply_score(self, record: dict[str, Any]) -> dict[str, Any]:
         score, grade = self.intelligence.score(record)
+        record["business_intelligence_score"] = score
+        record["business_intelligence_grade"] = grade
         record["intelligence_score"] = score
         record["intelligence_grade"] = grade
         return record

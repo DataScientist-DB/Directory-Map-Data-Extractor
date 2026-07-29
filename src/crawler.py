@@ -26,7 +26,9 @@ from src.adapters.router import get_adapter
 from src.enrichment.website_enricher import WebsiteEnricher
 from src.models.proxy_config import ProxyConfig
 from src.browser.browser_factory import BrowserFactory
-from src.intelligence.company_qualifier import CompanyQualifier
+from src.intelligence.company_processing_pipeline import (
+    CompanyProcessingPipeline,
+)
 from src.discovery.request_parser import RequestParser
 from src.discovery.search_orchestrator import SearchOrchestrator
 
@@ -36,9 +38,6 @@ FieldSpec = Union[str, Dict[str, Any]]
 # Small helpers / constants
 # -------------------------
 website_enricher = WebsiteEnricher()
-
-
-qualifier = CompanyQualifier()
 
 _RPC_RE = re.compile(r"\brpc\d+\b", re.I)
 _RSS_RE = re.compile(r"\brss\d+\b", re.I)
@@ -458,6 +457,19 @@ async def run_crawler(
 ) -> Dict[str, Any]:
     # Parse the user's search request
     search_request = RequestParser.parse(input_data)
+    processing_pipeline = CompanyProcessingPipeline(
+        request={
+            "keyword": search_request.keyword,
+            "services": search_request.services,
+            "products": search_request.products,
+            "industries": search_request.industries,
+            "location": search_request.location,
+            "country": search_request.country,
+        },
+        enable_website_enrichment=enable_website_enrichment,
+        website_timeout_ms=website_timeout_ms,
+        website_enricher=website_enricher,
+    )
 
     start_urls = input_data.get("startUrls") or []
 
@@ -827,26 +839,16 @@ async def run_crawler(
                             print("DEBUG adapter records:", len(adapter_records))
 
                         for record in adapter_records[:max_listings]:
-                            if enable_website_enrichment and record.get("website"):
-                                record = await website_enricher.enrich_record_from_website(
-                                    page,
+                            processed_record = (
+                                await processing_pipeline.process(
                                     record,
-                                    timeout_ms=website_timeout_ms,
+                                    page=page,
                                 )
-
-                            record = qualifier.qualify(
-                                record=record,
-                                request={
-                                    "keyword": search_request.keyword,
-                                    "services": search_request.services,
-                                    "products": search_request.products,
-                                    "industries": search_request.industries,
-                                    "location": search_request.location,
-                                    "country": search_request.country,
-                                },
                             )
+                            if processed_record is None:
+                                continue
 
-                            await Actor.push_data(record)
+                            await Actor.push_data(processed_record)
                             pushed += 1
 
                         if enable_website_enrichment and debug:
@@ -1019,7 +1021,14 @@ async def run_crawler(
                         continue
 
                     seen_keys.add(key)
-                    await Actor.push_data(merged)
+                    processed_record = await processing_pipeline.process(
+                        merged,
+                        page=page,
+                    )
+                    if processed_record is None:
+                        continue
+
+                    await Actor.push_data(processed_record)
                     pushed += 1
 
                 continue
@@ -1133,7 +1142,7 @@ async def run_crawler(
 
                     seen_keys.add(key)
 
-                    await Actor.push_data({
+                    processed_record = await processing_pipeline.process({
                         "entity_name": record.get("name"),
                         "website": record.get("website"),
                         "email": record.get("email"),
@@ -1141,7 +1150,11 @@ async def run_crawler(
                         "source_url": record.get("source_url"),
                         "services": record.get("description"),
                         "social_links": record.get("social_links"),
-                    })
+                    }, page=page)
+                    if processed_record is None:
+                        continue
+
+                    await Actor.push_data(processed_record)
 
                     pushed += 1
 
@@ -1276,7 +1289,14 @@ async def run_crawler(
                     record["service_names_str"] = "; ".join(record["service_names"]) if record["service_names"] else ""
 
 
-                    await Actor.push_data(record)
+                    processed_record = await processing_pipeline.process(
+                        record,
+                        page=page,
+                    )
+                    if processed_record is None:
+                        continue
+
+                    await Actor.push_data(processed_record)
                     pushed += 1
 
                 continue
@@ -1311,7 +1331,14 @@ async def run_crawler(
                     record["category_names_str"] = "; ".join(product_categories)
                     record["service_names_str"] = "; ".join(regenerative_services)
 
-                await Actor.push_data(record)
+                processed_record = await processing_pipeline.process(
+                    record,
+                    page=page,
+                )
+                if processed_record is None:
+                    continue
+
+                await Actor.push_data(processed_record)
                 pushed += 1
 
             if pagination_mode == "pagination" and pushed < max_listings:

@@ -13,6 +13,9 @@ from src.crawler import run_crawler
 from src.discovery.request_parser import RequestParser
 from src.discovery.search_orchestrator import SearchOrchestrator
 from src.export_columns import ALL_COLUMNS, DEFAULT_COLUMNS
+from src.intelligence.company_processing_pipeline import (
+    CompanyProcessingPipeline,
+)
 from src.intelligence.company_resolver import CompanyResolver
 
 from src.run_summary import print_run_summary
@@ -402,6 +405,18 @@ async def main() -> None:
 
 
         search_request = RequestParser.parse(input_data)
+        company_pipeline = CompanyProcessingPipeline(
+            request={
+                "keyword": search_request.keyword,
+                "services": search_request.services,
+                "products": search_request.products,
+                "industries": search_request.industries,
+                "location": search_request.location,
+                "country": search_request.country,
+            },
+            enable_website_enrichment=enable_website_enrichment,
+            website_timeout_ms=website_timeout_ms,
+        )
         provider_registry = build_default_provider_registry(input_data)
         search_orchestrator = SearchOrchestrator(
             registry=provider_registry,
@@ -473,7 +488,11 @@ async def main() -> None:
                     )
 
                 if outcome.records:
-                    await Actor.push_data(outcome.records)
+                    processed_records = await company_pipeline.process_many(
+                        outcome.records
+                    )
+                    if processed_records:
+                        await Actor.push_data(processed_records)
 
                 crawl_results.extend(outcome.crawl_results)
 
