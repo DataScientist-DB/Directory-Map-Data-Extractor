@@ -1150,6 +1150,41 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
         )
 
         return matched_categories
+
+    def _uses_direct_listing_source(
+        self,
+        current_url: str,
+        categories: list[str],
+    ) -> bool:
+        """
+        Return True when category discovery intentionally selected the supplied
+        listing URL itself.
+
+        Direct category, search, alphabetical, and category-less ``/list``
+        pages are already executable result sources. Filtering their URL
+        against the user's service text can incorrectly discard a valid target
+        (for example, ``management consulting`` against a ``Management``
+        category URL). Relevance is evaluated later by the company processing
+        pipeline, so explicit listing targets must be crawled as supplied.
+        """
+        if len(categories) != 1:
+            return False
+
+        normalized_current = self._normalize_member_url(
+            current_url or self.source_url
+        )
+        normalized_category = self._normalize_member_url(
+            categories[0]
+        )
+
+        if not normalized_current or not normalized_category:
+            return False
+
+        return (
+            normalized_current == normalized_category
+            and "/list" in urlsplit(normalized_current).path.lower()
+        )
+
     ###########################################################################
     # Member discovery
     ###########################################################################
@@ -1526,11 +1561,25 @@ class ChamberMasterAdapter(BaseDirectoryAdapter):
             len(categories),
         )
 
-        matched_categories = (
-            self._filter_categories_by_request(
-                categories
+        current_url = getattr(page, "url", "") or self.source_url
+
+        if self._uses_direct_listing_source(
+            current_url,
+            categories,
+        ):
+            matched_categories = categories
+
+            self._debug(
+                "DEBUG ChamberMaster honoring direct listing URL "
+                "without category-name filtering:",
+                matched_categories[0],
             )
-        )
+        else:
+            matched_categories = (
+                self._filter_categories_by_request(
+                    categories
+                )
+            )
 
         if not matched_categories:
             self._debug(
