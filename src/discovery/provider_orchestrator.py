@@ -124,6 +124,72 @@ class ProviderOrchestrator:
 
         return results
 
+    async def search_directory(
+        self,
+        request: Any,
+        *,
+        directory: str,
+        requested_provider_names: Optional[Sequence[str]] = None,
+        local_only: bool = False,
+    ) -> List[ProviderExecutionResult]:
+        """
+        Execute a directory's provider chain in registry priority order.
+
+        A successful or terminal result stops the chain. A result marked
+        ``requires_fallback`` advances to the next eligible provider.
+        ``local_only`` excludes providers whose metadata identifies an
+        external access strategy.
+        """
+        requested = {
+            str(name).strip().casefold()
+            for name in (requested_provider_names or [])
+            if str(name).strip()
+        }
+
+        providers = self.registry.providers_for_directory(
+            directory,
+            capability="search",
+        )
+
+        eligible = []
+        for provider in providers:
+            name = provider.provider_name().strip().casefold()
+            if requested and name not in requested:
+                continue
+
+            metadata = provider.metadata() or {}
+            access_strategy = str(
+                metadata.get("access_strategy") or ""
+            ).strip().casefold()
+
+            if local_only and access_strategy in {
+                "external",
+                "external_actor",
+                "remote_actor",
+                "remote_api",
+            }:
+                continue
+
+            eligible.append(provider)
+
+        results: List[ProviderExecutionResult] = []
+
+        for provider in eligible:
+            provider_results = await self.search(
+                request,
+                provider_names=[provider.provider_name()],
+            )
+            if not provider_results:
+                continue
+
+            result = provider_results[0]
+            results.append(result)
+
+            if not result.requires_fallback:
+                break
+
+        return results
+
     @staticmethod
     def _normalize_records(response: Any) -> List[Any]:
         if response is None:

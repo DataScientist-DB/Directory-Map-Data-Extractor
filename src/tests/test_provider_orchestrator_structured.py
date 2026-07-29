@@ -25,6 +25,9 @@ class StructuredProvider(BaseProvider):
     def capabilities(self) -> dict[str, bool]:
         return {"search": True}
 
+    def metadata(self) -> dict[str, str]:
+        return {"directory": "bbb"}
+
     def search(self, request):
         return ProviderResult(
             records=self._records,
@@ -83,3 +86,28 @@ async def test_runs_native_fallback():
     assert results[0].provider_name == "bbb_external"
     assert results[1].provider_name == "bbb_native"
     assert results[1].usable is True
+
+
+@pytest.mark.asyncio
+async def test_runs_directory_chain_by_provider_priority():
+    external = StructuredProvider(
+        "bbb_external",
+        ProviderStatus.BLOCKED.value,
+    )
+    native = StructuredProvider(
+        "bbb_native",
+        ProviderStatus.SUCCESS.value,
+        records=[{"name": "Example Business"}],
+    )
+
+    registry = build_provider_registry([native, external])
+    orchestrator = ProviderOrchestrator(registry)
+
+    results = await orchestrator.search_directory(
+        {},
+        directory="bbb",
+    )
+
+    assert [
+        result.provider_name for result in results
+    ] == ["bbb_external", "bbb_native"]

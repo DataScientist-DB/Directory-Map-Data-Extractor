@@ -4,7 +4,6 @@ import csv
 import html
 import io
 import json
-from copy import deepcopy
 from typing import Any, Dict, Iterable
 
 from apify import Actor
@@ -21,7 +20,9 @@ from src.taxonomy_static import RPC_CATEGORY_MAP, RSS_SERVICE_MAP
 from src.adapters.providers.default_registry import (
     build_default_provider_registry,
 )
-from src.discovery.provider_orchestrator import ProviderOrchestrator
+from src.discovery.directory_execution_coordinator import (
+    DirectoryExecutionCoordinator,
+)
 def _clean_label(value: Any) -> str:
     if value is None:
         return ""
@@ -206,14 +207,6 @@ def _normalize_requested_providers(input_data: dict[str, Any]) -> list[str]:
     ]
 
     return list(dict.fromkeys(normalized))
-
-
-def _provider_requested(
-    requested_providers: list[str],
-    provider_name: str,
-) -> bool:
-    """No explicit list means automatic/legacy provider selection."""
-    return not requested_providers or provider_name in requested_providers
 
 
 def _log_provider_result(
@@ -418,6 +411,14 @@ async def main() -> None:
             request=search_request,
         )
         execution_details = search_orchestrator.execution_details() or {}
+        execution_coordinator = DirectoryExecutionCoordinator(
+            provider_registry,
+            source_input=input_data,
+            requested_provider_names=requested_providers,
+            local_only=local_only,
+            enable_website_enrichment=enable_website_enrichment,
+            website_timeout_ms=website_timeout_ms,
+        )
 
         for skipped in execution_details.get("skipped", []):
             Actor.log.info(
@@ -447,171 +448,34 @@ async def main() -> None:
                     f"directory={directory} url={url}"
                 )
 
-                target_input = deepcopy(input_data)
-                target_input["architecture"] = directory
-                target_input["startUrls"] = [{"url": url}]
-
-                target_search = dict(target_input.get("search") or {})
-                target_search["directories"] = [directory]
-                target_search["autoSelectDirectories"] = False
-                target_input["search"] = target_search
-
-                bbb_provider_config = input_data.get("bbbProvider", {}) or {}
-
-                provider_orchestrator = ProviderOrchestrator(
-                    provider_registry
+                outcome = await execution_coordinator.execute(
+                    directory=directory,
+                    search_url=url,
                 )
 
-                external_requested = _provider_requested(
-                    requested_providers,
-                    "bbb_external",
-                )
-                native_requested = _provider_requested(
-                    requested_providers,
-                    "bbb_native",
-                )
-                if directory == "bbb":
-                    provider_request = {
-                        "input_data": input_data,
-                        "search_url": url,
-                        "enable_website_enrichment": enable_website_enrichment,
-                        "website_timeout_ms": website_timeout_ms,
-                        "max_pages": int(
-                            bbb_provider_config.get(
-                                "maxPages",
-                                input_data.get("maxPages", 10),
-                            )
-                        ),
-                        "max_companies": int(
-                            bbb_provider_config.get(
-                                "maxCompanies",
-                                input_data.get("maxListings", 100),
-                            )
-                        ),
-                        "max_concurrency": int(
-                            bbb_provider_config.get(
-                                "maxConcurrency",
-                                input_data.get("maxConcurrency", 1),
-                            )
-                        ),
-                        "use_apify_proxy": bool(
-                            bbb_provider_config.get("useApifyProxy", True)
-                        ),
-                    }
-
-
-                    if local_only or not external_requested:
-                        execution_results = await provider_orchestrator.search(
-                            request=provider_request,
-                            provider_names=["bbb_native"],
-                        )
-                    else:
-                        execution_results = (
-                            await provider_orchestrator.search_with_fallback(
-                                request=provider_request,
-                                primary_name="bbb_external",
-                                fallback_name="bbb_native",
-                                fallback_enabled=native_requested,
-                            )
-                        )
-
-                    for result in execution_results:
-                        Actor.log.info(
-                            "[PF] "
-                            f"{result.provider_name} "
-                            f"status={result.status} "
-                            f"records={len(result.records)}"
-                        )
-
-                        crawl_results.append(
-                            {
-                                "architecture": directory,
-                                "directory": directory,
-                                "source_url": url,
-                                "target_url": url,
-                                "status": result.status.value
-                                if hasattr(result.status, "value")
-                                else str(result.status),
-                                "records_found": len(result.records),
-                                "provider": result.provider_name,
-                                "category_map": {},
-                                "service_map": {},
-                                "access_reason": result.report.reason,
-                            }
-                        )
-
-                    continue
-
-                elif directory == "chambermaster":
-                    provider_request = {
-                        "input_data": target_input,
-                        "search_url": url,
-                        "enable_website_enrichment": enable_website_enrichment,
-                        "website_timeout_ms": website_timeout_ms,
-                    }
-
-                    execution_results = await provider_orchestrator.search(
-                        request=provider_request,
-                        provider_names=["chambermaster"],
+                for result in outcome.provider_results:
+                    status = (
+                        result.status.value
+                        if hasattr(result.status, "value")
+                        else str(result.status)
                     )
-
-                    crawl_results.extend(
-                        result.report.metadata.get("crawler_result", {})
-                        for result in execution_results
-                        if result.report
+                    Actor.log.info(
+                        "[PF] "
+                        f"{result.provider_name} "
+                        f"status={status} "
+                        f"records={len(result.records)}"
                     )
-
-                    continue
-
-                try:
-                    target_result = await run_crawler(
-                        target_input,
-                        enable_website_enrichment=enable_website_enrichment,
-                        website_timeout_ms=website_timeout_ms,
-                    ) or {}
-
-                    target_result["directory"] = directory
-                    target_result["target_url"] = url
-
-
-
-                    crawl_results.append(target_result)
-
                     _log_provider_result(
-                        provider_name=(
-                            "bbb_native" if directory == "bbb" else directory
-                        ),
-                        status=str(target_result.get("status") or "success"),
-                        records=int(target_result.get("records_found") or 0),
-                        error=str(
-                            target_result.get("access_reason")
-                            or target_result.get("blocked_reason")
-                            or ""
-                        ),
+                        provider_name=result.provider_name,
+                        status=status,
+                        records=len(result.records),
+                        error=result.error or "",
                     )
 
-                except Exception as exc:
-                    _log_provider_result(
-                        provider_name=(
-                            "bbb_native" if directory == "bbb" else directory
-                        ),
-                        status="failed",
-                        records=0,
-                        error=str(exc),
-                    )
-                    crawl_results.append(
-                        {
-                            "architecture": directory,
-                            "directory": directory,
-                            "source_url": url,
-                            "target_url": url,
-                            "status": "failed",
-                            "records_found": 0,
-                            "reason": str(exc),
-                            "category_map": {},
-                            "service_map": {},
-                        }
-                    )
+                if outcome.records:
+                    await Actor.push_data(outcome.records)
+
+                crawl_results.extend(outcome.crawl_results)
 
         elif execution_details.get("skipped"):
             crawl_results.extend(
