@@ -96,6 +96,18 @@ def test_requested_chambermaster_without_url_is_skipped():
     assert details["skipped"][0]["reason"] == "explicit_url_required"
 
 
+def test_explicit_request_directories_override_catalog_selection():
+    orchestrator = SearchOrchestrator(registry=_runtime_registry())
+    request = SearchRequest(
+        keyword="traffic engineers",
+        location="Phoenix, AZ",
+        country="USA",
+        directories=["bbb"],
+    )
+
+    assert orchestrator.get_directories(request) == ["bbb"]
+
+
 def test_requested_unregistered_directory_is_not_executed():
     orchestrator = SearchOrchestrator(registry=_runtime_registry())
     request = SearchRequest(

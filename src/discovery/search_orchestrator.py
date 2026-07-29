@@ -40,6 +40,9 @@ class SearchOrchestrator:
 
     def get_directories(self, request: Any) -> list[str]:
         result = self.selector.select(request)
+        requested = self._requested_directories(request)
+        if requested:
+            return requested
         if isinstance(result, DirectorySelection):
             return list(result.provider_ids)
         return result
