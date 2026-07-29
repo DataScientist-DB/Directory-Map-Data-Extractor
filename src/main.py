@@ -409,11 +409,23 @@ async def main() -> None:
 
 
         search_request = RequestParser.parse(input_data)
-        search_orchestrator = SearchOrchestrator()
+        provider_registry = build_default_provider_registry(input_data)
+        search_orchestrator = SearchOrchestrator(
+            registry=provider_registry,
+        )
         directory_targets = search_orchestrator.build_targets(
             input_data=input_data,
             request=search_request,
         )
+        execution_details = search_orchestrator.execution_details() or {}
+
+        for skipped in execution_details.get("skipped", []):
+            Actor.log.info(
+                "DIRECTORY SKIPPED: "
+                f"directory={skipped.get('directory', '')} "
+                f"reason={skipped.get('reason', '')} "
+                f"detail={skipped.get('detail', '')}"
+            )
 
         crawl_results: list[dict[str, Any]] = []
 
@@ -445,9 +457,6 @@ async def main() -> None:
                 target_input["search"] = target_search
 
                 bbb_provider_config = input_data.get("bbbProvider", {}) or {}
-
-                provider_registry = build_default_provider_registry(input_data)
-
 
                 provider_orchestrator = ProviderOrchestrator(
                     provider_registry
@@ -604,6 +613,22 @@ async def main() -> None:
                         }
                     )
 
+        elif execution_details.get("skipped"):
+            crawl_results.extend(
+                {
+                    "architecture": skipped.get("directory", ""),
+                    "directory": skipped.get("directory", ""),
+                    "source_url": "",
+                    "target_url": "",
+                    "status": "not_supported",
+                    "records_found": 0,
+                    "reason": skipped.get("reason", ""),
+                    "access_reason": skipped.get("detail", ""),
+                    "category_map": {},
+                    "service_map": {},
+                }
+                for skipped in execution_details["skipped"]
+            )
         else:
             target_result = await run_crawler(
                 input_data,

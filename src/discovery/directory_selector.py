@@ -102,7 +102,20 @@ def _request_query(request: Any) -> str:
         "product_name",
         "category",
     )
-    return str(value or "").strip()
+    if value not in (None, ""):
+        return str(value).strip()
+
+    for plural_name in ("services", "products", "industries"):
+        values = _read_value(request, plural_name)
+        if isinstance(values, str) and values.strip():
+            return values.strip()
+        if isinstance(values, (list, tuple, set)):
+            for item in values:
+                text = str(item or "").strip()
+                if text:
+                    return text
+
+    return ""
 
 
 def _request_location(request: Any) -> str:
